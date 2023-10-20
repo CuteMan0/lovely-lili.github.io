@@ -204,8 +204,9 @@ void SetAngle(float angle)
     m=data;
     m=m&amp;0x80;         //取首位
     if(m==0x80)
-    &#123;OLED_SDIN_Set();&#125;
-    else OLED_SDIN_Clr();
+    OLED_SDIN_Set();
+    else
+    OLED_SDIN_Clr();
     data=data&lt;&lt;1;           //将下一位数据推至首位，准备下次读取
     OLED_SCLK_Set();    //读SDA的数据
     OLED_SCLK_Clr();
