@@ -1,47 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>确知信号</title>
-    <url>/2023/09/24/2.%E7%A1%AE%E7%9F%A5%E4%BF%A1%E5%8F%B7/</url>
-    <content><![CDATA[<h3 id="信号的类型"><a href="#信号的类型" class="headerlink" title="信号的类型"></a>信号的类型</h3><p>信号按照能量是否有限区分 能量信号、功率信号<br>信号能量E为</p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
-<h4 id="能量信号"><a href="#能量信号" class="headerlink" title="能量信号"></a>能量信号</h4><p>若E是一个正的有限值，即下式，称信号为能量信号</p>
- \[0 < E = \int_{ - \infty }^\infty  {{s^2}(t)dt}  < \infty \] 
-<p>将信号的平均功率定义为</p>
- \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - T/2}^{T/2} {{s^2}(t)dt} \] 
-<p>不难看出，能量信号的平均功率P&#x3D;0</p>
-<h4 id="功率信号"><a href="#功率信号" class="headerlink" title="功率信号"></a>功率信号</h4><p>若P是一个正的有限值，即下式，称信号为功率信号</p>
- \[0 < P < \infty \] 
-<p>功率信号的能量E无穷大</p>
-<h3 id="确知信号的频域性质"><a href="#确知信号的频域性质" class="headerlink" title="确知信号的频域性质"></a>确知信号的频域性质</h3><h4 id="周期性功率信号的频谱"><a href="#周期性功率信号的频谱" class="headerlink" title="周期性功率信号的频谱"></a>周期性功率信号的频谱</h4><p>对于一个周期为 T0 的周期性功率信号 s(t) ，其频谱函数为傅里叶级数系数，如下式</p>
- \[{C_n} = C(n{f_0}) = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} \] 
-<p>故周期性信号可以展开成如下的傅里叶级数</p>
- \[s(t) = \sum\limits_{ - \infty }^\infty  {{C_n}{e^{j2\pi nt/{T_0}}}} \] 
-<p>当 n&#x3D;0 时，为信号 s(t) 的时间平均值，即 直流分量</p>
- \[{C_0} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t)dt} \] 
-<p>一般来说，频谱函数 Cn 为复数，代表在各频率上信号分量的复振幅，可写作</p>
- \[{C_n} = \left| {{C_n}} \right|{e^{j{\theta _n}}}\] 
-<p>其中</p>
- \[\left| {{C_n}} \right| = \frac{1}{2}\sqrt {{a_n}^2 + {b_n}^2} \] 
- \[{\theta _n} =  - \arctan ({b_n}/{a_n})\] 
-<p>因为 n 可取负值，称 Cn 为双边谱，但负频谱仅在数学上有意义，将实信号的频谱称为单边谱<br>对物理可实现的实信号，其频谱如下</p>
- \[{C_{ - n}} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ + j2\pi n{f_0}t}}dt}  = {\left[ {\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} } \right]^ * } = {C_n}^{^ * }\] 
-<p>可得正频和负频部分之间存在共轭关系，即正负频谱的模偶对称，相位奇对称。</p>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-]]></content>
-      <categories>
-        <category>通信原理笔记</category>
-      </categories>
-  </entry>
-  <entry>
     <title>About me</title>
     <url>/2023/08/14/About%20me/</url>
     <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我我我"><a href="#我我我" class="headerlink" title="我我我"></a>我我我</h4><p>我是笠笠，目前就读于江京院的电气院电信专业<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
@@ -106,6 +65,47 @@ L = (Vin - Vout) * D / fsw * r * Iload
 ]]></content>
       <categories>
         <category>开关电源</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>确知信号</title>
+    <url>/2023/09/24/2.%E7%A1%AE%E7%9F%A5%E4%BF%A1%E5%8F%B7/</url>
+    <content><![CDATA[<h3 id="信号的类型"><a href="#信号的类型" class="headerlink" title="信号的类型"></a>信号的类型</h3><p>信号按照能量是否有限区分 能量信号、功率信号<br>信号能量E为</p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
+<h4 id="能量信号"><a href="#能量信号" class="headerlink" title="能量信号"></a>能量信号</h4><p>若E是一个正的有限值，即下式，称信号为能量信号</p>
+ \[0 < E = \int_{ - \infty }^\infty  {{s^2}(t)dt}  < \infty \] 
+<p>将信号的平均功率定义为</p>
+ \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - T/2}^{T/2} {{s^2}(t)dt} \] 
+<p>不难看出，能量信号的平均功率P&#x3D;0</p>
+<h4 id="功率信号"><a href="#功率信号" class="headerlink" title="功率信号"></a>功率信号</h4><p>若P是一个正的有限值，即下式，称信号为功率信号</p>
+ \[0 < P < \infty \] 
+<p>功率信号的能量E无穷大</p>
+<h3 id="确知信号的频域性质"><a href="#确知信号的频域性质" class="headerlink" title="确知信号的频域性质"></a>确知信号的频域性质</h3><h4 id="周期性功率信号的频谱"><a href="#周期性功率信号的频谱" class="headerlink" title="周期性功率信号的频谱"></a>周期性功率信号的频谱</h4><p>对于一个周期为 T0 的周期性功率信号 s(t) ，其频谱函数为傅里叶级数系数，如下式</p>
+ \[{C_n} = C(n{f_0}) = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} \] 
+<p>故周期性信号可以展开成如下的傅里叶级数</p>
+ \[s(t) = \sum\limits_{ - \infty }^\infty  {{C_n}{e^{j2\pi nt/{T_0}}}} \] 
+<p>当 n&#x3D;0 时，为信号 s(t) 的时间平均值，即 直流分量</p>
+ \[{C_0} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t)dt} \] 
+<p>一般来说，频谱函数 Cn 为复数，代表在各频率上信号分量的复振幅，可写作</p>
+ \[{C_n} = \left| {{C_n}} \right|{e^{j{\theta _n}}}\] 
+<p>其中</p>
+ \[\left| {{C_n}} \right| = \frac{1}{2}\sqrt {{a_n}^2 + {b_n}^2} \] 
+ \[{\theta _n} =  - \arctan ({b_n}/{a_n})\] 
+<p>因为 n 可取负值，称 Cn 为双边谱，但负频谱仅在数学上有意义，将实信号的频谱称为单边谱<br>对物理可实现的实信号，其频谱如下</p>
+ \[{C_{ - n}} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ + j2\pi n{f_0}t}}dt}  = {\left[ {\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} } \right]^ * } = {C_n}^{^ * }\] 
+<p>可得正频和负频部分之间存在共轭关系，即正负频谱的模偶对称，相位奇对称。</p>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+]]></content>
+      <categories>
+        <category>通信原理笔记</category>
       </categories>
   </entry>
   <entry>
