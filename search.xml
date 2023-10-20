@@ -109,39 +109,6 @@ L = (Vin - Vout) * D / fsw * r * Iload
       </categories>
   </entry>
   <entry>
-    <title>SSD1306</title>
-    <url>/2023/10/20/SSD1306/</url>
-    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
-<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Byte+ACK) 的格式传输，发出STOP信号表示传输结束</p>
-<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
-&#123;
-    unsigned char i;
-    unsigned char m,data;
-    data=IIC_Byte;
-    OLED_SCLK_Clr();
-    for(i=0;i&lt;8;i++)	//1Byte data	
-    &#123;
-    m=data;
-    m=m&amp;0x80;         //取首位
-    if(m==0x80)
-    &#123;OLED_SDIN_Set();&#125;
-    else OLED_SDIN_Clr();
-    data=data&lt;&lt;1;           //将下一位数据推至首位，准备下次读取
-    OLED_SCLK_Set();    //读SDA的数据
-    OLED_SCLK_Clr();
-    &#125;
-&#125;
-</code></pre>
-<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
-<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
-<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
-<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
     <title>SG90小记</title>
     <url>/2023/08/17/SG90%E5%B0%8F%E8%AE%B0/</url>
     <content><![CDATA[<h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
@@ -216,6 +183,39 @@ void SetAngle(float angle)
 &#125;
 </code></pre>
 <h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>舵机分为：模拟舵机 和 数字舵机<br>    模拟： 要一直发送PWM信号，直至到达目标位置，比如这里的 SG90<br>    数字： 仅需一次PWM信号，比如 MG90S （较推荐）</p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>SSD1306</title>
+    <url>/2023/10/20/SSD1306/</url>
+    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
+<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Byte+ACK) 的格式传输，发出STOP信号表示传输结束</p>
+<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
+&#123;
+    unsigned char i;
+    unsigned char m,data;
+    data=IIC_Byte;
+    OLED_SCLK_Clr();
+    for(i=0;i&lt;8;i++)	//1Byte data	
+    &#123;
+    m=data;
+    m=m&amp;0x80;         //取首位
+    if(m==0x80)
+    &#123;OLED_SDIN_Set();&#125;
+    else OLED_SDIN_Clr();
+    data=data&lt;&lt;1;           //将下一位数据推至首位，准备下次读取
+    OLED_SCLK_Set();    //读SDA的数据
+    OLED_SCLK_Clr();
+    &#125;
+&#125;
+</code></pre>
+<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
+<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
+<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
+<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
 ]]></content>
       <categories>
         <category>MCU</category>
