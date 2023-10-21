@@ -109,7 +109,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2023-10-20T13:52:44.986Z" itemprop="dateUpdated">2023-10-20</time>
+              <time  class="article-updated" datetime="2023-10-21T13:06:37.280Z" itemprop="dateUpdated">2023-10-21</time>
             </h2>
           
           
@@ -142,7 +142,7 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h3 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h3><p>在移程序的时候，摸到PCB背面有些热乎，于是想实时显示下U的温度————工科男的强迫症罢了</p>
+        <h3 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h3><p>在移程序的时候，摸到PCB背面有些热乎，于是想实时显示下U的温度————<del>工科男的强迫症罢了</del></p>
 <h3 id="ADC测温"><a href="#ADC测温" class="headerlink" title="ADC测温"></a>ADC测温</h3><p>H7的内置温度传感器在ADC3上，采样时间最少保持9μs</p>
 <h5 id="计算"><a href="#计算" class="headerlink" title="计算"></a>计算</h5><p>以下为相关的计算公式<br><img src="/images/%E6%B8%A9%E5%BA%A6%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F.jpg"><br>注：传感器从掉电模式中唤醒需要一个启动时间，启动时间过后其才能正确输出VSENSE，ADC在上电后同样需要一个启动时间约25.2μs，所以最好同时将ADEN、SENSEEN置1</p>
 <h4 id="误差"><a href="#误差" class="headerlink" title="误差"></a>误差</h4><p>adc读出来温度居然有120°C？？，怀疑是取错地址了，结果是没有自校准</p>
