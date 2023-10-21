@@ -47,9 +47,6 @@
     <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我我我"><a href="#我我我" class="headerlink" title="我我我"></a>我我我</h4><p>我是笠笠，目前就读于江京院的电气院电信专业<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
 <h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
 ]]></content>
-      <categories>
-        <category>有关于我</category>
-      </categories>
   </entry>
   <entry>
     <title>MP2456计算</title>
@@ -106,46 +103,6 @@ L = (Vin - Vout) * D / fsw * r * Iload
 ]]></content>
       <categories>
         <category>开关电源</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>SSD1306</title>
-    <url>/2023/10/20/SSD1306/</url>
-    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
-<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Byte+ACK) 的格式传输，发出STOP信号表示传输结束</p>
-<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
-&#123;
-    unsigned char i;
-    unsigned char m,data;
-    data=IIC_Byte;
-    OLED_SCLK_Clr();
-    for(i=0;i&lt;8;i++)	//1Byte data	
-    &#123;
-    m=data;
-    m=m&amp;0x80;         //取首位
-    if(m==0x80)
-    OLED_SDIN_Set();
-    else
-    OLED_SDIN_Clr();
-    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次读取
-    OLED_SCLK_Set();    //读SDA的数据
-    OLED_SCLK_Clr();
-    &#125;
-&#125;
-</code></pre>
-<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
-<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
-<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
-<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="指令列表"><a href="#指令列表" class="headerlink" title="指令列表"></a>指令列表</h4><h5 id="00h-0Fh"><a href="#00h-0Fh" class="headerlink" title="00h~0Fh"></a>00h~0Fh</h5><p>设置起始列地址的低4位</p>
-<h5 id="10h-1Fh"><a href="#10h-1Fh" class="headerlink" title="10h~1Fh"></a>10h~1Fh</h5><p>设置起始列地址的高4位</p>
-<h5 id="20h：A-1-0"><a href="#20h：A-1-0" class="headerlink" title="20h：A[1:0]"></a>20h：A[1:0]</h5><p>设置内存寻址模式</p>
-<h6 id="A-1-0-10b页面寻址"><a href="#A-1-0-10b页面寻址" class="headerlink" title="A[1:0]&#x3D;10b	页面寻址"></a>A[1:0]&#x3D;10b	页面寻址</h6><p><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-00b水平寻址"><a href="#A-1-0-00b水平寻址" class="headerlink" title="A[1:0]&#x3D;00b	水平寻址"></a>A[1:0]&#x3D;00b	水平寻址</h6><p><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-01b竖直寻址"><a href="#A-1-0-01b竖直寻址" class="headerlink" title="A[1:0]&#x3D;01b	竖直寻址"></a>A[1:0]&#x3D;01b	竖直寻址</h6><p><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-11b无效寻址"><a href="#A-1-0-11b无效寻址" class="headerlink" title="A[1:0]&#x3D;11b	无效寻址"></a>A[1:0]&#x3D;11b	无效寻址</h6><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
-]]></content>
-      <categories>
-        <category>MCU</category>
       </categories>
   </entry>
   <entry>
@@ -229,6 +186,69 @@ void SetAngle(float angle)
       </categories>
   </entry>
   <entry>
+    <title>WDG</title>
+    <url>/2023/08/19/Watch-dog/</url>
+    <content><![CDATA[<h2 id="看门狗"><a href="#看门狗" class="headerlink" title="看门狗"></a>看门狗</h2><p>其实就是一个定时器，在程序跑飞&#x2F;死循环时复位</p>
+<h3 id="IWDG-（宠物狗）"><a href="#IWDG-（宠物狗）" class="headerlink" title="IWDG （宠物狗）"></a>IWDG （宠物狗）</h3><p><img src="/images/IWDG.png"><br>一个 12bit 的递减计数器，计数器值为 0 时，产生一个 IWDG_RESET 复位信号</p>
+<h5 id="相关时间计算"><a href="#相关时间计算" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Tiwdg = (4*2^prv) / LSI * rlv (s)
+注：prv ---- 预分频器值（8bit）     rlv ---- 重载寄存器值
+E.g：LSI = 40K， prv = 256，rlv = 625，则Tiwdg = 4s
+</code></pre>
+<h3 id="WWDG-（警犬）"><a href="#WWDG-（警犬）" class="headerlink" title="WWDG （警犬）"></a>WWDG （警犬）</h3><p>一个 7bit 的递减计数器到固定值 0X40 时不喂狗，产生复位，这个值叫窗口的下限，固定不可变<br>计数器值在减到某一个数之前喂狗的话也会产生复位，这个值叫窗口的上限，上限值由用户独立设置</p>
+<h5 id="相关时间计算-1"><a href="#相关时间计算-1" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Twwdg = Tpclk1 x 4096 x 2^wdgtb x (T[5:0] + 1) (ms)
+注：Tpclk1 ---- APB1时钟周期， 2^wdgtb ---- 预分频器（4bit） 
+    T[5:0] ---- 我所理解：T6位置0时，WWDG复位，所以上限值的T6位都是置1的，上下限差值为0x00-0x3F
+E.g：Tpclk1 = 1/36M， wdgtb = 0, T[5:0] = 0x00, 则Twwdg = 113μs
+</code></pre>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><pre><code>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误
+WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。
+</code></pre>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>SSD1306</title>
+    <url>/2023/10/20/SSD1306/</url>
+    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
+<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Byte+ACK) 的格式传输，发出STOP信号表示传输结束</p>
+<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
+&#123;
+    unsigned char i;
+    unsigned char m,data;
+    data=IIC_Byte;
+    OLED_SCLK_Clr();
+    for(i=0;i&lt;8;i++)	//1Byte data	
+    &#123;
+    m=data;
+    m=m&amp;0x80;         //取首位
+    if(m==0x80)
+    OLED_SDIN_Set();
+    else
+    OLED_SDIN_Clr();
+    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次读取
+    OLED_SCLK_Set();    //读SDA的数据
+    OLED_SCLK_Clr();
+    &#125;
+&#125;
+</code></pre>
+<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
+<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
+<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
+<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="指令列表"><a href="#指令列表" class="headerlink" title="指令列表"></a>指令列表</h4><h5 id="00h-0Fh"><a href="#00h-0Fh" class="headerlink" title="00h~0Fh"></a>00h~0Fh</h5><p>设置起始列地址的低4位</p>
+<h5 id="10h-1Fh"><a href="#10h-1Fh" class="headerlink" title="10h~1Fh"></a>10h~1Fh</h5><p>设置起始列地址的高4位</p>
+<h5 id="20h：A-1-0"><a href="#20h：A-1-0" class="headerlink" title="20h：A[1:0]"></a>20h：A[1:0]</h5><p>设置内存寻址模式</p>
+<h6 id="A-1-0-10b页面寻址"><a href="#A-1-0-10b页面寻址" class="headerlink" title="A[1:0]&#x3D;10b	页面寻址"></a>A[1:0]&#x3D;10b	页面寻址</h6><p><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+<h6 id="A-1-0-00b水平寻址"><a href="#A-1-0-00b水平寻址" class="headerlink" title="A[1:0]&#x3D;00b	水平寻址"></a>A[1:0]&#x3D;00b	水平寻址</h6><p><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+<h6 id="A-1-0-01b竖直寻址"><a href="#A-1-0-01b竖直寻址" class="headerlink" title="A[1:0]&#x3D;01b	竖直寻址"></a>A[1:0]&#x3D;01b	竖直寻址</h6><p><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+<h6 id="A-1-0-11b无效寻址"><a href="#A-1-0-11b无效寻址" class="headerlink" title="A[1:0]&#x3D;11b	无效寻址"></a>A[1:0]&#x3D;11b	无效寻址</h6><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
     <title>温热的32</title>
     <url>/2023/09/01/%E6%B8%A9%E7%83%AD%E7%9A%8432/</url>
     <content><![CDATA[<h3 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h3><p>在移程序的时候，摸到PCB背面有些热乎，于是想实时显示下U的温度————<del>工科男的强迫症罢了</del></p>
@@ -280,29 +300,6 @@ HAL_TIMEOUT                     时间溢出
 线性度校准 ： 测量 内部基准电压 和 ADC 输入信号的幅值之间的比例关系，校准 ADC 增益的方式，确保 ADC 输出的数值与输入信号的幅值之间具有良好的线性关系，为了准确 转换 ADC 输入信号
 </code></pre>
 <p>注：<br>线性度校准可能会出现 timeout ，修改 ADC_CALIBRATION_TIMEOUT 的值</p>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>WDG</title>
-    <url>/2023/08/19/Watch-dog/</url>
-    <content><![CDATA[<h2 id="看门狗"><a href="#看门狗" class="headerlink" title="看门狗"></a>看门狗</h2><p>其实就是一个定时器，在程序跑飞&#x2F;死循环时复位</p>
-<h3 id="IWDG-（宠物狗）"><a href="#IWDG-（宠物狗）" class="headerlink" title="IWDG （宠物狗）"></a>IWDG （宠物狗）</h3><p><img src="/images/IWDG.png"><br>一个 12bit 的递减计数器，计数器值为 0 时，产生一个 IWDG_RESET 复位信号</p>
-<h5 id="相关时间计算"><a href="#相关时间计算" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Tiwdg = (4*2^prv) / LSI * rlv (s)
-注：prv ---- 预分频器值（8bit）     rlv ---- 重载寄存器值
-E.g：LSI = 40K， prv = 256，rlv = 625，则Tiwdg = 4s
-</code></pre>
-<h3 id="WWDG-（警犬）"><a href="#WWDG-（警犬）" class="headerlink" title="WWDG （警犬）"></a>WWDG （警犬）</h3><p>一个 7bit 的递减计数器到固定值 0X40 时不喂狗，产生复位，这个值叫窗口的下限，固定不可变<br>计数器值在减到某一个数之前喂狗的话也会产生复位，这个值叫窗口的上限，上限值由用户独立设置</p>
-<h5 id="相关时间计算-1"><a href="#相关时间计算-1" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Twwdg = Tpclk1 x 4096 x 2^wdgtb x (T[5:0] + 1) (ms)
-注：Tpclk1 ---- APB1时钟周期， 2^wdgtb ---- 预分频器（4bit） 
-    T[5:0] ---- 我所理解：T6位置0时，WWDG复位，所以上限值的T6位都是置1的，上下限差值为0x00-0x3F
-E.g：Tpclk1 = 1/36M， wdgtb = 0, T[5:0] = 0x00, 则Twwdg = 113μs
-</code></pre>
-<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><pre><code>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误
-WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。
-</code></pre>
 ]]></content>
       <categories>
         <category>MCU</category>
