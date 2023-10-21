@@ -229,6 +229,29 @@ void SetAngle(float angle)
       </categories>
   </entry>
   <entry>
+    <title>WDG</title>
+    <url>/2023/08/19/Watch-dog/</url>
+    <content><![CDATA[<h2 id="看门狗"><a href="#看门狗" class="headerlink" title="看门狗"></a>看门狗</h2><p>其实就是一个定时器，在程序跑飞&#x2F;死循环时复位</p>
+<h3 id="IWDG-（宠物狗）"><a href="#IWDG-（宠物狗）" class="headerlink" title="IWDG （宠物狗）"></a>IWDG （宠物狗）</h3><p><img src="/images/IWDG.png"><br>一个 12bit 的递减计数器，计数器值为 0 时，产生一个 IWDG_RESET 复位信号</p>
+<h5 id="相关时间计算"><a href="#相关时间计算" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Tiwdg = (4*2^prv) / LSI * rlv (s)
+注：prv ---- 预分频器值（8bit）     rlv ---- 重载寄存器值
+E.g：LSI = 40K， prv = 256，rlv = 625，则Tiwdg = 4s
+</code></pre>
+<h3 id="WWDG-（警犬）"><a href="#WWDG-（警犬）" class="headerlink" title="WWDG （警犬）"></a>WWDG （警犬）</h3><p>一个 7bit 的递减计数器到固定值 0X40 时不喂狗，产生复位，这个值叫窗口的下限，固定不可变<br>计数器值在减到某一个数之前喂狗的话也会产生复位，这个值叫窗口的上限，上限值由用户独立设置</p>
+<h5 id="相关时间计算-1"><a href="#相关时间计算-1" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Twwdg = Tpclk1 x 4096 x 2^wdgtb x (T[5:0] + 1) (ms)
+注：Tpclk1 ---- APB1时钟周期， 2^wdgtb ---- 预分频器（4bit） 
+    T[5:0] ---- 我所理解：T6位置0时，WWDG复位，所以上限值的T6位都是置1的，上下限差值为0x00-0x3F
+E.g：Tpclk1 = 1/36M， wdgtb = 0, T[5:0] = 0x00, 则Twwdg = 113μs
+</code></pre>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><pre><code>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误
+WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。
+</code></pre>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
     <title>温热的32</title>
     <url>/2023/09/01/%E6%B8%A9%E7%83%AD%E7%9A%8432/</url>
     <content><![CDATA[<h3 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h3><p>在移程序的时候，摸到PCB背面有些热乎，于是想实时显示下U的温度————工科男的强迫症罢了</p>
@@ -280,29 +303,6 @@ HAL_TIMEOUT                     时间溢出
 线性度校准 ： 测量 内部基准电压 和 ADC 输入信号的幅值之间的比例关系，校准 ADC 增益的方式，确保 ADC 输出的数值与输入信号的幅值之间具有良好的线性关系，为了准确 转换 ADC 输入信号
 </code></pre>
 <p>注：<br>线性度校准可能会出现 timeout ，修改 ADC_CALIBRATION_TIMEOUT 的值</p>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>WDG</title>
-    <url>/2023/08/19/Watch-dog/</url>
-    <content><![CDATA[<h2 id="看门狗"><a href="#看门狗" class="headerlink" title="看门狗"></a>看门狗</h2><p>其实就是一个定时器，在程序跑飞&#x2F;死循环时复位</p>
-<h3 id="IWDG-（宠物狗）"><a href="#IWDG-（宠物狗）" class="headerlink" title="IWDG （宠物狗）"></a>IWDG （宠物狗）</h3><p><img src="/images/IWDG.png"><br>一个 12bit 的递减计数器，计数器值为 0 时，产生一个 IWDG_RESET 复位信号</p>
-<h5 id="相关时间计算"><a href="#相关时间计算" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Tiwdg = (4*2^prv) / LSI * rlv (s)
-注：prv ---- 预分频器值（8bit）     rlv ---- 重载寄存器值
-E.g：LSI = 40K， prv = 256，rlv = 625，则Tiwdg = 4s
-</code></pre>
-<h3 id="WWDG-（警犬）"><a href="#WWDG-（警犬）" class="headerlink" title="WWDG （警犬）"></a>WWDG （警犬）</h3><p>一个 7bit 的递减计数器到固定值 0X40 时不喂狗，产生复位，这个值叫窗口的下限，固定不可变<br>计数器值在减到某一个数之前喂狗的话也会产生复位，这个值叫窗口的上限，上限值由用户独立设置</p>
-<h5 id="相关时间计算-1"><a href="#相关时间计算-1" class="headerlink" title="相关时间计算"></a>相关时间计算</h5><pre><code>Twwdg = Tpclk1 x 4096 x 2^wdgtb x (T[5:0] + 1) (ms)
-注：Tpclk1 ---- APB1时钟周期， 2^wdgtb ---- 预分频器（4bit） 
-    T[5:0] ---- 我所理解：T6位置0时，WWDG复位，所以上限值的T6位都是置1的，上下限差值为0x00-0x3F
-E.g：Tpclk1 = 1/36M， wdgtb = 0, T[5:0] = 0x00, 则Twwdg = 113μs
-</code></pre>
-<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><pre><code>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误
-WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。
-</code></pre>
 ]]></content>
       <categories>
         <category>MCU</category>
