@@ -107,6 +107,11 @@
             <time  class="article-date" datetime="2023-10-20T14:17:11.000Z" itemprop="datePublished">2023-10-20</time>
           </h2>
           
+            <h2 class="last-time">
+              <span>最后更新于</span>
+              <time  class="article-updated" datetime="2023-10-22T07:49:59.947Z" itemprop="dateUpdated">2023-10-22</time>
+            </h2>
+          
           
           <ul class="wrap-list dark">
   
@@ -138,7 +143,7 @@
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
         <h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
-<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Byte+ACK) 的格式传输，发出STOP信号表示传输结束</p>
+<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Bytes+ACK) 的格式传输，发出STOP信号表示传输结束</p>
 <h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
 &#123;
     unsigned char i;
