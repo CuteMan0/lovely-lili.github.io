@@ -38,6 +38,7 @@
  \[\int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt}  = {\left[ {\int_{ - \infty }^\infty  {s(t){e^{j2\pi ft}}dt} } \right]^*}\] 
 
 <h5 id="Cn和S-f-区别"><a href="#Cn和S-f-区别" class="headerlink" title="Cn和S(f)区别"></a>Cn和S(f)区别</h5><p>1：S(f)是连续谱,Cn&#x3D;C(nf0)是离散谱<br>2：S(f)的单位是V&#x2F;Hz，而Cn的单位是V</p>
+<h5 id="单位冲激函数"><a href="#单位冲激函数" class="headerlink" title="单位冲激函数"></a>单位冲激函数</h5><p>声明一下，占个位</p>
 <h4 id="能量信号的能量谱密度G-f"><a href="#能量信号的能量谱密度G-f" class="headerlink" title="能量信号的能量谱密度G(f)"></a>能量信号的能量谱密度G(f)</h4><p>信号能量:</p>
  \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
 <p>由巴塞伐尔定理得</p>
