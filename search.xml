@@ -48,10 +48,15 @@
 
 <h4 id="功率信号的功率谱密度P-f"><a href="#功率信号的功率谱密度P-f" class="headerlink" title="功率信号的功率谱密度P(f)"></a>功率信号的功率谱密度P(f)</h4><p>将信号截出一段长度为T的截短信号S_T(t)，通过能量信号的计算方法得</p>
  \[E = \int_{ - \infty }^\infty  {s_T^2(t)dt}  = \int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df} \] 
-<p>此时被积因子为瞬频功率<del>这个词是我瞎编的</del>，对其<del>在时域上</del>求平均得出功率谱密度P(f)<del>我也不是很理解咯</del></p>
+<p>此时被积因子为瞬频功率<del>这个词是我瞎编的</del>，对其<del>在时域上</del>求平均得出功率谱密度P(f)<del>猪脑过载不理解</del></p>
  \[P(f) = \mathop {\lim }\limits_{T \to \infty } \frac{{{{\left| {{S_T}(f)} \right|}^2}}}{T}\] 
 <p>同样的，功率谱密度P(f)在频率轴f上的积分等于信号功率，单位W&#x2F;Hz。</p>
-  
+ \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df}  = \int_{ - \infty }^\infty  {P(f)df} \] 
+
+
+
+
+
   
   
   
@@ -68,103 +73,6 @@
     <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我我我"><a href="#我我我" class="headerlink" title="我我我"></a>我我我</h4><p>我是笠笠，目前就读于江京院的电气院电信专业<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
 <h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>MP2456计算</title>
-    <url>/2023/09/08/MP2456/</url>
-    <content><![CDATA[<h3 id="事由"><a href="#事由" class="headerlink" title="事由"></a>事由</h3><p>开学了无所事事，翻看MP2456 datasheet的时候对有关于电感值的计算公式熟悉又陌生，重新来计算一下吧<br>下图为手册相关内容<br><img src="/images/MP2456.jpg"></p>
-<h4 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h4><ol>
-<li>电感上的电流不能突变</li>
-<li>电感上储存的能量不能突变</li>
-</ol>
-<p>将公式变换为</p>
-<pre><code>V * Δt = L * ΔI    （1）
-</code></pre>
-<h4 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h4><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
-<pre><code>由(1)得出
-Ion、Ioff为导通与关断期间电感的电流变化量
-Von * ton = L * Ion
-Voff * toff = L * Ioff
-
-D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
-ton = D * T = D / fsw 
-toff = (1-D) * T = (1-D) / fsw
-代入至伏秒定律，得
-Von * ton = Von * D / fsw = L * Ion             (2.1)
-Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
-</code></pre>
-<h4 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h4><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
-<pre><code>（1）负载电流 Iload = Idc
-（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
-（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
- 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
-</code></pre>
-<h4 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h4><p>此图为同步整流的BUCK电路模型<br><img src="/images/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
-<h5 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h5><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
-<pre><code>根据(2.1)、(1)、(3)有
-Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
-将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
-得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
-</code></pre>
-<h5 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h5><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
-<pre><code>根据(2.2)、(1)、(3)有
-Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
-将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
-得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
-</code></pre>
-<h4 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h4><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式，两者仅在分子上出现区别</p>
-<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
-此时发现只要满足 Vout / Vin = D ，可使得(4.1)与(4.2) 完全相同
-即 (Vin - Vout) * D = Vout * (1-D)
-将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
-故，Buck电路的电感计算公式为
-L = (Vin - Vout) * D / fsw * r * Iload
-</code></pre>
-<h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><h4 id="23-9-11-21-00"><a href="#23-9-11-21-00" class="headerlink" title="23&#x2F;9&#x2F;11 21:00"></a>23&#x2F;9&#x2F;11 21:00</h4><p>可惜我是懒人，最终还是按照手册推荐的值进行器件选型,已经打板下单了<br>以下为原理图和PCB，采用两路A4950电机驱动，OLED预留的是12864，不得不说12864调试是真的简易快捷，加上想学习b站上一个基于U8g2且特别丝滑的UI<br>贴下b站链接<br><a href="https://www.bilibili.com/video/BV1CL41187da/?share_source=copy_web&vd_source=1db224e93eb7d9db5b8f56dfae3e6630">https://www.bilibili.com/video/BV1CL41187da/?share_source=copy_web&amp;vd_source=1db224e93eb7d9db5b8f56dfae3e6630</a><br><img src="/images/MP2456%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1.png"><br>关于PCB上晶振的位置摆放问题，确实太新手了哈哈，但是懒得更改了，也没有要求EMC，就这样吧🤣<br><img src="/images/motor_PCB.png"></p>
-]]></content>
-      <categories>
-        <category>开关电源</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>SSD1306</title>
-    <url>/2023/10/20/SSD1306/</url>
-    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
-<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Bytes+ACK) 的格式传输，发出STOP信号表示传输结束</p>
-<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
-&#123;
-    unsigned char i;
-    unsigned char m,data;
-    data=IIC_Byte;
-    OLED_SCLK_Clr();
-    for(i=0;i&lt;8;i++)	//1Byte data	
-    &#123;
-    m=data;
-    m=m&amp;0x80;         //取首位
-    if(m==0x80)
-    OLED_SDIN_Set();
-    else
-    OLED_SDIN_Clr();
-    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次读取
-    OLED_SCLK_Set();    //读SDA的数据
-    OLED_SCLK_Clr();
-    &#125;
-&#125;
-</code></pre>
-<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
-<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
-<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
-<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="指令列表"><a href="#指令列表" class="headerlink" title="指令列表"></a>指令列表</h4><h5 id="00h-0Fh"><a href="#00h-0Fh" class="headerlink" title="00h~0Fh"></a>00h~0Fh</h5><p>设置起始列地址的低4位</p>
-<h5 id="10h-1Fh"><a href="#10h-1Fh" class="headerlink" title="10h~1Fh"></a>10h~1Fh</h5><p>设置起始列地址的高4位</p>
-<h5 id="20h：A-1-0"><a href="#20h：A-1-0" class="headerlink" title="20h：A[1:0]"></a>20h：A[1:0]</h5><p>设置内存寻址模式</p>
-<h6 id="A-1-0-10b页面寻址"><a href="#A-1-0-10b页面寻址" class="headerlink" title="A[1:0]&#x3D;10b	页面寻址"></a>A[1:0]&#x3D;10b	页面寻址</h6><p><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-00b水平寻址"><a href="#A-1-0-00b水平寻址" class="headerlink" title="A[1:0]&#x3D;00b	水平寻址"></a>A[1:0]&#x3D;00b	水平寻址</h6><p><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-01b竖直寻址"><a href="#A-1-0-01b竖直寻址" class="headerlink" title="A[1:0]&#x3D;01b	竖直寻址"></a>A[1:0]&#x3D;01b	竖直寻址</h6><p><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-11b无效寻址"><a href="#A-1-0-11b无效寻址" class="headerlink" title="A[1:0]&#x3D;11b	无效寻址"></a>A[1:0]&#x3D;11b	无效寻址</h6><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
   </entry>
   <entry>
     <title>SG90小记</title>
@@ -247,6 +155,63 @@ void SetAngle(float angle)
       </categories>
   </entry>
   <entry>
+    <title>MP2456计算</title>
+    <url>/2023/09/08/MP2456/</url>
+    <content><![CDATA[<h3 id="事由"><a href="#事由" class="headerlink" title="事由"></a>事由</h3><p>开学了无所事事，翻看MP2456 datasheet的时候对有关于电感值的计算公式熟悉又陌生，重新来计算一下吧<br>下图为手册相关内容<br><img src="/images/MP2456.jpg"></p>
+<h4 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h4><ol>
+<li>电感上的电流不能突变</li>
+<li>电感上储存的能量不能突变</li>
+</ol>
+<p>将公式变换为</p>
+<pre><code>V * Δt = L * ΔI    （1）
+</code></pre>
+<h4 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h4><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
+<pre><code>由(1)得出
+Ion、Ioff为导通与关断期间电感的电流变化量
+Von * ton = L * Ion
+Voff * toff = L * Ioff
+
+D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
+ton = D * T = D / fsw 
+toff = (1-D) * T = (1-D) / fsw
+代入至伏秒定律，得
+Von * ton = Von * D / fsw = L * Ion             (2.1)
+Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
+</code></pre>
+<h4 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h4><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
+<pre><code>（1）负载电流 Iload = Idc
+（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
+（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
+ 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
+</code></pre>
+<h4 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h4><p>此图为同步整流的BUCK电路模型<br><img src="/images/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
+<h5 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h5><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
+<pre><code>根据(2.1)、(1)、(3)有
+Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
+将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
+得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
+</code></pre>
+<h5 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h5><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
+<pre><code>根据(2.2)、(1)、(3)有
+Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
+将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
+得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
+</code></pre>
+<h4 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h4><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式，两者仅在分子上出现区别</p>
+<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
+此时发现只要满足 Vout / Vin = D ，可使得(4.1)与(4.2) 完全相同
+即 (Vin - Vout) * D = Vout * (1-D)
+将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
+故，Buck电路的电感计算公式为
+L = (Vin - Vout) * D / fsw * r * Iload
+</code></pre>
+<h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><h4 id="23-9-11-21-00"><a href="#23-9-11-21-00" class="headerlink" title="23&#x2F;9&#x2F;11 21:00"></a>23&#x2F;9&#x2F;11 21:00</h4><p>可惜我是懒人，最终还是按照手册推荐的值进行器件选型,已经打板下单了<br>以下为原理图和PCB，采用两路A4950电机驱动，OLED预留的是12864，不得不说12864调试是真的简易快捷，加上想学习b站上一个基于U8g2且特别丝滑的UI<br>贴下b站链接<br><a href="https://www.bilibili.com/video/BV1CL41187da/?share_source=copy_web&vd_source=1db224e93eb7d9db5b8f56dfae3e6630">https://www.bilibili.com/video/BV1CL41187da/?share_source=copy_web&amp;vd_source=1db224e93eb7d9db5b8f56dfae3e6630</a><br><img src="/images/MP2456%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1.png"><br>关于PCB上晶振的位置摆放问题，确实太新手了哈哈，但是懒得更改了，也没有要求EMC，就这样吧🤣<br><img src="/images/motor_PCB.png"></p>
+]]></content>
+      <categories>
+        <category>开关电源</category>
+      </categories>
+  </entry>
+  <entry>
     <title>WDG</title>
     <url>/2023/08/19/Watch-dog/</url>
     <content><![CDATA[<h2 id="看门狗"><a href="#看门狗" class="headerlink" title="看门狗"></a>看门狗</h2><p>其实就是一个定时器，在程序跑飞&#x2F;死循环时复位</p>
@@ -321,6 +286,46 @@ HAL_TIMEOUT                     时间溢出
 线性度校准 ： 测量 内部基准电压 和 ADC 输入信号的幅值之间的比例关系，校准 ADC 增益的方式，确保 ADC 输出的数值与输入信号的幅值之间具有良好的线性关系，为了准确 转换 ADC 输入信号
 </code></pre>
 <p>注：<br>线性度校准可能会出现 timeout ，修改 ADC_CALIBRATION_TIMEOUT 的值</p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>SSD1306</title>
+    <url>/2023/10/20/SSD1306/</url>
+    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
+<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Bytes+ACK) 的格式传输，发出STOP信号表示传输结束</p>
+<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
+&#123;
+    unsigned char i;
+    unsigned char m,data;
+    data=IIC_Byte;
+    OLED_SCLK_Clr();
+    for(i=0;i&lt;8;i++)	//1Byte data	
+    &#123;
+    m=data;
+    m=m&amp;0x80;         //取首位
+    if(m==0x80)
+    OLED_SDIN_Set();
+    else
+    OLED_SDIN_Clr();
+    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次读取
+    OLED_SCLK_Set();    //读SDA的数据
+    OLED_SCLK_Clr();
+    &#125;
+&#125;
+</code></pre>
+<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
+<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
+<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
+<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="指令列表"><a href="#指令列表" class="headerlink" title="指令列表"></a>指令列表</h4><h5 id="00h-0Fh"><a href="#00h-0Fh" class="headerlink" title="00h~0Fh"></a>00h~0Fh</h5><p>设置起始列地址的低4位</p>
+<h5 id="10h-1Fh"><a href="#10h-1Fh" class="headerlink" title="10h~1Fh"></a>10h~1Fh</h5><p>设置起始列地址的高4位</p>
+<h5 id="20h：A-1-0"><a href="#20h：A-1-0" class="headerlink" title="20h：A[1:0]"></a>20h：A[1:0]</h5><p>设置内存寻址模式</p>
+<h6 id="A-1-0-10b页面寻址"><a href="#A-1-0-10b页面寻址" class="headerlink" title="A[1:0]&#x3D;10b	页面寻址"></a>A[1:0]&#x3D;10b	页面寻址</h6><p><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+<h6 id="A-1-0-00b水平寻址"><a href="#A-1-0-00b水平寻址" class="headerlink" title="A[1:0]&#x3D;00b	水平寻址"></a>A[1:0]&#x3D;00b	水平寻址</h6><p><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+<h6 id="A-1-0-01b竖直寻址"><a href="#A-1-0-01b竖直寻址" class="headerlink" title="A[1:0]&#x3D;01b	竖直寻址"></a>A[1:0]&#x3D;01b	竖直寻址</h6><p><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+<h6 id="A-1-0-11b无效寻址"><a href="#A-1-0-11b无效寻址" class="headerlink" title="A[1:0]&#x3D;11b	无效寻址"></a>A[1:0]&#x3D;11b	无效寻址</h6><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
 ]]></content>
       <categories>
         <category>MCU</category>
