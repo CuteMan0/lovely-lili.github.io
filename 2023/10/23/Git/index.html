@@ -24,7 +24,7 @@
 
   
 
-  <title>SSD1306 | lovely-lili&#39;s blog</title>
+  <title>Git | lovely-lili&#39;s blog</title>
 
   
 
@@ -100,22 +100,15 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">SSD1306</h1>
+          <h1 class="title-wrap">Git</h1>
           <h2 class="title-sub-wrap">
             <strong>lovely-lili</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-10-20T14:17:11.000Z" itemprop="datePublished">2023-10-20</time>
+            <time  class="article-date" datetime="2023-10-23T13:07:05.000Z" itemprop="datePublished">2023-10-23</time>
           </h2>
-          
-            <h2 class="last-time">
-              <span>最后更新于</span>
-              <time  class="article-updated" datetime="2023-10-22T07:49:59.947Z" itemprop="dateUpdated">2023-10-22</time>
-            </h2>
           
           
           <ul class="wrap-list dark">
-  
-    <li><a href="/categories/MCU/">📒 MCU</a></li>
   
 </ul>
           <ul class="wrap-list dark">
@@ -142,38 +135,120 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
-<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Bytes+ACK) 的格式传输，发出STOP信号表示传输结束</p>
-<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
-&#123;
-    unsigned char i;
-    unsigned char m,data;
-    data=IIC_Byte;
-    OLED_SCLK_Clr();
-    for(i=0;i&lt;8;i++)	//1Byte data	
-    &#123;
-    m=data;
-    m=m&amp;0x80;         //取首位
-    if(m==0x80)
-    OLED_SDIN_Set();
-    else
-    OLED_SDIN_Clr();
-    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次读取
-    OLED_SCLK_Set();    //读SDA的数据
-    OLED_SCLK_Clr();
-    &#125;
-&#125;
-</code></pre>
-<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
-<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
-<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
-<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="指令列表"><a href="#指令列表" class="headerlink" title="指令列表"></a>指令列表</h4><h5 id="00h-0Fh"><a href="#00h-0Fh" class="headerlink" title="00h~0Fh"></a>00h~0Fh</h5><p>设置起始列地址的低4位</p>
-<h5 id="10h-1Fh"><a href="#10h-1Fh" class="headerlink" title="10h~1Fh"></a>10h~1Fh</h5><p>设置起始列地址的高4位</p>
-<h5 id="20h：A-1-0"><a href="#20h：A-1-0" class="headerlink" title="20h：A[1:0]"></a>20h：A[1:0]</h5><p>设置内存寻址模式</p>
-<h6 id="A-1-0-10b页面寻址"><a href="#A-1-0-10b页面寻址" class="headerlink" title="A[1:0]&#x3D;10b	页面寻址"></a>A[1:0]&#x3D;10b	页面寻址</h6><p><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-00b水平寻址"><a href="#A-1-0-00b水平寻址" class="headerlink" title="A[1:0]&#x3D;00b	水平寻址"></a>A[1:0]&#x3D;00b	水平寻址</h6><p><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-01b竖直寻址"><a href="#A-1-0-01b竖直寻址" class="headerlink" title="A[1:0]&#x3D;01b	竖直寻址"></a>A[1:0]&#x3D;01b	竖直寻址</h6><p><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
-<h6 id="A-1-0-11b无效寻址"><a href="#A-1-0-11b无效寻址" class="headerlink" title="A[1:0]&#x3D;11b	无效寻址"></a>A[1:0]&#x3D;11b	无效寻址</h6><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+        <h3 id="Git基本命令"><a href="#Git基本命令" class="headerlink" title="Git基本命令"></a>Git基本命令</h3><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">git init</td>
+<td align="left">开始Git旅程</td>
+</tr>
+<tr>
+<td align="left">git add filename</td>
+<td align="left">添加文件到缓存区,filename填写文件名，要加后缀哦</td>
+</tr>
+<tr>
+<td align="left">git add .</td>
+<td align="left">add所有文件</td>
+</tr>
+<tr>
+<td align="left">git rm –cached filename</td>
+<td align="left">去除缓存区文件</td>
+</tr>
+<tr>
+<td align="left">git status</td>
+<td align="left">查看缓存区内容</td>
+</tr>
+<tr>
+<td align="left">git commit -m “anything”</td>
+<td align="left">提交本地仓库，anything填写备注</td>
+</tr>
+<tr>
+<td align="left">git push -u origin master</td>
+<td align="left">本地库推送到远程库,-u在第一次推送时使用,origin作别名使用可自定义</td>
+</tr>
+<tr>
+<td align="left">git push</td>
+<td align="left">-u之后可如此简化使用，-u作用是把本地和远程仓库关联</td>
+</tr>
+<tr>
+<td align="left">git log</td>
+<td align="left">查看当前文件版本</td>
+</tr>
+<tr>
+<td align="left">git reset –hard ID</td>
+<td align="left">恢复版本，ID可自定义也可在log中查看</td>
+</tr>
+</tbody></table>
+<h4 id="Git与远程仓库关联"><a href="#Git与远程仓库关联" class="headerlink" title="Git与远程仓库关联"></a>Git与远程仓库关联</h4><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">git remote add origin server</td>
+<td align="left">关联远程仓库 server填github的SSH</td>
+</tr>
+<tr>
+<td align="left">git remote remove origin</td>
+<td align="left">解除关联</td>
+</tr>
+</tbody></table>
+<h3 id="Git分支"><a href="#Git分支" class="headerlink" title="Git分支"></a>Git分支</h3><p>这非常有意义！<br>在多人协作时，可以隔离工程，各自工作负责的内容，最后再进行合并</p>
+<h4 id="Git分支命令"><a href="#Git分支命令" class="headerlink" title="Git分支命令"></a>Git分支命令</h4><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">git branch</td>
+<td align="left">查看分支</td>
+</tr>
+<tr>
+<td align="left">git branch xxx</td>
+<td align="left">创建分支，xxx分支名</td>
+</tr>
+<tr>
+<td align="left">git branch -d xxx</td>
+<td align="left">删除分支</td>
+</tr>
+<tr>
+<td align="left">git checkout xxx</td>
+<td align="left">切换分支</td>
+</tr>
+<tr>
+<td align="left">git checkout -b xxx</td>
+<td align="left">快速创建和切换</td>
+</tr>
+<tr>
+<td align="left">git merge xxx</td>
+<td align="left">合并分支x，注意：是将x合并至当前分支</td>
+</tr>
+<tr>
+<td align="left">git remote show xxx</td>
+<td align="left">查看远程分支</td>
+</tr>
+<tr>
+<td align="left">git push origin xxx</td>
+<td align="left">推送至远程</td>
+</tr>
+<tr>
+<td align="left">git push origin –delete xxx</td>
+<td align="left">删除远程分支</td>
+</tr>
+<tr>
+<td align="left">git pull</td>
+<td align="left">更新当前分支</td>
+</tr>
+</tbody></table>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>参考链接：<a target="_blank" rel="noopener" href="https://www.bootcss.com/p/git-guide/">https://www.bootcss.com/p/git-guide/</a></p>
 
       </section>
 
@@ -181,28 +256,14 @@
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-    <div class="card-text">
-      
-        <a href="/2023/10/23/Git/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">Git</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
     <div class="card-text">
       
-        <a href="/2023/09/24/2.%E7%A1%AE%E7%9F%A5%E4%BF%A1%E5%8F%B7/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">确知信号</h2>
+        <a href="/2023/10/20/SSD1306/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">SSD1306</h2>
         </a>
       
       <div class="card-text--row">Older</div>
