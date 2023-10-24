@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>确知信号</title>
+    <url>/2023/09/24/2.%E7%A1%AE%E7%9F%A5%E4%BF%A1%E5%8F%B7/</url>
+    <content><![CDATA[<h3 id="信号的类型"><a href="#信号的类型" class="headerlink" title="信号的类型"></a>信号的类型</h3><p>信号按照能量是否有限区分 能量信号、功率信号<br>信号能量E为<del>对瞬时功率求积分</del></p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
+
+<h4 id="能量信号"><a href="#能量信号" class="headerlink" title="能量信号"></a>能量信号</h4><p>若E是一个正的有限值，即下式，称信号为能量信号</p>
+ \[0 < E = \int_{ - \infty }^\infty  {{s^2}(t)dt}  < \infty \] 
+<p>将信号的平均功率定义为<del>对单位时间的能量求平均并推广到整个时域</del></p>
+ \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - T/2}^{T/2} {{s^2}(t)dt} \] 
+<p>不难看出，能量信号的平均功率P&#x3D;0</p>
+<h4 id="功率信号"><a href="#功率信号" class="headerlink" title="功率信号"></a>功率信号</h4><p>若P是一个正的有限值，即下式，称信号为功率信号</p>
+ \[0 < P < \infty \] 
+<p>功率信号的能量E无穷大</p>
+<h3 id="确知信号的频域性质"><a href="#确知信号的频域性质" class="headerlink" title="确知信号的频域性质"></a>确知信号的频域性质</h3><h4 id="功率信号的频谱Cn"><a href="#功率信号的频谱Cn" class="headerlink" title="功率信号的频谱Cn"></a>功率信号的频谱Cn</h4><p>对于一个周期为 T0 的周期性功率信号s(t)，其频谱函数为傅里叶级数系数，如下式</p>
+ \[{C_n} = C(n{f_0}) = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} \] 
+<p>故周期性信号可以展开成如下的傅里叶级数</p>
+ \[s(t) = \sum\limits_{ - \infty }^\infty  {{C_n}{e^{j2\pi nt/{T_0}}}} \] 
+<p>当 n&#x3D;0 时，为信号s(t)的时间平均值，即 直流分量</p>
+ \[{C_0} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t)dt} \] 
+<p>一般来说，频谱函数 Cn 为复数，代表在各频率上信号分量的复振幅，可写作</p>
+ \[{C_n} = \left| {{C_n}} \right|{e^{j{\theta _n}}}\] 
+<p>其中</p>
+ \[\left| {{C_n}} \right| = \frac{1}{2}\sqrt {{a_n}^2 + {b_n}^2} \] 
+ \[{\theta _n} =  - \arctan ({b_n}/{a_n})\] 
+<p>因为 n 可取负值，称 Cn 为双边谱，但负频谱仅在数学上有意义，将实信号的频谱称为单边谱<br>对物理可实现的实信号，其频谱如下</p>
+ \[{C_{ - n}} = {C_n}^*\] 
+ \[\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{j2\pi n{f_0}t}}dt}  = {\left[ {\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} } \right]^ * }\] 
+<p>可得正频和负频部分之间存在共轭关系，即正负频谱的模偶对称，相位奇对称。</p>
+<h4 id="能量信号的频谱密度S-f"><a href="#能量信号的频谱密度S-f" class="headerlink" title="能量信号的频谱密度S(f)"></a>能量信号的频谱密度S(f)</h4><p>设能量信号s(t),则它的傅里叶变换s(f)被定义为它的频谱密度</p>
+ \[S(f) = \int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt} \] 
+<p>s(f)的逆傅里叶变换为s(t):</p>
+ \[s(t) = \int_{ - \infty }^\infty  {S(f){e^{j2\pi ft}}df} \] 
+<p>同样的，其正负频谱的模偶对称，相位奇对称。</p>
+ \[S(f) = {\left[ {S( - f)} \right]^*}\] 
+ \[\int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt}  = {\left[ {\int_{ - \infty }^\infty  {s(t){e^{j2\pi ft}}dt} } \right]^*}\] 
+
+<h5 id="Cn和S-f-区别"><a href="#Cn和S-f-区别" class="headerlink" title="Cn和S(f)区别"></a>Cn和S(f)区别</h5><p>1：S(f)是连续谱,Cn&#x3D;C(nf0)是离散谱<br>2：S(f)的单位是V&#x2F;Hz，而Cn的单位是V</p>
+<h5 id="单位冲激函数"><a href="#单位冲激函数" class="headerlink" title="单位冲激函数"></a>单位冲激函数</h5><p>声明一下，占个位</p>
+<h4 id="能量信号的能量谱密度G-f"><a href="#能量信号的能量谱密度G-f" class="headerlink" title="能量信号的能量谱密度G(f)"></a>能量信号的能量谱密度G(f)</h4><p>信号能量:</p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
+<p>由巴塞伐尔定理得</p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} = \int_{ - \infty }^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
+ \[G(f) = {\left| {S(f)} \right|^2}\] 
+<p>能量谱密度G(f)在频率轴f上的积分等于信号能量，单位J&#x2F;Hz。<br>且G(f)为偶函数</p>
+ \[E = 2\int_0^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
+
+<h4 id="功率信号的功率谱密度P-f"><a href="#功率信号的功率谱密度P-f" class="headerlink" title="功率信号的功率谱密度P(f)"></a>功率信号的功率谱密度P(f)</h4><p>将信号截出一段长度为T的截短信号S_T(t)，通过能量信号的计算方法得</p>
+ \[E = \int_{ - T/2}^{T/2} {s_T^2(t)dt}  = \int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df} \] 
+<p>此时被积因子为瞬频功率<del>这个词是我瞎编的</del>，对其<del>在时域上</del>求平均得出功率谱密度P(f)<del>猪脑过载不理解</del></p>
+ \[P(f) = \mathop {\lim }\limits_{T \to \infty } \frac{{{{\left| {{S_T}(f)} \right|}^2}}}{T}\] 
+<p>同样的，功率谱密度P(f)在频率轴f上的积分等于信号功率，单位W&#x2F;Hz。</p>
+ \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df}  = \int_{ - \infty }^\infty  {P(f)df} \] 
+
+
+
+
+
+  
+  
+  
+  
+  
+  ]]></content>
+      <categories>
+        <category>通信原理笔记</category>
+      </categories>
+  </entry>
+  <entry>
     <title>About me</title>
     <url>/2023/08/14/About%20me/</url>
     <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
@@ -128,71 +196,83 @@
 ]]></content>
   </entry>
   <entry>
-    <title>确知信号</title>
-    <url>/2023/09/24/2.%E7%A1%AE%E7%9F%A5%E4%BF%A1%E5%8F%B7/</url>
-    <content><![CDATA[<h3 id="信号的类型"><a href="#信号的类型" class="headerlink" title="信号的类型"></a>信号的类型</h3><p>信号按照能量是否有限区分 能量信号、功率信号<br>信号能量E为<del>对瞬时功率求积分</del></p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
+    <title>SG90小记</title>
+    <url>/2023/08/17/SG90%E5%B0%8F%E8%AE%B0/</url>
+    <content><![CDATA[<h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
+<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><pre><code>红色 ---------------------- VCC
+棕色 ---------------------- GND
+橙色 ---------------------- PWM
+</code></pre>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>SG90的控制信号是周期 20 ms （即频率50Hz）的脉宽调制（PWM）信号，通过调节脉冲宽度驱动舵机<br>以下是 180°版本的脉宽与角度关系：</p>
+<pre><code>脉宽                舵机转角度              占空比
+0.5 ms --------------   0°  --------------  2.5%
+1.0 ms --------------  45°  --------------   5%
+1.5 ms --------------  90°  --------------  7.5%
+2.0 ms --------------  135° --------------  10%
+2.5 ms --------------  180° --------------  12.5% 
+</code></pre>
+<p>而360°版本因为无角度定位，上电并不会复位到0°位置，此时调节脉宽控制它的旋转</p>
+<pre><code>    脉宽                舵机状态                占空比
+0.5-1.5 ms -------------- 正转 --------------  2.5-7.5%
+1.5-2.5 ms -------------- 反转 --------------  7.5-12.5%
+  约1.5 ms -------------- 暂停 --------------    7.5%
+  约2.5 ms -------------- 转速 --------------   12.5% 
+</code></pre>
+<p>不同的舵机可能有不同的中位，所以并不一定是在1.5&#x2F;2.5 ms暂停&#x2F;转速调节！会有一定的偏差，需要实际测试捏..</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code>void TIM5_PWM_Init(u16 arr,u16 psc)
+&#123;
+    //定义初始化结构体
+    GPIO_InitTypeDef GPIO_InitStructure;
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+    
+    //使能定时器时钟 TIM5
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+    //使能GPIOA外设时钟使能
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    //初始化GPIO
+    //设置复用输出功能TIM5
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; //TIM5 PA0
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; //复用推挽输出
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &amp;GPIO_InitStructure);
+    
+    //初始化时基
+    //arr = 9999
+    TIM_TimeBaseStructure.TIM_Period = arr;
+    //psc = 143
+    TIM_TimeBaseStructure.TIM_Prescaler =psc;
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIM5, &amp;TIM_TimeBaseStructure); 
+    
+    //输出模式配置
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OCInitStructure.TIM_Pulse = 0;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(TIM5, &amp;TIM_OCInitStructure);
+    
+    TIM_CtrlPWMOutputs(TIM5,ENABLE);
+    
+    TIM_OC1PreloadConfig(TIM5, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIM5, &amp;TIM_OCInitStructure);
+    
+    //使能ARR、MOE及定时器
+    TIM_ARRPreloadConfig(TIM5, ENABLE); //使能TIMx在ARR上的预装载寄存器
+    TIM_Cmd(TIM5, ENABLE); //使能TIM5
+&#125;
 
-<h4 id="能量信号"><a href="#能量信号" class="headerlink" title="能量信号"></a>能量信号</h4><p>若E是一个正的有限值，即下式，称信号为能量信号</p>
- \[0 < E = \int_{ - \infty }^\infty  {{s^2}(t)dt}  < \infty \] 
-<p>将信号的平均功率定义为<del>对单位时间的能量求平均并推广到整个时域</del></p>
- \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - T/2}^{T/2} {{s^2}(t)dt} \] 
-<p>不难看出，能量信号的平均功率P&#x3D;0</p>
-<h4 id="功率信号"><a href="#功率信号" class="headerlink" title="功率信号"></a>功率信号</h4><p>若P是一个正的有限值，即下式，称信号为功率信号</p>
- \[0 < P < \infty \] 
-<p>功率信号的能量E无穷大</p>
-<h3 id="确知信号的频域性质"><a href="#确知信号的频域性质" class="headerlink" title="确知信号的频域性质"></a>确知信号的频域性质</h3><h4 id="功率信号的频谱Cn"><a href="#功率信号的频谱Cn" class="headerlink" title="功率信号的频谱Cn"></a>功率信号的频谱Cn</h4><p>对于一个周期为 T0 的周期性功率信号s(t)，其频谱函数为傅里叶级数系数，如下式</p>
- \[{C_n} = C(n{f_0}) = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} \] 
-<p>故周期性信号可以展开成如下的傅里叶级数</p>
- \[s(t) = \sum\limits_{ - \infty }^\infty  {{C_n}{e^{j2\pi nt/{T_0}}}} \] 
-<p>当 n&#x3D;0 时，为信号s(t)的时间平均值，即 直流分量</p>
- \[{C_0} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t)dt} \] 
-<p>一般来说，频谱函数 Cn 为复数，代表在各频率上信号分量的复振幅，可写作</p>
- \[{C_n} = \left| {{C_n}} \right|{e^{j{\theta _n}}}\] 
-<p>其中</p>
- \[\left| {{C_n}} \right| = \frac{1}{2}\sqrt {{a_n}^2 + {b_n}^2} \] 
- \[{\theta _n} =  - \arctan ({b_n}/{a_n})\] 
-<p>因为 n 可取负值，称 Cn 为双边谱，但负频谱仅在数学上有意义，将实信号的频谱称为单边谱<br>对物理可实现的实信号，其频谱如下</p>
- \[{C_{ - n}} = {C_n}^*\] 
- \[\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{j2\pi n{f_0}t}}dt}  = {\left[ {\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} } \right]^ * }\] 
-<p>可得正频和负频部分之间存在共轭关系，即正负频谱的模偶对称，相位奇对称。</p>
-<h4 id="能量信号的频谱密度S-f"><a href="#能量信号的频谱密度S-f" class="headerlink" title="能量信号的频谱密度S(f)"></a>能量信号的频谱密度S(f)</h4><p>设能量信号s(t),则它的傅里叶变换s(f)被定义为它的频谱密度</p>
- \[S(f) = \int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt} \] 
-<p>s(f)的逆傅里叶变换为s(t):</p>
- \[s(t) = \int_{ - \infty }^\infty  {S(f){e^{j2\pi ft}}df} \] 
-<p>同样的，其正负频谱的模偶对称，相位奇对称。</p>
- \[S(f) = {\left[ {S( - f)} \right]^*}\] 
- \[\int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt}  = {\left[ {\int_{ - \infty }^\infty  {s(t){e^{j2\pi ft}}dt} } \right]^*}\] 
-
-<h5 id="Cn和S-f-区别"><a href="#Cn和S-f-区别" class="headerlink" title="Cn和S(f)区别"></a>Cn和S(f)区别</h5><p>1：S(f)是连续谱,Cn&#x3D;C(nf0)是离散谱<br>2：S(f)的单位是V&#x2F;Hz，而Cn的单位是V</p>
-<h5 id="单位冲激函数"><a href="#单位冲激函数" class="headerlink" title="单位冲激函数"></a>单位冲激函数</h5><p>声明一下，占个位</p>
-<h4 id="能量信号的能量谱密度G-f"><a href="#能量信号的能量谱密度G-f" class="headerlink" title="能量信号的能量谱密度G(f)"></a>能量信号的能量谱密度G(f)</h4><p>信号能量:</p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
-<p>由巴塞伐尔定理得</p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} = \int_{ - \infty }^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
- \[G(f) = {\left| {S(f)} \right|^2}\] 
-<p>能量谱密度G(f)在频率轴f上的积分等于信号能量，单位J&#x2F;Hz。<br>且G(f)为偶函数</p>
- \[E = 2\int_0^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
-
-<h4 id="功率信号的功率谱密度P-f"><a href="#功率信号的功率谱密度P-f" class="headerlink" title="功率信号的功率谱密度P(f)"></a>功率信号的功率谱密度P(f)</h4><p>将信号截出一段长度为T的截短信号S_T(t)，通过能量信号的计算方法得</p>
- \[E = \int_{ - T/2}^{T/2} {s_T^2(t)dt}  = \int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df} \] 
-<p>此时被积因子为瞬频功率<del>这个词是我瞎编的</del>，对其<del>在时域上</del>求平均得出功率谱密度P(f)<del>猪脑过载不理解</del></p>
- \[P(f) = \mathop {\lim }\limits_{T \to \infty } \frac{{{{\left| {{S_T}(f)} \right|}^2}}}{T}\] 
-<p>同样的，功率谱密度P(f)在频率轴f上的积分等于信号功率，单位W&#x2F;Hz。</p>
- \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df}  = \int_{ - \infty }^\infty  {P(f)df} \] 
-
-
-
-
-
-  
-  
-  
-  
-  
-  ]]></content>
+void SetAngle(float angle)
+&#123;
+    angle=(u16)(50.0*angle/9.0+249.0);
+    TIM_SetCompare1(TIM5,angle);
+&#125;
+</code></pre>
+<h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>舵机分为：<br>    模拟舵机：要一直发送PWM信号，直至到达目标位置，如此文的SG90<br>    数字舵机：仅需一次PWM信号，如MG90S</p>
+]]></content>
       <categories>
-        <category>通信原理笔记</category>
+        <category>MCU</category>
       </categories>
   </entry>
   <entry>
@@ -280,7 +360,7 @@ L = (Vin - Vout) * D / fsw * r * Iload
 <h5 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h5><pre><code>void Read_IIC_Byte(void)        //参考江科大的写法
 &#123;
     unsigned char i,Byte = 0x00;
-    OLED_SDIN_Set();            //从机获得写数据的能力
+    OLED_SDIN_Set();            //主机断开下管，由从机接管SDA
     for(i=0;i&lt;8;i++)
     &#123;
         OLED_SCLK_Set();    
@@ -324,86 +404,6 @@ E.g：Tpclk1 = 1/36M， wdgtb = 0, T[5:0] = 0x00, 则Twwdg = 113μs
 <h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><pre><code>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误
 WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。
 </code></pre>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>SG90小记</title>
-    <url>/2023/08/17/SG90%E5%B0%8F%E8%AE%B0/</url>
-    <content><![CDATA[<h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
-<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><pre><code>红色 ---------------------- VCC
-棕色 ---------------------- GND
-橙色 ---------------------- PWM
-</code></pre>
-<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>SG90的控制信号是周期 20 ms （即频率50Hz）的脉宽调制（PWM）信号，通过调节脉冲宽度驱动舵机<br>以下是 180°版本的脉宽与角度关系：</p>
-<pre><code>脉宽                舵机转角度              占空比
-0.5 ms --------------   0°  --------------  2.5%
-1.0 ms --------------  45°  --------------   5%
-1.5 ms --------------  90°  --------------  7.5%
-2.0 ms --------------  135° --------------  10%
-2.5 ms --------------  180° --------------  12.5% 
-</code></pre>
-<p>而360°版本因为无角度定位，上电并不会复位到0°位置，此时调节脉宽控制它的旋转</p>
-<pre><code>    脉宽                舵机状态                占空比
-0.5-1.5 ms -------------- 正转 --------------  2.5-7.5%
-1.5-2.5 ms -------------- 反转 --------------  7.5-12.5%
-  约1.5 ms -------------- 暂停 --------------    7.5%
-  约2.5 ms -------------- 转速 --------------   12.5% 
-</code></pre>
-<p>不同的舵机可能有不同的中位，所以并不一定是在1.5&#x2F;2.5 ms暂停&#x2F;转速调节！会有一定的偏差，需要实际测试捏..</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code>void TIM5_PWM_Init(u16 arr,u16 psc)
-&#123;
-    //定义初始化结构体
-    GPIO_InitTypeDef GPIO_InitStructure;
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-    TIM_OCInitTypeDef TIM_OCInitStructure;
-    
-    //使能定时器时钟 TIM5
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-    //使能GPIOA外设时钟使能
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    //初始化GPIO
-    //设置复用输出功能TIM5
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; //TIM5 PA0
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; //复用推挽输出
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &amp;GPIO_InitStructure);
-    
-    //初始化时基
-    //arr = 9999
-    TIM_TimeBaseStructure.TIM_Period = arr;
-    //psc = 143
-    TIM_TimeBaseStructure.TIM_Prescaler =psc;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInit(TIM5, &amp;TIM_TimeBaseStructure); 
-    
-    //输出模式配置
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 0;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-    TIM_OC1Init(TIM5, &amp;TIM_OCInitStructure);
-    
-    TIM_CtrlPWMOutputs(TIM5,ENABLE);
-    
-    TIM_OC1PreloadConfig(TIM5, TIM_OCPreload_Enable);
-    TIM_OC2Init(TIM5, &amp;TIM_OCInitStructure);
-    
-    //使能ARR、MOE及定时器
-    TIM_ARRPreloadConfig(TIM5, ENABLE); //使能TIMx在ARR上的预装载寄存器
-    TIM_Cmd(TIM5, ENABLE); //使能TIM5
-&#125;
-
-void SetAngle(float angle)
-&#123;
-    angle=(u16)(50.0*angle/9.0+249.0);
-    TIM_SetCompare1(TIM5,angle);
-&#125;
-</code></pre>
-<h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>舵机分为：<br>    模拟舵机：要一直发送PWM信号，直至到达目标位置，如此文的SG90<br>    数字舵机：仅需一次PWM信号，如MG90S</p>
 ]]></content>
       <categories>
         <category>MCU</category>

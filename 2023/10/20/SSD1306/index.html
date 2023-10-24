@@ -109,7 +109,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2023-10-24T14:23:56.816Z" itemprop="dateUpdated">2023-10-24</time>
+              <time  class="article-updated" datetime="2023-10-24T14:47:32.517Z" itemprop="dateUpdated">2023-10-24</time>
             </h2>
           
           
@@ -167,7 +167,7 @@
 <h5 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h5><pre><code>void Read_IIC_Byte(void)        //参考江科大的写法
 &#123;
     unsigned char i,Byte = 0x00;
-    OLED_SDIN_Set();            //从机获得写数据的能力
+    OLED_SDIN_Set();            //主机断开下管，由从机接管SDA
     for(i=0;i&lt;8;i++)
     &#123;
         OLED_SCLK_Set();    
@@ -309,14 +309,14 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/">
-            开关电源 (1)
+          <a href="/categories/MCU/">
+            MCU (4)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/MCU/">
-            MCU (4)
+          <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/">
+            开关电源 (1)
           </a>
         </li>
       
