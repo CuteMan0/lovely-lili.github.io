@@ -109,7 +109,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2023-10-22T07:49:59.947Z" itemprop="dateUpdated">2023-10-22</time>
+              <time  class="article-updated" datetime="2023-10-24T14:23:56.816Z" itemprop="dateUpdated">2023-10-24</time>
             </h2>
           
           
@@ -153,15 +153,29 @@
     for(i=0;i&lt;8;i++)	//1Byte data	
     &#123;
     m=data;
-    m=m&amp;0x80;         //取首位
+    m=m&amp;0x80;           //将要写入的位
     if(m==0x80)
-    OLED_SDIN_Set();
+    OLED_SDIN_Set();    //写1
     else
-    OLED_SDIN_Clr();
-    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次读取
+    OLED_SDIN_Clr();    //写0
+    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次写入
     OLED_SCLK_Set();    //读SDA的数据
     OLED_SCLK_Clr();
     &#125;
+&#125;
+</code></pre>
+<h5 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h5><pre><code>void Read_IIC_Byte(void)        //参考江科大的写法
+&#123;
+    unsigned char i,Byte = 0x00;
+    OLED_SDIN_Set();            //从机获得写数据的能力
+    for(i=0;i&lt;8;i++)
+    &#123;
+        OLED_SCLK_Set();    
+        if(IIC_R_SDA()==1)
+        &#123;Byte |= (0x80 &gt;&gt; i);&#125;  //因为默认为0，只需要记录为1的位
+        OLED_SCLK_Clr();
+    &#125;
+    return Byte;
 &#125;
 </code></pre>
 <h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
@@ -295,14 +309,14 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/MCU/">
-            MCU (4)
+          <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/">
+            开关电源 (1)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/">
-            开关电源 (1)
+          <a href="/categories/MCU/">
+            MCU (4)
           </a>
         </li>
       
