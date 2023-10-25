@@ -69,6 +69,13 @@
       </categories>
   </entry>
   <entry>
+    <title>About me</title>
+    <url>/2023/08/14/About%20me/</url>
+    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
+<h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
+]]></content>
+  </entry>
+  <entry>
     <title>Git</title>
     <url>/2023/10/23/Git/</url>
     <content><![CDATA[<h3 id="Git基本命令"><a href="#Git基本命令" class="headerlink" title="Git基本命令"></a>Git基本命令</h3><table>
@@ -186,13 +193,6 @@
 </tbody></table>
 <h4 id="实例演示"><a href="#实例演示" class="headerlink" title="实例演示"></a>实例演示</h4><p>使用git branch查看当前所有的分支，图示当前为test<br>使用git checkout master切换到master主分支<br><img src="/images/checkout.png"><br>再次查看，成功切换到主分支<br>执行git branch -d test删除test，并使用git branch test新建test<br><img src="/images/branch.png"><br>最后将新建的test推送到远程库中，命名远程分支test<br><img src="/images/remote.png"><br>可以见到GitHub中更新了test</p>
 <h3 id="Git学习参考"><a href="#Git学习参考" class="headerlink" title="Git学习参考"></a>Git学习参考</h3><p>git - 简易指南：<a href="https://www.bootcss.com/p/git-guide">https://www.bootcss.com/p/git-guide</a><br>git - 指令列表：<a href="https://book.git-scm.com/docs">https://book.git-scm.com/docs</a></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>About me</title>
-    <url>/2023/08/14/About%20me/</url>
-    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
-<h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
 ]]></content>
   </entry>
   <entry>
@@ -397,24 +397,24 @@ void SetAngle(float angle)
 <thead>
 <tr>
 <th align="left"></th>
-<th align="right"></th>
+<th align="left"></th>
 </tr>
 </thead>
 <tbody><tr>
 <td align="left">81+A[7:0]</td>
-<td align="right">设置对比度，在下个字节设置对比度，00-FFh可调</td>
+<td align="left">设置对比度，在下个字节设置对比度，00-FFh可调</td>
 </tr>
 <tr>
 <td align="left">A4 &#x2F; A5</td>
-<td align="right">显示RAM中的数据 &#x2F; 全屏点亮</td>
+<td align="left">显示RAM中的数据 &#x2F; 全屏点亮</td>
 </tr>
 <tr>
 <td align="left">A6 &#x2F; A7</td>
-<td align="right">正常(0关1开) &#x2F; 反转(0开1关)显示模式</td>
+<td align="left">正常(0关1开) &#x2F; 反转(0开1关)显示模式</td>
 </tr>
 <tr>
 <td align="left">AE &#x2F; AF</td>
-<td align="right">关闭 &#x2F; 开启显示</td>
+<td align="left">关闭 &#x2F; 开启显示</td>
 </tr>
 </tbody></table>
 <h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p>连续水平滚动设置<br><img src="/images/26.png"></p>
@@ -423,28 +423,28 @@ void SetAngle(float angle)
 <thead>
 <tr>
 <th align="left"></th>
-<th align="right"></th>
+<th align="left"></th>
 </tr>
 </thead>
 <tbody><tr>
 <td align="left">26 &#x2F; 27</td>
-<td align="right">右滚 &#x2F; 左滚</td>
+<td align="left">右滚 &#x2F; 左滚</td>
 </tr>
 <tr>
 <td align="left">A[7:0]</td>
-<td align="right">空字节</td>
+<td align="left">空字节</td>
 </tr>
 <tr>
 <td align="left">B[2:0]</td>
-<td align="right">设置起始页地址，详见图表</td>
+<td align="left">设置起始页地址，详见图表</td>
 </tr>
 <tr>
 <td align="left">C[2:0]</td>
-<td align="right">按帧率设置滚动速度，详见图表</td>
+<td align="left">按帧率设置滚动速度，详见图表</td>
 </tr>
 <tr>
 <td align="left">D[2:0]</td>
-<td align="right">设置结束页地址，注意不能小于B[2:0]</td>
+<td align="left">设置结束页地址，注意不能小于B[2:0]</td>
 </tr>
 </tbody></table>
 <h5 id="10-25"><a href="#10-25" class="headerlink" title="10&#x2F;25"></a>10&#x2F;25</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
