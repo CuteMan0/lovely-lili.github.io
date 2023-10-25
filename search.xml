@@ -253,86 +253,6 @@ L = (Vin - Vout) * D / fsw * r * Iload
       </categories>
   </entry>
   <entry>
-    <title>SG90小记</title>
-    <url>/2023/08/17/SG90%E5%B0%8F%E8%AE%B0/</url>
-    <content><![CDATA[<h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
-<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><pre><code>红色 ---------------------- VCC
-棕色 ---------------------- GND
-橙色 ---------------------- PWM
-</code></pre>
-<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>SG90的控制信号是周期 20 ms （即频率50Hz）的脉宽调制（PWM）信号，通过调节脉冲宽度驱动舵机<br>以下是 180°版本的脉宽与角度关系：</p>
-<pre><code>脉宽                舵机转角度              占空比
-0.5 ms --------------   0°  --------------  2.5%
-1.0 ms --------------  45°  --------------   5%
-1.5 ms --------------  90°  --------------  7.5%
-2.0 ms --------------  135° --------------  10%
-2.5 ms --------------  180° --------------  12.5% 
-</code></pre>
-<p>而360°版本因为无角度定位，上电并不会复位到0°位置，此时调节脉宽控制它的旋转</p>
-<pre><code>    脉宽                舵机状态                占空比
-0.5-1.5 ms -------------- 正转 --------------  2.5-7.5%
-1.5-2.5 ms -------------- 反转 --------------  7.5-12.5%
-  约1.5 ms -------------- 暂停 --------------    7.5%
-  约2.5 ms -------------- 转速 --------------   12.5% 
-</code></pre>
-<p>不同的舵机可能有不同的中位，所以并不一定是在1.5&#x2F;2.5 ms暂停&#x2F;转速调节！会有一定的偏差，需要实际测试捏..</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code>void TIM5_PWM_Init(u16 arr,u16 psc)
-&#123;
-    //定义初始化结构体
-    GPIO_InitTypeDef GPIO_InitStructure;
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-    TIM_OCInitTypeDef TIM_OCInitStructure;
-    
-    //使能定时器时钟 TIM5
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-    //使能GPIOA外设时钟使能
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    //初始化GPIO
-    //设置复用输出功能TIM5
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; //TIM5 PA0
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; //复用推挽输出
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &amp;GPIO_InitStructure);
-    
-    //初始化时基
-    //arr = 9999
-    TIM_TimeBaseStructure.TIM_Period = arr;
-    //psc = 143
-    TIM_TimeBaseStructure.TIM_Prescaler =psc;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInit(TIM5, &amp;TIM_TimeBaseStructure); 
-    
-    //输出模式配置
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 0;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-    TIM_OC1Init(TIM5, &amp;TIM_OCInitStructure);
-    
-    TIM_CtrlPWMOutputs(TIM5,ENABLE);
-    
-    TIM_OC1PreloadConfig(TIM5, TIM_OCPreload_Enable);
-    TIM_OC2Init(TIM5, &amp;TIM_OCInitStructure);
-    
-    //使能ARR、MOE及定时器
-    TIM_ARRPreloadConfig(TIM5, ENABLE); //使能TIMx在ARR上的预装载寄存器
-    TIM_Cmd(TIM5, ENABLE); //使能TIM5
-&#125;
-
-void SetAngle(float angle)
-&#123;
-    angle=(u16)(50.0*angle/9.0+249.0);
-    TIM_SetCompare1(TIM5,angle);
-&#125;
-</code></pre>
-<h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>舵机分为：<br>    模拟舵机：要一直发送PWM信号，直至到达目标位置，如此文的SG90<br>    数字舵机：仅需一次PWM信号，如MG90S</p>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
     <title>SSD1306</title>
     <url>/2023/10/20/SSD1306/</url>
     <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
@@ -446,6 +366,86 @@ void SetAngle(float angle)
 ![](images/竖直寻址.png)
 ###### A[1:0]=11b	无效寻址
 ![](images/鸽子.png) -->]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>SG90小记</title>
+    <url>/2023/08/17/SG90%E5%B0%8F%E8%AE%B0/</url>
+    <content><![CDATA[<h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
+<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><pre><code>红色 ---------------------- VCC
+棕色 ---------------------- GND
+橙色 ---------------------- PWM
+</code></pre>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>SG90的控制信号是周期 20 ms （即频率50Hz）的脉宽调制（PWM）信号，通过调节脉冲宽度驱动舵机<br>以下是 180°版本的脉宽与角度关系：</p>
+<pre><code>脉宽                舵机转角度              占空比
+0.5 ms --------------   0°  --------------  2.5%
+1.0 ms --------------  45°  --------------   5%
+1.5 ms --------------  90°  --------------  7.5%
+2.0 ms --------------  135° --------------  10%
+2.5 ms --------------  180° --------------  12.5% 
+</code></pre>
+<p>而360°版本因为无角度定位，上电并不会复位到0°位置，此时调节脉宽控制它的旋转</p>
+<pre><code>    脉宽                舵机状态                占空比
+0.5-1.5 ms -------------- 正转 --------------  2.5-7.5%
+1.5-2.5 ms -------------- 反转 --------------  7.5-12.5%
+  约1.5 ms -------------- 暂停 --------------    7.5%
+  约2.5 ms -------------- 转速 --------------   12.5% 
+</code></pre>
+<p>不同的舵机可能有不同的中位，所以并不一定是在1.5&#x2F;2.5 ms暂停&#x2F;转速调节！会有一定的偏差，需要实际测试捏..</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code>void TIM5_PWM_Init(u16 arr,u16 psc)
+&#123;
+    //定义初始化结构体
+    GPIO_InitTypeDef GPIO_InitStructure;
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+    
+    //使能定时器时钟 TIM5
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+    //使能GPIOA外设时钟使能
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    //初始化GPIO
+    //设置复用输出功能TIM5
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; //TIM5 PA0
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; //复用推挽输出
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &amp;GPIO_InitStructure);
+    
+    //初始化时基
+    //arr = 9999
+    TIM_TimeBaseStructure.TIM_Period = arr;
+    //psc = 143
+    TIM_TimeBaseStructure.TIM_Prescaler =psc;
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIM5, &amp;TIM_TimeBaseStructure); 
+    
+    //输出模式配置
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OCInitStructure.TIM_Pulse = 0;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(TIM5, &amp;TIM_OCInitStructure);
+    
+    TIM_CtrlPWMOutputs(TIM5,ENABLE);
+    
+    TIM_OC1PreloadConfig(TIM5, TIM_OCPreload_Enable);
+    TIM_OC2Init(TIM5, &amp;TIM_OCInitStructure);
+    
+    //使能ARR、MOE及定时器
+    TIM_ARRPreloadConfig(TIM5, ENABLE); //使能TIMx在ARR上的预装载寄存器
+    TIM_Cmd(TIM5, ENABLE); //使能TIM5
+&#125;
+
+void SetAngle(float angle)
+&#123;
+    angle=(u16)(50.0*angle/9.0+249.0);
+    TIM_SetCompare1(TIM5,angle);
+&#125;
+</code></pre>
+<h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>舵机分为：<br>    模拟舵机：要一直发送PWM信号，直至到达目标位置，如此文的SG90<br>    数字舵机：仅需一次PWM信号，如MG90S</p>
+]]></content>
       <categories>
         <category>MCU</category>
       </categories>
