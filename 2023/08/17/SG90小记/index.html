@@ -29,6 +29,11 @@
 <script src="/js/lib/highlight.js"></script>
 
 
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.js"></script>
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
 
 <script src="/js/lib/preview.js"></script>
 
@@ -160,10 +165,26 @@
     
     <div class="content" v-pre>
         <h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
-<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><pre><code>红色 ---------------------- VCC
-棕色 ---------------------- GND
-橙色 ---------------------- PWM
-</code></pre>
+<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">红</td>
+<td align="left">VCC</td>
+</tr>
+<tr>
+<td align="left">棕</td>
+<td align="left">GND</td>
+</tr>
+<tr>
+<td align="left">橙</td>
+<td align="left">PWM</td>
+</tr>
+</tbody></table>
 <h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>SG90的控制信号是周期 20 ms （即频率50Hz）的脉宽调制（PWM）信号，通过调节脉冲宽度驱动舵机<br>以下是 180°版本的脉宽与角度关系：</p>
 <pre><code>脉宽                舵机转角度              占空比
 0.5 ms --------------   0°  --------------  2.5%

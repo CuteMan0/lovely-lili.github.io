@@ -29,6 +29,11 @@
 <script src="/js/lib/highlight.js"></script>
 
 
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.js"></script>
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
 
 <script src="/js/lib/preview.js"></script>
 
@@ -171,9 +176,7 @@ E.g：LSI = 40K， prv = 256，rlv = 625，则Tiwdg = 4s
     T[5:0] ---- 我所理解：T6位置0时，WWDG复位，所以上限值的T6位都是置1的，上下限差值为0x00-0x3F
 E.g：Tpclk1 = 1/36M， wdgtb = 0, T[5:0] = 0x00, 则Twwdg = 113μs
 </code></pre>
-<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><pre><code>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误
-WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。
-</code></pre>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>IWDG 因为采用 LSI 独立于系统时钟，故可监测硬件错误<br>WWDG 用于监测软件逻辑错误，且能在中断中进行抢救。</p>
 
     </div>
     

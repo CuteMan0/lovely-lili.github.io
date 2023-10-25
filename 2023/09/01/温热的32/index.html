@@ -29,6 +29,11 @@
 <script src="/js/lib/highlight.js"></script>
 
 
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.js"></script>
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
 
 <script src="/js/lib/preview.js"></script>
 
@@ -189,25 +194,55 @@ int ADCtemp()
 <h4 id="ADC自校准"><a href="#ADC自校准" class="headerlink" title="ADC自校准"></a>ADC自校准</h4><p>在HAL_ADC_Init后，调用此函数启动ADC的自校准功能，支持偏移校准和线性度校准</p>
 <pre><code>HAL_ADCEx_Calibration_Start(&amp;hadc3,ADC_CALIB_OFFSET,ADC_SINGLE_ENDED);
 </code></pre>
-<p>第二参数</p>
-<pre><code>ADC_CALIB_OFFSET                只运行偏移校准而不运行线性度校准
-ADC_CALIB_OFFSET_LINEARITY      同时运行偏移校准和线性度校准
-</code></pre>
-<p>第三参数</p>
-<pre><code>ADC_SINGLE_ENDED                单端模式
-ADC_DIFFERENTIAL_ENDED          差分模式
-</code></pre>
-<p>返回值</p>
-<pre><code>HAL_ERROR                       配置失败
-HAL_OK                          配置成功
-HAL_BUSY                        操作中
-HAL_TIMEOUT                     时间溢出
-</code></pre>
-<p>说明：</p>
-<pre><code>偏移校准 ： 测量 ADC 参考电压的实际值，将该值与 预设的参考电压 比较，得到参考电压的偏差，校准偏移量，为了准确 测量 ADC 输入信号。
-线性度校准 ： 测量 内部基准电压 和 ADC 输入信号的幅值之间的比例关系，校准 ADC 增益的方式，确保 ADC 输出的数值与输入信号的幅值之间具有良好的线性关系，为了准确 转换 ADC 输入信号
-</code></pre>
-<p>注：<br>线性度校准可能会出现 timeout ，修改 ADC_CALIBRATION_TIMEOUT 的值</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数、返回值</th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ADC_CALIB_OFFSET</td>
+<td align="left">只运行偏移校准而不运行线性度校准</td>
+</tr>
+<tr>
+<td align="left">ADC_CALIB_OFFSET_LINEARITY</td>
+<td align="left">同时运行偏移校准和线性度校准</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">ADC_SINGLE_ENDED</td>
+<td align="left">单端模式</td>
+</tr>
+<tr>
+<td align="left">ADC_DIFFERENTIAL_ENDED</td>
+<td align="left">差分模式</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">HAL_ERROR</td>
+<td align="left">配置失败</td>
+</tr>
+<tr>
+<td align="left">HAL_OK</td>
+<td align="left">配置成功</td>
+</tr>
+<tr>
+<td align="left">HAL_BUSY</td>
+<td align="left">操作中</td>
+</tr>
+<tr>
+<td align="left">HAL_TIMEOUT</td>
+<td align="left">时间溢出</td>
+</tr>
+</tbody></table>
+<p>说明：<br>    偏移校准 ： 测量 ADC 参考电压的实际值，将该值与 预设的参考电压 比较，得到参考电压的偏差，校准偏移量，为了准确 测量 ADC 输入信号。<br>    线性度校准 ： 测量 内部基准电压 和 ADC 输入信号的幅值之间的比例关系，校准 ADC 增益的方式，确保 ADC 输出的数值与输入信号的幅值之间具有良好的线性关系，为了准确 转换 ADC 输入信号<br>注：<br>线性度校准可能会出现 timeout ，修改 ADC_CALIBRATION_TIMEOUT 的值</p>
 
     </div>
     
