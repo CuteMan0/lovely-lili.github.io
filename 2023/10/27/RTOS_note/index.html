@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
-    <title>SG90小记 | lovely-lili&#39;s blog</title>
+    <title>FreeRTOS基本原理 | lovely-lili&#39;s blog</title>
     <meta name="author" content="lovely-lili" />
     <meta name="description" content="好想学习" />
     <meta name="keywords" content="" />
@@ -141,117 +141,250 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>SG90小记</h1>
+        <h1>FreeRTOS基本原理</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2023/8/17
-        </span>
-        
-        <span class="category">
-            <a href="/categories/MCU/">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                MCU
-            </a>
+            2023/10/27
         </span>
         
         
     </div>
     
     <div class="content" v-pre>
-        <h2 id="为什么写SG90"><a href="#为什么写SG90" class="headerlink" title="为什么写SG90"></a>为什么写SG90</h2><p>一些机缘巧合居然又用到它啦，SG90是很早就使用过的一款舵机，发现有些遗忘，特此做个备份</p>
-<h3 id="接线方式"><a href="#接线方式" class="headerlink" title="接线方式"></a>接线方式</h3><table>
+        <h3 id="FreeRTOS的文件组成"><a href="#FreeRTOS的文件组成" class="headerlink" title="FreeRTOS的文件组成"></a>FreeRTOS的文件组成</h3><table>
 <thead>
 <tr>
-<th align="left"></th>
-<th align="left"></th>
+<th align="center">文件说明</th>
+<th align="left">file_name</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">红</td>
-<td align="left">VCC</td>
+<td align="center">USER配置和程序文件</td>
+<td align="left">FreeRTOSConfig.h</td>
 </tr>
 <tr>
-<td align="left">棕</td>
-<td align="left">GND</td>
+<td align="center"></td>
+<td align="left">freertos.c</td>
 </tr>
 <tr>
-<td align="left">橙</td>
-<td align="left">PWM</td>
+<td align="center">FreeRTOS通用功能文件</td>
+<td align="left">task.c</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">queue.c</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">timers.c等</td>
+</tr>
+<tr>
+<td align="center">FreeRTOS通用定义文件</td>
+<td align="left">FreeRTOS.h</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">projdefs.h</td>
+</tr>
+<tr>
+<td align="center">CMSIS-RTOS接口文件</td>
+<td align="left">cmsis_os.h</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">cmsis_os2.h</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">cmsis_os2.c</td>
+</tr>
+<tr>
+<td align="center">硬件相关的移植文件</td>
+<td align="left">port.c</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">portmacro.c</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">heap4.c   &#x2F;&#x2F;heap是堆，顾名思义这是管理内存的文件</td>
 </tr>
 </tbody></table>
-<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>SG90的控制信号是周期 20 ms （即频率50Hz）的脉宽调制（PWM）信号，通过调节脉冲宽度驱动舵机<br>以下是 180°版本的脉宽与角度关系：</p>
-<pre><code>脉宽                舵机转角度              占空比
-0.5 ms --------------   0°  --------------  2.5%
-1.0 ms --------------  45°  --------------   5%
-1.5 ms --------------  90°  --------------  7.5%
-2.0 ms --------------  135° --------------  10%
-2.5 ms --------------  180° --------------  12.5% 
-</code></pre>
-<p>而360°版本因为无角度定位，上电并不会复位到0°位置，此时调节脉宽控制它的旋转</p>
-<pre><code>    脉宽                舵机状态                占空比
-0.5-1.5 ms -------------- 正转 --------------  2.5-7.5%
-1.5-2.5 ms -------------- 反转 --------------  7.5-12.5%
-  约1.5 ms -------------- 暂停 --------------    7.5%
-  约2.5 ms -------------- 转速 --------------   12.5% 
-</code></pre>
-<p>不同的舵机可能有不同的中位，所以并不一定是在1.5&#x2F;2.5 ms暂停&#x2F;转速调节！会有一定的偏差，需要实际测试捏..</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><pre><code>void TIM5_PWM_Init(u16 arr,u16 psc)
-&#123;
-    //定义初始化结构体
-    GPIO_InitTypeDef GPIO_InitStructure;
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-    TIM_OCInitTypeDef TIM_OCInitStructure;
-    
-    //使能定时器时钟 TIM5
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-    //使能GPIOA外设时钟使能
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    //初始化GPIO
-    //设置复用输出功能TIM5
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; //TIM5 PA0
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP; //复用推挽输出
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &amp;GPIO_InitStructure);
-    
-    //初始化时基
-    //arr = 9999
-    TIM_TimeBaseStructure.TIM_Period = arr;
-    //psc = 143
-    TIM_TimeBaseStructure.TIM_Prescaler =psc;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInit(TIM5, &amp;TIM_TimeBaseStructure); 
-    
-    //输出模式配置
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 0;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-    TIM_OC1Init(TIM5, &amp;TIM_OCInitStructure);
-    
-    TIM_CtrlPWMOutputs(TIM5,ENABLE);
-    
-    TIM_OC1PreloadConfig(TIM5, TIM_OCPreload_Enable);
-    TIM_OC2Init(TIM5, &amp;TIM_OCInitStructure);
-    
-    //使能ARR、MOE及定时器
-    TIM_ARRPreloadConfig(TIM5, ENABLE); //使能TIMx在ARR上的预装载寄存器
-    TIM_Cmd(TIM5, ENABLE); //使能TIM5
-&#125;
-
-void SetAngle(float angle)
-&#123;
-    angle=(u16)(50.0*angle/9.0+249.0);
-    TIM_SetCompare1(TIM5,angle);
-&#125;
-</code></pre>
-<h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><p>舵机分为：<br>    模拟舵机：要一直发送PWM信号，直至到达目标位置，如此文的SG90<br>    数字舵机：仅需一次PWM信号，如MG90S</p>
+<h4 id="USER配置和程序文件"><a href="#USER配置和程序文件" class="headerlink" title="USER配置和程序文件"></a>USER配置和程序文件</h4><p><strong>FreeRTOSConfig.h</strong></p>
+<hr>
+<p>文件中宏定义了<strong>FreeRTOS</strong>中的各种功能，可按需裁剪</p>
+<p><img src="/images/FreeRTOSConfig.png"></p>
+<p><strong>freertos.c</strong></p>
+<hr>
+<p>这里是主要编写的地方，文件包含了FreeRTOS的初始化及用户代码</p>
+<h4 id="FreeRTOS通用功能文件"><a href="#FreeRTOS通用功能文件" class="headerlink" title="FreeRTOS通用功能文件"></a>FreeRTOS通用功能文件</h4><table>
+<thead>
+<tr>
+<th align="center">文件</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">task.o</td>
+<td align="center">实现任务管理</td>
+</tr>
+<tr>
+<td align="center">queue.o</td>
+<td align="center">实现队列功能</td>
+</tr>
+<tr>
+<td align="center">timers.o</td>
+<td align="center">实现软定时器功能</td>
+</tr>
+<tr>
+<td align="center">list.o</td>
+<td align="center">实现链表功能</td>
+</tr>
+</tbody></table>
+<h4 id="FreeRTOS通用定义文件"><a href="#FreeRTOS通用定义文件" class="headerlink" title="FreeRTOS通用定义文件"></a>FreeRTOS通用定义文件</h4><p><strong>FreeRTOS.h</strong></p>
+<hr>
+<p>与<strong>FreeRTOSConfig.h</strong>一样，但不推荐直接修改<strong>FreeRTOS.h</strong></p>
+<h4 id="CMSIS-RTOS接口文件"><a href="#CMSIS-RTOS接口文件" class="headerlink" title="CMSIS-RTOS接口文件"></a>CMSIS-RTOS接口文件</h4><hr>
+<p><strong>CMSIS-RTOS接口文件</strong>中的函数与数据类型以<strong>os</strong>为前缀，通过调用具体的RTOS函数实现<br>使用这些函数可降低应用程序和RTOS之间的关联，便于在不同的RTOS中移植程序<br>譬如，在文件<strong>cmsis_os2.c</strong>中<br><strong>osThreadNew()</strong> 通过调用FreeRTOS的 <strong>xTaskCreateStatic()、xTaskCreate()</strong> 两个函数来创建任务</p>
+<p><img src="/images/osThreadNew.png"></p>
+<h4 id="硬件相关的移植文件"><a href="#硬件相关的移植文件" class="headerlink" title="硬件相关的移植文件"></a>硬件相关的移植文件</h4><hr>
+<p><strong>portmacro.h</strong>中重新定义了一些基础数据类型</p>
+<p><img src="/images/portmacro.png"></p>
+<table>
+<thead>
+<tr>
+<th align="center">FreeRTOS数据类型</th>
+<th align="center">同义</th>
+<th align="center">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">BaseType_t</td>
+<td align="center">int32_t</td>
+<td align="center">基础数据类型</td>
+</tr>
+<tr>
+<td align="center">UBaseType_t</td>
+<td align="center">uint32_t</td>
+<td align="center">基础数据类型</td>
+</tr>
+<tr>
+<td align="center">StackType_t</td>
+<td align="center">uint32_t</td>
+<td align="center">栈数据类型</td>
+</tr>
+<tr>
+<td align="center">TickType_t</td>
+<td align="center">uint32_t</td>
+<td align="center">基础时钟节拍数类型</td>
+</tr>
+</tbody></table>
+<h3 id="FreeRTOS的编码规则"><a href="#FreeRTOS的编码规则" class="headerlink" title="FreeRTOS的编码规则"></a>FreeRTOS的编码规则</h3><p><strong>变量名</strong></p>
+<hr>
+<p>变量名使用类型前缀</p>
+<table>
+<thead>
+<tr>
+<th align="center">前缀</th>
+<th align="center">类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">(u)c</td>
+<td align="center">(unsigned)char  ——— 1Byte</td>
+</tr>
+<tr>
+<td align="center">(u)s</td>
+<td align="center">(unsigned)short ——— 2Byte</td>
+</tr>
+<tr>
+<td align="center">(u)l</td>
+<td align="center">(unsigned)long  ——— 4Byte</td>
+</tr>
+<tr>
+<td align="center">(u)x</td>
+<td align="center">(U)BaseType_t</td>
+</tr>
+<tr>
+<td align="center">p</td>
+<td align="center">指针类型</td>
+</tr>
+</tbody></table>
+<p><strong>函数名</strong></p>
+<hr>
+<table>
+<thead>
+<tr>
+<th align="center">函数</th>
+<th align="center">返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">xTaskCreate</td>
+<td align="center">BaseType_t</td>
+</tr>
+<tr>
+<td align="center">vQueueDelete</td>
+<td align="center">void</td>
+</tr>
+<tr>
+<td align="center">pcTimerGetName</td>
+<td align="center">char*</td>
+</tr>
+<tr>
+<td align="center">pvPortMalloc</td>
+<td align="center">void*</td>
+</tr>
+</tbody></table>
+<p><strong>宏名称</strong></p>
+<hr>
+<table>
+<thead>
+<tr>
+<th align="center">前缀</th>
+<th align="center">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">config</td>
+<td align="center">用于系统功能配置</td>
+</tr>
+<tr>
+<td align="center">INCLUDE_</td>
+<td align="center">条件编译某个函数</td>
+</tr>
+<tr>
+<td align="center">task</td>
+<td align="center">任务相关</td>
+</tr>
+<tr>
+<td align="center">queue</td>
+<td align="center">队列相关</td>
+</tr>
+<tr>
+<td align="center">pd</td>
+<td align="center">项目通用</td>
+</tr>
+<tr>
+<td align="center">port</td>
+<td align="center">移植接口文件定义</td>
+</tr>
+<tr>
+<td align="center">tmr</td>
+<td align="center">软定时器相关</td>
+</tr>
+<tr>
+<td align="center">os</td>
+<td align="center">CMSIS-RTOS接口相关</td>
+</tr>
+</tbody></table>
+<hr>
+<p>好了今天就写到这里啦，写了两个小时了哈哈  ————23&#x2F;10&#x2F;27  17.59</p>
 
     </div>
     
