@@ -244,9 +244,11 @@ void IIC_Stop(void)
 <pre><code>    IIC_WriteByte(0x78);//W
     IIC_WriteByte(0x79);//R
 </code></pre>
-<h5 id="控制字节"><a href="#控制字节" class="headerlink" title="控制字节"></a>控制字节</h5><p>由Co和D&#x2F;C#及‘000000’组成。</p>
-<pre><code>    IIC_WriteByte(0x00);//下一位字节是命令
-    IIC_WriteByte(0x40);//下一位字节是数据，存入GDDRAM
+<h5 id="控制字节"><a href="#控制字节" class="headerlink" title="控制字节"></a>控制字节</h5><p>由Co和D&#x2F;C#及‘000000’组成，Co低电平意指后续的Byte都是数据，可用于连续输出CMD和DATA。</p>
+<pre><code>    IIC_WriteByte(0x00);//后面的字节是命令
+    IIC_WriteByte(0x40);//后面的字节是数据，并存入GDDRAM
+    IIC_WriteByte(0x80);//后一位字节是命令
+    IIC_WriteByte(0xC0);//后一位字节是数据，并存入GDDRAM
 </code></pre>
 <h5 id="写一次命令"><a href="#写一次命令" class="headerlink" title="写一次命令"></a>写一次命令</h5><pre><code>void OLED_CMD(u8 CMD)
 &#123;
@@ -255,7 +257,7 @@ void IIC_Stop(void)
     IIC_WriteByte(0x78);
     IIC_ReceiveAck();
 
-    IIC_WriteByte(0x00);
+    IIC_WriteByte(0x80);
     IIC_ReceiveAck();
 
     IIC_WriteByte(CMD);
@@ -272,6 +274,37 @@ void IIC_Stop(void)
 <p>观察屏幕，情况如下：</p>
 <p><img src="/images/12864_ON.jpg"></p>
 <p>屏幕被成功点亮，并将GDDRAM中的初始数据输出。</p>
+<h5 id="快速刷屏"><a href="#快速刷屏" class="headerlink" title="快速刷屏"></a>快速刷屏</h5><pre><code>void OLED_ClearScreen(void)
+&#123;
+    OLED_DATA_128_64(0x00);
+&#125;
+
+void OLED_FillScreen(void)
+&#123;
+    OLED_DATA_128_64(0xFF);
+&#125;
+
+void OLED_DATA_128_64(u8 DATA_128_64)
+&#123;
+    u16 i;
+    
+    IIC_Start();
+    
+    IIC_WriteByte(0x78);//从机地址0111100和R/W#
+    IIC_ReceiveAck();
+
+    IIC_WriteByte(0x40);
+    IIC_ReceiveAck();
+
+    for(i=0;i&lt;128*8;i++)
+    &#123;
+        IIC_WriteByte(DATA_128_64);
+        IIC_ReceiveAck();
+    &#125;
+    
+    IIC_Stop();
+&#125;
+</code></pre>
 <h4 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h4><h5 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h5><p><img src="/images/SSD1306_GDDRAM.png"></p>
 <p>从上至下，将GDDRAM分为8个PAGE，8 * 128Byte。<br>从左至右，将PAGE分为128个SEG，128 * 1Byte。</p>
 <p><img src="/images/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行。</p>
