@@ -602,7 +602,7 @@ void OLED_DATA_128_64(u8 DATA_128_64)
 </code></pre>
 <h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
 <h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p><img src="/images/26.png"></p>
-<h5 id="10-25"><a href="#10-25" class="headerlink" title="10&#x2F;25"></a>10&#x2F;25</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+<h5 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
 ]]></content>
       <categories>
         <category>MCU</category>
