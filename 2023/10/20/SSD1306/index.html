@@ -166,115 +166,142 @@
     <div class="content" v-pre>
         <h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4mbps</p>
 <!-- 此处需要介绍I2C的硬件配置 -->
-<h4 id="I2C的数据格式"><a href="#I2C的数据格式" class="headerlink" title="I2C的数据格式"></a>I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"><br>当检测到START信号，主机输出8bit——从机地址(7bit)和读写操作(1bit)，第9位为ACK应答信号，之后的数据以 N*(Bytes+ACK) 的格式传输，发出STOP信号表示传输结束</p>
-<h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void Write_IIC_Byte(unsigned char IIC_Byte)
+
+<h4 id="端口设置"><a href="#端口设置" class="headerlink" title="端口设置"></a>端口设置</h4><p>采用外部上拉（强上拉）时，端口配置为开漏输出，配合上拉电阻（1K左右）以输出高电平。</p>
+<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"></p>
+<p>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
+<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"></p>
+<pre><code>void IIC_Start(void)
 &#123;
-    unsigned char i;
-    unsigned char m,data;
-    data=IIC_Byte;
-    OLED_SCLK_Clr();
-    for(i=0;i&lt;8;i++)	//1Byte data	
-    &#123;
-    m=data;
-    m=m&amp;0x80;           //将要写入的位
-    if(m==0x80)
-    OLED_SDIN_Set();    //写1
-    else
-    OLED_SDIN_Clr();    //写0
-    data=data&lt;&lt;1;       //将下一位数据推至首位，准备下次写入
-    OLED_SCLK_Set();    //读SDA的数据
-    OLED_SCLK_Clr();
-    &#125;
+    SDA_HIGH;
+    SCL_HIGH;
+    SDA_LOW;
+    SCL_LOW;
+&#125;
+
+void IIC_Stop(void)
+&#123;
+    SDA_LOW;
+    SCL_HIGH;
+    SDA_HIGH;
 &#125;
 </code></pre>
-<h5 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h5><pre><code>void Read_IIC_Byte(void)        //参考江科大的写法
+<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"></p>
+<p>START之后，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
+<h5 id="发送ACK的方式参考"><a href="#发送ACK的方式参考" class="headerlink" title="发送ACK的方式参考"></a>发送ACK的方式参考</h5><pre><code>void IIC_SendAck(u8 ACK_Byte)
 &#123;
-    unsigned char i,Byte = 0x00;
-    OLED_SDIN_Set();            //主机断开下管，由从机接管SDA
+    if(ACK_Byte == 1)
+        SDA_HIGH;
+    else
+        SDA_LOW;
+    SCL_HIGH;
+    SCL_LOW;
+&#125;
+</code></pre>
+<h5 id="接受ACK方式参考"><a href="#接受ACK方式参考" class="headerlink" title="接受ACK方式参考"></a>接受ACK方式参考</h5><pre><code>u8 IIC_ReceiveAck(void)
+&#123;
+    u8 ACK_Byte;
+    SDA_HIGH;//主机释放，从机接管
+    SCL_HIGH;
+    ACK_Byte = READ_SDA;
+    SCL_LOW;
+    return ACK_Byte;
+&#125;
+</code></pre>
+<h4 id="I2C读写1Byte数据"><a href="#I2C读写1Byte数据" class="headerlink" title="I2C读写1Byte数据"></a>I2C读写1Byte数据</h4><h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void IIC_WriteByte(u8 IIC_Byte)
+&#123;
+    u8 i;
+    u8 data = IIC_Byte;
+    SCL_LOW;
     for(i=0;i&lt;8;i++)
     &#123;
-        OLED_SCLK_Set();    
-        if(IIC_R_SDA()==1)
-        &#123;Byte |= (0x80 &gt;&gt; i);&#125;  //因为默认为0，只需要记录为1的位
-        OLED_SCLK_Clr();
+        if((data&amp;0x80) == 0x80)
+            SDA_HIGH;
+        else
+            SDA_LOW;
+        data = data&lt;&lt;1;
+        SCL_HIGH;
+        SCL_LOW;
     &#125;
-    return Byte;
 &#125;
 </code></pre>
-<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"><br>在SCL为高电平期间读到SDA下降沿为START信号<br>在SCL为高电平期间读到SDA上升沿为STOP信号</p>
-<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"><br>接受设备检测到START信号，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
-<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"><br>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
-<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
-<!-- 这里是表格 -->
-<table>
-<thead>
-<tr>
-<th align="left"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">81+A[7:0]</td>
-<td align="left">设置对比度，在下个字节设置对比度，00-FFh可调</td>
-</tr>
-<tr>
-<td align="left">A4 &#x2F; A5</td>
-<td align="left">显示RAM中的数据 &#x2F; 全屏点亮</td>
-</tr>
-<tr>
-<td align="left">A6 &#x2F; A7</td>
-<td align="left">正常(0关1开) &#x2F; 反转(0开1关)显示模式</td>
-</tr>
-<tr>
-<td align="left">AE &#x2F; AF</td>
-<td align="left">关闭 &#x2F; 开启显示</td>
-</tr>
-</tbody></table>
-<h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p>连续水平滚动设置<br><img src="/images/26.png"></p>
-<!-- 这里是表格 -->
-<table>
-<thead>
-<tr>
-<th align="left"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">26 &#x2F; 27</td>
-<td align="left">右滚 &#x2F; 左滚</td>
-</tr>
-<tr>
-<td align="left">A[7:0]</td>
-<td align="left">空字节</td>
-</tr>
-<tr>
-<td align="left">B[2:0]</td>
-<td align="left">设置起始页地址，详见图表</td>
-</tr>
-<tr>
-<td align="left">C[2:0]</td>
-<td align="left">按帧率设置滚动速度，详见图表</td>
-</tr>
-<tr>
-<td align="left">D[2:0]</td>
-<td align="left">设置结束页地址，注意不能小于B[2:0]</td>
-</tr>
-</tbody></table>
+<h5 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h5><pre><code>u8 IIC_ReadByte(void)
+&#123;
+    u8 i,IIC_Byte = 0x00;
+    SDA_HIGH;//主机释放，从机接管  --这里的SDA,SCL都是推挽输出
+    for(i=0;i&lt;8;i++)
+    &#123;
+        SCL_HIGH;
+        if(READ_SDA == 1)
+            IIC_Byte |= (0x80&gt;&gt;i);
+        SCL_LOW;
+    &#125;
+    return IIC_Byte;
+&#125;
+</code></pre>
+<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="SSD1306使用I2C的数据格式"><a href="#SSD1306使用I2C的数据格式" class="headerlink" title="SSD1306使用I2C的数据格式"></a>SSD1306使用I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"></p>
+<h5 id="首字节"><a href="#首字节" class="headerlink" title="首字节"></a>首字节</h5><p>由从机地址（0x3C）和R&#x2F;W#组成。</p>
+<pre><code>    IIC_WriteByte(0x78);//W
+    IIC_WriteByte(0x79);//R
+</code></pre>
+<h5 id="控制字节"><a href="#控制字节" class="headerlink" title="控制字节"></a>控制字节</h5><p>由Co和D&#x2F;C#及‘000000’组成。</p>
+<pre><code>    IIC_WriteByte(0x00);//下一位字节是命令
+    IIC_WriteByte(0x40);//下一位字节是数据，存入GDDRAM
+</code></pre>
+<h5 id="写一次命令"><a href="#写一次命令" class="headerlink" title="写一次命令"></a>写一次命令</h5><pre><code>void OLED_CMD(u8 CMD)
+&#123;
+    IIC_Start();
+
+    IIC_WriteByte(0x78);
+    IIC_ReceiveAck();
+
+    IIC_WriteByte(0x00);
+    IIC_ReceiveAck();
+
+    IIC_WriteByte(CMD);
+    IIC_ReceiveAck();
+
+    IIC_Stop();
+&#125;
+</code></pre>
+<h5 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h5><p>尝试发送 AFh 开启屏幕的显示</p>
+<pre><code>OLED_CMD(0xAF);
+</code></pre>
+<p>接上逻辑分析仪查看时序</p>
+<p><img src="/images/I2C_logic.png"></p>
+<p>观察屏幕，情况如下：</p>
+<p><img src="/images/12864_ON.jpg"></p>
+<p>屏幕被成功点亮，并将GDDRAM中的初始数据输出。</p>
+<h4 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h4><h5 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h5><p><img src="/images/SSD1306_GDDRAM.png"></p>
+<p>从上至下，将GDDRAM分为8个PAGE，8 * 128Byte。<br>从左至右，将PAGE分为128个SEG，128 * 1Byte。</p>
+<p><img src="/images/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行。</p>
+<h5 id="GDDRAM的寻址模式"><a href="#GDDRAM的寻址模式" class="headerlink" title="GDDRAM的寻址模式"></a>GDDRAM的寻址模式</h5><p>20h+A[1:0]        设置内存寻址模式</p>
+<p> A[1:0]&#x3D;10b	页面寻址    用于局部刷新<br> 仅在PAGE中寻址。向GDDRAM写入1Byte后，列指针自增1，直至寻址结束，页指针不变。<br><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;00b	水平寻址<br><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;01b	竖直寻址<br><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;11b	无效寻址</p>
+<h5 id="填充全屏"><a href="#填充全屏" class="headerlink" title="填充全屏"></a>填充全屏</h5><pre><code>OLED_FILL（）
+&#123;
+    OLED_CMD(0x20);		// 设置寻址模式
+    OLED_CMD(0x00);		// 水平寻址模式
+    OLED_CMD(0X21);		// 设置列起始和结束地址
+    OLED_CMD(0X00);		// 列起始地址 0
+    OLED_CMD(0X7F);		// 列终止地址 127
+    OLED_CMD(0X22);		// 设置页起始和结束地址
+    OLED_CMD(0X00);		// 页起始地址 0
+    OLED_CMD(0X07);		// 页终止地址 7
+
+    u8 r,c;
+
+    for(r=0;r&lt;8;r++)
+        for(c=0;c&lt;128;c++)
+            OLED_DATA(0xFF);
+&#125;
+</code></pre>
+<h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
+<h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p><img src="/images/26.png"></p>
 <h5 id="10-25"><a href="#10-25" class="headerlink" title="10&#x2F;25"></a>10&#x2F;25</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
-<!-- ##### 00h~0Fh
-设置起始列地址的低4位
-##### 10h~1Fh
-设置起始列地址的高4位
-##### 20h：A[1:0]
-设置内存寻址模式
-###### A[1:0]=10b	页面寻址
-![](images/页面寻址.png)
-###### A[1:0]=00b	水平寻址
-![](images/水平寻址.png)
-###### A[1:0]=01b	竖直寻址
-![](images/竖直寻址.png)
-###### A[1:0]=11b	无效寻址
-![](images/鸽子.png) -->
+
     </div>
     
     
