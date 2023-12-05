@@ -49,7 +49,6 @@
 
 <h4 id="功率信号的功率谱密度P-f"><a href="#功率信号的功率谱密度P-f" class="headerlink" title="功率信号的功率谱密度P(f)"></a>功率信号的功率谱密度P(f)</h4><p>将信号截出一段长度为T的截短信号S_T(t)，通过能量信号的计算方法得</p>
  \[E = \int_{ - T/2}^{T/2} {s_T^2(t)dt}  = \int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df} \] 
-<p>此时被积因子为瞬频功率<del>这个词是我瞎编的</del>，对其<del>在时域上</del>求平均得出功率谱密度P(f)<del>猪脑过载不理解</del></p>
  \[P(f) = \mathop {\lim }\limits_{T \to \infty } \frac{{{{\left| {{S_T}(f)} \right|}^2}}}{T}\] 
 <p>同样的，功率谱密度P(f)在频率轴f上的积分等于信号功率，单位W&#x2F;Hz。</p>
  \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df}  = \int_{ - \infty }^\infty  {P(f)df} \] 
@@ -73,126 +72,6 @@
     <url>/2023/08/14/About%20me/</url>
     <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
 <h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>Git</title>
-    <url>/2023/10/23/Git/</url>
-    <content><![CDATA[<h3 id="Git基本命令"><a href="#Git基本命令" class="headerlink" title="Git基本命令"></a>Git基本命令</h3><table>
-<thead>
-<tr>
-<th align="left"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">git init</td>
-<td align="left">开始Git旅程</td>
-</tr>
-<tr>
-<td align="left">git add filename</td>
-<td align="left">添加文件到缓存区,filename填写文件名，要加后缀哦</td>
-</tr>
-<tr>
-<td align="left">git add .</td>
-<td align="left">add所有文件</td>
-</tr>
-<tr>
-<td align="left">git rm –cached filename</td>
-<td align="left">去除缓存区文件</td>
-</tr>
-<tr>
-<td align="left">git status</td>
-<td align="left">查看缓存区内容</td>
-</tr>
-<tr>
-<td align="left">git commit -m “anything”</td>
-<td align="left">提交本地仓库，anything填写备注</td>
-</tr>
-<tr>
-<td align="left">git push -u origin master</td>
-<td align="left">本地库推送到远程库,-u在第一次推送时使用,origin作别名使用可自定义</td>
-</tr>
-<tr>
-<td align="left">git push</td>
-<td align="left">-u之后可如此简化使用，-u作用是把本地和远程仓库关联</td>
-</tr>
-<tr>
-<td align="left">git log</td>
-<td align="left">查看当前文件版本</td>
-</tr>
-<tr>
-<td align="left">git reset –hard ID</td>
-<td align="left">恢复版本，ID可自定义也可在log中查看</td>
-</tr>
-</tbody></table>
-<h4 id="Git与远程仓库关联"><a href="#Git与远程仓库关联" class="headerlink" title="Git与远程仓库关联"></a>Git与远程仓库关联</h4><table>
-<thead>
-<tr>
-<th align="left"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">git remote add origin server</td>
-<td align="left">关联远程仓库 server填github的SSH</td>
-</tr>
-<tr>
-<td align="left">git remote remove origin</td>
-<td align="left">解除关联</td>
-</tr>
-</tbody></table>
-<h3 id="Git分支"><a href="#Git分支" class="headerlink" title="Git分支"></a>Git分支</h3><p>这非常有意义！<br>在多人协作时，可以隔离工程，各自工作负责的内容，最后再进行合并</p>
-<h4 id="Git分支命令"><a href="#Git分支命令" class="headerlink" title="Git分支命令"></a>Git分支命令</h4><table>
-<thead>
-<tr>
-<th align="left"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">git branch</td>
-<td align="left">查看分支</td>
-</tr>
-<tr>
-<td align="left">git branch xxx</td>
-<td align="left">创建分支，xxx分支名</td>
-</tr>
-<tr>
-<td align="left">git branch -d xxx</td>
-<td align="left">删除分支</td>
-</tr>
-<tr>
-<td align="left">git checkout xxx</td>
-<td align="left">切换分支</td>
-</tr>
-<tr>
-<td align="left">git checkout -b xxx</td>
-<td align="left">快速创建和切换</td>
-</tr>
-<tr>
-<td align="left">git merge xxx</td>
-<td align="left">合并分支x，注意：是将x合并至当前分支</td>
-</tr>
-<tr>
-<td align="left">git remote show xxx</td>
-<td align="left">查看远程分支</td>
-</tr>
-<tr>
-<td align="left">git push origin xxx</td>
-<td align="left">推送至远程</td>
-</tr>
-<tr>
-<td align="left">git push origin –delete xxx</td>
-<td align="left">删除远程分支</td>
-</tr>
-<tr>
-<td align="left">git pull</td>
-<td align="left">更新当前分支</td>
-</tr>
-</tbody></table>
-<h4 id="实例演示"><a href="#实例演示" class="headerlink" title="实例演示"></a>实例演示</h4><p>使用git branch查看当前所有的分支，图示当前为test<br>使用git checkout master切换到master主分支<br><img src="/images/checkout.png"><br>再次查看，成功切换到主分支<br>执行git branch -d test删除test，并使用git branch test新建test<br><img src="/images/branch.png"><br>最后将新建的test推送到远程库中，命名远程分支test<br><img src="/images/remote.png"><br>可以见到GitHub中更新了test</p>
-<h3 id="Git学习参考"><a href="#Git学习参考" class="headerlink" title="Git学习参考"></a>Git学习参考</h3><p>git - 简易指南：<a href="https://www.bootcss.com/p/git-guide">https://www.bootcss.com/p/git-guide</a><br>git - 指令列表：<a href="https://book.git-scm.com/docs">https://book.git-scm.com/docs</a></p>
 ]]></content>
   </entry>
   <entry>
