@@ -131,74 +131,6 @@ L = (Vin - Vout) * D / fsw * r * Iload
 ]]></content>
   </entry>
   <entry>
-    <title>STM32笔记之delay_us</title>
-    <url>/2023/12/29/STM32%E7%AC%94%E8%AE%B0%E4%B9%8Bdelay_us/</url>
-    <content><![CDATA[<h3 id="ReadME"><a href="#ReadME" class="headerlink" title="ReadME"></a>ReadME</h3><p>对博客 <a href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a> 进行了转载并添加了一些个人的代码理解</p>
-<h4 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h4><pre><code>void delay_us(uint32_t us)
-&#123;
-    uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
-    while (delay--)
-    &#123;
-        ;
-    &#125;
-&#125;
-</code></pre>
-<h5 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h5><p>HAL_RCC_GetHCLKFreq会返回SystemCoreClock的值，在这里就是72M,delay用一个系数与参数相乘并不断自减.<br>利用重复的指令执行时间来做延时的基本单位,这就是为什么只能用于72M的F1系列.<br>但这提供了一个思路，对于其他型号只需要得知指令的执行时间并平衡系数的值，同样可以得到想要的delay_us.</p>
-<h4 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h4><pre><code>#define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
-void HAL_Delay_us(__IO uint32_t delay)
-&#123;
-    int last, curr, val;
-    int temp;
-
-    while (delay != 0)
-    &#123;
-        temp = delay &gt; 900 ? 900 : delay;
-        last = SysTick-&gt;VAL;
-        curr = last - CPU_FREQUENCY_MHZ * temp;
-        if (curr &gt;= 0)
-        &#123;
-            do
-            &#123;
-                val = SysTick-&gt;VAL;
-            &#125;
-            while ((val &lt; last) &amp;&amp; (val &gt;= curr));
-        &#125;
-        else
-        &#123;
-            curr += CPU_FREQUENCY_MHZ * 1000;
-            do
-            &#123;
-                val = SysTick-&gt;VAL;
-            &#125;
-            while ((val &lt;= last) || (val &gt; curr));
-        &#125;
-        delay -= temp;
-    &#125;
-&#125;
-</code></pre>
-<h5 id="工作原理-1"><a href="#工作原理-1" class="headerlink" title="工作原理"></a>工作原理</h5><p>这里定义了四个var：<br>last存放延时(temp)开始的 SysTick-&gt;VAL 寄存器的值.<br>curr存放延时(temp)结束的 SysTick-&gt;VAL 寄存器的值.<br>val更新 SysTick-&gt;VAL寄存器的值.<br>————关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual.<br>temp用来设置一次最大延时的系数.</p>
-<p>虽程序中并未提及但 SysTick-&gt;LOAD 的值应为 CPU_FREQUENCY_MHZ * 1000 在此条件下 SysTick 1μs自减，1ms重载.<br>当传入delay参数时，对其按照temp进行拆分————因为VAL不会超过1000.<br>对拆分后的delay分批延时 n*temp + delay%temp ;n&#x3D;delay&#x2F;temp.</p>
-<p>当curr ≥ 0时<br><img src="/images/curr+.png"><br>通过(val &lt; last) &amp;&amp; (val &gt;&#x3D; curr)来实现一次延时temp.</p>
-<p>当curr ＜ 0时<br><img src="/images/curr-1.png"><br>将curr搬移 CPU_FREQUENCY_MHZ * 1000 如下图：<br><img src="/images/curr-2.png"><br>通过(val &lt;&#x3D; last) || (val &gt; curr)来实现一次延时temp.</p>
-<h4 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h4><p>(这里是HAL写法)，但需要占用一个定时器，对TIM资源紧张的型号不友好.</p>
-<pre><code>#define DLY_TIM_Handle (&amp;htimx)
-void delay_us(uint16_t nus)
-&#123;
-    __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
-    __HAL_TIM_ENABLE(DLY_TIM_Handle);
-    while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
-    &#123;
-    &#125;
-    __HAL_TIM_DISABLE(DLY_TIM_Handle);
-&#125;
-</code></pre>
-<h5 id="工作原理-2"><a href="#工作原理-2" class="headerlink" title="工作原理"></a>工作原理</h5><p>首先设置TIMx的计数周期为1μs.<br>将TIMx的值与传入的参数nus进行比较，实现delay_μs.</p>
-]]></content>
-      <categories>
-        <category>STM32</category>
-      </categories>
-  </entry>
-  <entry>
     <title>SSD1306</title>
     <url>/2023/10/20/SSD1306/</url>
     <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4Mbps</p>
@@ -371,6 +303,74 @@ void OLED_DATA_128_64(u8 DATA_128_64)
 <h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
 <h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p><img src="/images/26.png"></p>
 <h5 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>STM32笔记之delay_us</title>
+    <url>/2023/12/29/STM32%E7%AC%94%E8%AE%B0%E4%B9%8Bdelay_us/</url>
+    <content><![CDATA[<h3 id="ReadME"><a href="#ReadME" class="headerlink" title="ReadME"></a>ReadME</h3><p>对博客 <a href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a> 进行了转载并添加了一些个人的代码理解</p>
+<h4 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h4><pre><code>void delay_us(uint32_t us)
+&#123;
+    uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
+    while (delay--)
+    &#123;
+        ;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h5><p>HAL_RCC_GetHCLKFreq会返回SystemCoreClock的值，在这里就是72M,delay用一个系数与参数相乘并不断自减.<br>利用重复的指令执行时间来做延时的基本单位,这就是为什么只能用于72M的F1系列.<br>但这提供了一个思路，对于其他型号只需要得知指令的执行时间并平衡系数的值，同样可以得到想要的delay_us.</p>
+<h4 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h4><pre><code>#define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
+void HAL_Delay_us(__IO uint32_t delay)
+&#123;
+    int last, curr, val;
+    int temp;
+
+    while (delay != 0)
+    &#123;
+        temp = delay &gt; 900 ? 900 : delay;
+        last = SysTick-&gt;VAL;
+        curr = last - CPU_FREQUENCY_MHZ * temp;
+        if (curr &gt;= 0)
+        &#123;
+            do
+            &#123;
+                val = SysTick-&gt;VAL;
+            &#125;
+            while ((val &lt; last) &amp;&amp; (val &gt;= curr));
+        &#125;
+        else
+        &#123;
+            curr += CPU_FREQUENCY_MHZ * 1000;
+            do
+            &#123;
+                val = SysTick-&gt;VAL;
+            &#125;
+            while ((val &lt;= last) || (val &gt; curr));
+        &#125;
+        delay -= temp;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="工作原理-1"><a href="#工作原理-1" class="headerlink" title="工作原理"></a>工作原理</h5><p>这里定义了四个var：<br>last存放延时(temp)开始的 SysTick-&gt;VAL 寄存器的值.<br>curr存放延时(temp)结束的 SysTick-&gt;VAL 寄存器的值.<br>val更新 SysTick-&gt;VAL寄存器的值.<br>————关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual.<br>temp用来设置一次最大延时的系数.</p>
+<p>虽程序中并未提及但 SysTick-&gt;LOAD 的值应为 CPU_FREQUENCY_MHZ * 1000 在此条件下 SysTick 1μs自减，1ms重载.<br>当传入delay参数时，对其按照temp进行拆分————因为VAL不会超过1000.<br>对拆分后的delay分批延时 n*temp + delay%temp ;n&#x3D;delay&#x2F;temp.</p>
+<p>当curr ≥ 0时<br><img src="/images/curr+.png"><br>通过(val &lt; last) &amp;&amp; (val &gt;&#x3D; curr)来实现一次延时temp.</p>
+<p>当curr ＜ 0时<br><img src="/images/curr-1.png"><br>将curr搬移 CPU_FREQUENCY_MHZ * 1000 如下图：<br><img src="/images/curr-2.png"><br>通过(val &lt;&#x3D; last) || (val &gt; curr)来实现一次延时temp.</p>
+<h4 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h4><p>(这里是HAL写法)，但需要占用一个定时器，对TIM资源紧张的型号不友好.</p>
+<pre><code>#define DLY_TIM_Handle (&amp;htimx)
+void delay_us(uint16_t nus)
+&#123;
+    __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
+    __HAL_TIM_ENABLE(DLY_TIM_Handle);
+    while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
+    &#123;
+    &#125;
+    __HAL_TIM_DISABLE(DLY_TIM_Handle);
+&#125;
+</code></pre>
+<h5 id="工作原理-2"><a href="#工作原理-2" class="headerlink" title="工作原理"></a>工作原理</h5><p>首先设置TIMx的计数周期为1μs.<br>将TIMx的值与传入的参数nus进行比较，实现delay_μs.</p>
 ]]></content>
       <categories>
         <category>MCU</category>
