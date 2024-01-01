@@ -68,9 +68,16 @@
       </categories>
   </entry>
   <entry>
-    <title>MP2456计算</title>
+    <title>About me</title>
+    <url>/2023/08/14/About%20me/</url>
+    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
+<h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>电感与纹波</title>
     <url>/2023/09/08/MP2456/</url>
-    <content><![CDATA[<h3 id="事由"><a href="#事由" class="headerlink" title="事由"></a>事由</h3><p>开学了无所事事，翻看MP2456 datasheet的时候对有关于电感值的计算公式熟悉又陌生，重新来计算一下吧<br>下图为手册相关内容<br><img src="/images/MP2456.jpg"></p>
+    <content><![CDATA[<h3 id="事由"><a href="#事由" class="headerlink" title="事由"></a>事由</h3><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/MP2456.jpg"></p>
 <h4 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h4><ol>
 <li>电感上的电流不能突变</li>
 <li>电感上储存的能量不能突变</li>
@@ -122,13 +129,6 @@ L = (Vin - Vout) * D / fsw * r * Iload
       <categories>
         <category>开关电源</category>
       </categories>
-  </entry>
-  <entry>
-    <title>About me</title>
-    <url>/2023/08/14/About%20me/</url>
-    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
-<h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
-]]></content>
   </entry>
   <entry>
     <title>SSD1306</title>
