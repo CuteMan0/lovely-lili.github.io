@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>确知信号</title>
+    <url>/2023/09/24/2.%E7%A1%AE%E7%9F%A5%E4%BF%A1%E5%8F%B7/</url>
+    <content><![CDATA[<h3 id="信号的类型"><a href="#信号的类型" class="headerlink" title="信号的类型"></a>信号的类型</h3><p>信号按照能量是否有限区分 能量信号、功率信号<br>信号能量E为<del>对瞬时功率求积分</del></p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
+
+<h4 id="能量信号"><a href="#能量信号" class="headerlink" title="能量信号"></a>能量信号</h4><p>若E是一个正的有限值，即下式，称信号为能量信号</p>
+ \[0 < E = \int_{ - \infty }^\infty  {{s^2}(t)dt}  < \infty \] 
+<p>将信号的平均功率定义为<del>对单位时间的能量求平均并推广到整个时域</del></p>
+ \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - T/2}^{T/2} {{s^2}(t)dt} \] 
+<p>不难看出，能量信号的平均功率P&#x3D;0</p>
+<h4 id="功率信号"><a href="#功率信号" class="headerlink" title="功率信号"></a>功率信号</h4><p>若P是一个正的有限值，即下式，称信号为功率信号</p>
+ \[0 < P < \infty \] 
+<p>功率信号的能量E无穷大</p>
+<h3 id="确知信号的频域性质"><a href="#确知信号的频域性质" class="headerlink" title="确知信号的频域性质"></a>确知信号的频域性质</h3><h4 id="功率信号的频谱Cn"><a href="#功率信号的频谱Cn" class="headerlink" title="功率信号的频谱Cn"></a>功率信号的频谱Cn</h4><p>对于一个周期为 T0 的周期性功率信号s(t)，其频谱函数为傅里叶级数系数，如下式</p>
+ \[{C_n} = C(n{f_0}) = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} \] 
+<p>故周期性信号可以展开成如下的傅里叶级数</p>
+ \[s(t) = \sum\limits_{ - \infty }^\infty  {{C_n}{e^{j2\pi nt/{T_0}}}} \] 
+<p>当 n&#x3D;0 时，为信号s(t)的时间平均值，即 直流分量</p>
+ \[{C_0} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t)dt} \] 
+<p>一般来说，频谱函数 Cn 为复数，代表在各频率上信号分量的复振幅，可写作</p>
+ \[{C_n} = \left| {{C_n}} \right|{e^{j{\theta _n}}}\] 
+<p>其中</p>
+ \[\left| {{C_n}} \right| = \frac{1}{2}\sqrt {{a_n}^2 + {b_n}^2} \] 
+ \[{\theta _n} =  - \arctan ({b_n}/{a_n})\] 
+<p>因为 n 可取负值，称 Cn 为双边谱，但负频谱仅在数学上有意义，将实信号的频谱称为单边谱<br>对物理可实现的实信号，其频谱如下</p>
+ \[{C_{ - n}} = {C_n}^*\] 
+ \[\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{j2\pi n{f_0}t}}dt}  = {\left[ {\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} } \right]^ * }\] 
+<p>可得正频和负频部分之间存在共轭关系，即正负频谱的模偶对称，相位奇对称。</p>
+<h4 id="能量信号的频谱密度S-f"><a href="#能量信号的频谱密度S-f" class="headerlink" title="能量信号的频谱密度S(f)"></a>能量信号的频谱密度S(f)</h4><p>设能量信号s(t),则它的傅里叶变换s(f)被定义为它的频谱密度</p>
+ \[S(f) = \int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt} \] 
+<p>s(f)的逆傅里叶变换为s(t):</p>
+ \[s(t) = \int_{ - \infty }^\infty  {S(f){e^{j2\pi ft}}df} \] 
+<p>同样的，其正负频谱的模偶对称，相位奇对称。</p>
+ \[S(f) = {\left[ {S( - f)} \right]^*}\] 
+ \[\int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt}  = {\left[ {\int_{ - \infty }^\infty  {s(t){e^{j2\pi ft}}dt} } \right]^*}\] 
+
+<h5 id="Cn和S-f-区别"><a href="#Cn和S-f-区别" class="headerlink" title="Cn和S(f)区别"></a>Cn和S(f)区别</h5><p>1：S(f)是连续谱,Cn&#x3D;C(nf0)是离散谱<br>2：S(f)的单位是V&#x2F;Hz，而Cn的单位是V</p>
+<h5 id="单位冲激函数"><a href="#单位冲激函数" class="headerlink" title="单位冲激函数"></a>单位冲激函数</h5><p>声明一下，占个位</p>
+<h4 id="能量信号的能量谱密度G-f"><a href="#能量信号的能量谱密度G-f" class="headerlink" title="能量信号的能量谱密度G(f)"></a>能量信号的能量谱密度G(f)</h4><p>信号能量:</p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
+<p>由巴塞伐尔定理得</p>
+ \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} = \int_{ - \infty }^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
+ \[G(f) = {\left| {S(f)} \right|^2}\] 
+<p>能量谱密度G(f)在频率轴f上的积分等于信号能量，单位J&#x2F;Hz。<br>且G(f)为偶函数</p>
+ \[E = 2\int_0^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
+
+<h4 id="功率信号的功率谱密度P-f"><a href="#功率信号的功率谱密度P-f" class="headerlink" title="功率信号的功率谱密度P(f)"></a>功率信号的功率谱密度P(f)</h4><p>将信号截出一段长度为T的截短信号S_T(t)，通过能量信号的计算方法得</p>
+ \[E = \int_{ - T/2}^{T/2} {s_T^2(t)dt}  = \int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df} \] 
+ \[P(f) = \mathop {\lim }\limits_{T \to \infty } \frac{{{{\left| {{S_T}(f)} \right|}^2}}}{T}\] 
+<p>同样的，功率谱密度P(f)在频率轴f上的积分等于信号功率，单位W&#x2F;Hz。</p>
+ \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df}  = \int_{ - \infty }^\infty  {P(f)df} \] 
+
+
+
+
+
+  
+  
+  
+  
+  
+  ]]></content>
+      <categories>
+        <category>通信原理笔记</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>About me</title>
+    <url>/2023/08/14/About%20me/</url>
+    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，一名电子信息工程的大三学生<br>欢迎与我交流一些电子技术哦！也可以约我一起骑车！</p>
+<h4 id="一些展望"><a href="#一些展望" class="headerlink" title="一些展望"></a>一些展望</h4><p>多多学习吧，希望再参加电赛时能拿到好成绩捏😀</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>电感与纹波</title>
+    <url>/2023/09/08/MP2456/</url>
+    <content><![CDATA[<h3 id="事由"><a href="#事由" class="headerlink" title="事由"></a>事由</h3><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/MP2456.jpg"></p>
+<h4 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h4><ol>
+<li>电感上的电流不能突变</li>
+<li>电感上储存的能量不能突变</li>
+</ol>
+<p>将公式变换为</p>
+<pre><code>V * Δt = L * ΔI    （1）
+</code></pre>
+<h4 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h4><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
+<pre><code>由(1)得出
+Ion、Ioff为导通与关断期间电感的电流变化量
+Von * ton = L * Ion
+Voff * toff = L * Ioff
+
+D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
+ton = D * T = D / fsw 
+toff = (1-D) * T = (1-D) / fsw
+代入至伏秒定律，得
+Von * ton = Von * D / fsw = L * Ion             (2.1)
+Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
+</code></pre>
+<h4 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h4><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
+<pre><code>（1）负载电流 Iload = Idc
+（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
+（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
+ 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
+</code></pre>
+<h4 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h4><p>此图为同步整流的BUCK电路模型<br><img src="/images/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
+<h5 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h5><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
+<pre><code>根据(2.1)、(1)、(3)有
+Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
+将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
+得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
+</code></pre>
+<h5 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h5><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
+<pre><code>根据(2.2)、(1)、(3)有
+Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
+将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
+得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
+</code></pre>
+<h4 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h4><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式，两者仅在分子上出现区别</p>
+<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
+此时发现只要满足 Vout / Vin = D ，可使得(4.1)与(4.2) 完全相同
+即 (Vin - Vout) * D = Vout * (1-D)
+将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
+故，Buck电路的电感计算公式为
+L = (Vin - Vout) * D / fsw * r * Iload
+</code></pre>
+]]></content>
+      <categories>
+        <category>开关电源</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>SSD1306</title>
+    <url>/2023/10/20/SSD1306/</url>
+    <content><![CDATA[<h3 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h3><p>飞利浦（NXP）于1980提出I2C串行总线，使用多主从架构，为同步半双工通信方式<br>常见速率：100kbps、300kbps、3.4Mbps</p>
+<!-- 此处需要介绍I2C的硬件配置 -->
+
+<h4 id="端口设置"><a href="#端口设置" class="headerlink" title="端口设置"></a>端口设置</h4><p>采用外部上拉（强上拉）时，端口配置为开漏输出，配合上拉电阻（1K左右）以输出高电平。</p>
+<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"></p>
+<p>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
+<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"></p>
+<pre><code>void IIC_Start(void)
+&#123;
+    SDA_HIGH;
+    SCL_HIGH;
+    SDA_LOW;
+    SCL_LOW;
+&#125;
+
+void IIC_Stop(void)
+&#123;
+    SDA_LOW;
+    SCL_HIGH;
+    SDA_HIGH;
+&#125;
+</code></pre>
+<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"></p>
+<p>START之后，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
+<h5 id="发送ACK的方式参考"><a href="#发送ACK的方式参考" class="headerlink" title="发送ACK的方式参考"></a>发送ACK的方式参考</h5><pre><code>void IIC_SendAck(u8 ACK_Byte)
+&#123;
+    if(ACK_Byte == 1)
+        SDA_HIGH;
+    else
+        SDA_LOW;
+    SCL_HIGH;
+    SCL_LOW;
+&#125;
+</code></pre>
+<h5 id="接受ACK方式参考"><a href="#接受ACK方式参考" class="headerlink" title="接受ACK方式参考"></a>接受ACK方式参考</h5><pre><code>u8 IIC_ReceiveAck(void)
+&#123;
+    u8 ACK_Byte;
+    SDA_HIGH;//主机释放，从机接管
+    SCL_HIGH;
+    ACK_Byte = READ_SDA;
+    SCL_LOW;
+    return ACK_Byte;
+&#125;
+</code></pre>
+<h4 id="I2C读写1Byte数据"><a href="#I2C读写1Byte数据" class="headerlink" title="I2C读写1Byte数据"></a>I2C读写1Byte数据</h4><h5 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h5><pre><code>void IIC_WriteByte(u8 IIC_Byte)
+&#123;
+    u8 i;
+    u8 data = IIC_Byte;
+    SCL_LOW;
+    for(i=0;i&lt;8;i++)
+    &#123;
+        if((data&amp;0x80) == 0x80)
+            SDA_HIGH;
+        else
+            SDA_LOW;
+        data = data&lt;&lt;1;
+        SCL_HIGH;
+        SCL_LOW;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h5><pre><code>u8 IIC_ReadByte(void)
+&#123;
+    u8 i,IIC_Byte = 0x00;
+    SDA_HIGH;//主机释放，从机接管  --这里的SDA,SCL都是推挽输出
+    for(i=0;i&lt;8;i++)
+    &#123;
+        SCL_HIGH;
+        if(READ_SDA == 1)
+            IIC_Byte |= (0x80&gt;&gt;i);
+        SCL_LOW;
+    &#125;
+    return IIC_Byte;
+&#125;
+</code></pre>
+<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="SSD1306使用I2C的数据格式"><a href="#SSD1306使用I2C的数据格式" class="headerlink" title="SSD1306使用I2C的数据格式"></a>SSD1306使用I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"></p>
+<h5 id="首字节"><a href="#首字节" class="headerlink" title="首字节"></a>首字节</h5><p>由从机地址（0x3C）和R&#x2F;W#组成。</p>
+<pre><code>    IIC_WriteByte(0x78);//W
+    IIC_WriteByte(0x79);//R
+</code></pre>
+<h5 id="控制字节"><a href="#控制字节" class="headerlink" title="控制字节"></a>控制字节</h5><p>由Co和D&#x2F;C#及‘000000’组成，Co低电平意指后续的Byte都是数据，可用于连续输出CMD和DATA。</p>
+<pre><code>    IIC_WriteByte(0x00);//后面的字节是命令
+    IIC_WriteByte(0x40);//后面的字节是数据，并存入GDDRAM
+    IIC_WriteByte(0x80);//后一位字节是命令
+    IIC_WriteByte(0xC0);//后一位字节是数据，并存入GDDRAM
+</code></pre>
+<h5 id="写一次命令"><a href="#写一次命令" class="headerlink" title="写一次命令"></a>写一次命令</h5><pre><code>void OLED_CMD(u8 CMD)
+&#123;
+    IIC_Start();
+
+    IIC_WriteByte(0x78);
+    IIC_ReceiveAck();
+
+    IIC_WriteByte(0x80);
+    IIC_ReceiveAck();
+
+    IIC_WriteByte(CMD);
+    IIC_ReceiveAck();
+
+    IIC_Stop();
+&#125;
+</code></pre>
+<h5 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h5><p>尝试发送 AFh 开启屏幕的显示</p>
+<pre><code>OLED_CMD(0xAF);
+</code></pre>
+<p>接上逻辑分析仪查看时序</p>
+<p><img src="/images/I2C_logic.png"></p>
+<p>观察屏幕，情况如下：</p>
+<p><img src="/images/12864_ON.jpg"></p>
+<p>屏幕被成功点亮，并将GDDRAM中的初始数据输出。</p>
+<h5 id="快速刷屏"><a href="#快速刷屏" class="headerlink" title="快速刷屏"></a>快速刷屏</h5><pre><code>void OLED_ClearScreen(void)
+&#123;
+    OLED_DATA_128_64(0x00);
+&#125;
+
+void OLED_FillScreen(void)
+&#123;
+    OLED_DATA_128_64(0xFF);
+&#125;
+
+void OLED_DATA_128_64(u8 DATA_128_64)
+&#123;
+    u16 i;
+    
+    IIC_Start();
+    
+    IIC_WriteByte(0x78);//从机地址0111100和R/W#
+    IIC_ReceiveAck();
+
+    IIC_WriteByte(0x40);
+    IIC_ReceiveAck();
+
+    for(i=0;i&lt;128*8;i++)
+    &#123;
+        IIC_WriteByte(DATA_128_64);
+        IIC_ReceiveAck();
+    &#125;
+    
+    IIC_Stop();
+&#125;
+</code></pre>
+<h4 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h4><h5 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h5><p><img src="/images/SSD1306_GDDRAM.png"></p>
+<p>从上至下，将GDDRAM分为8个PAGE，8 * 128Byte。<br>从左至右，将PAGE分为128个SEG，128 * 1Byte。</p>
+<p><img src="/images/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行。</p>
+<h5 id="GDDRAM的寻址模式"><a href="#GDDRAM的寻址模式" class="headerlink" title="GDDRAM的寻址模式"></a>GDDRAM的寻址模式</h5><p>20h+A[1:0]        设置内存寻址模式</p>
+<p> A[1:0]&#x3D;10b	页面寻址    用于局部刷新<br> 仅在PAGE中寻址。向GDDRAM写入1Byte后，列指针自增1，直至寻址结束，页指针不变。<br><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;00b	水平寻址<br><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;01b	竖直寻址<br><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;11b	无效寻址</p>
+<h5 id="填充全屏"><a href="#填充全屏" class="headerlink" title="填充全屏"></a>填充全屏</h5><pre><code>OLED_FILL（）
+&#123;
+    OLED_CMD(0x20);		// 设置寻址模式
+    OLED_CMD(0x00);		// 水平寻址模式
+    OLED_CMD(0X21);		// 设置列起始和结束地址
+    OLED_CMD(0X00);		// 列起始地址 0
+    OLED_CMD(0X7F);		// 列终止地址 127
+    OLED_CMD(0X22);		// 设置页起始和结束地址
+    OLED_CMD(0X00);		// 页起始地址 0
+    OLED_CMD(0X07);		// 页终止地址 7
+
+    u8 r,c;
+
+    for(r=0;r&lt;8;r++)
+        for(c=0;c&lt;128;c++)
+            OLED_DATA(0xFF);
+&#125;
+</code></pre>
+<h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
+<h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p><img src="/images/26.png"></p>
+<h5 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>STM32笔记之delay_us</title>
+    <url>/2023/12/29/STM32%E7%AC%94%E8%AE%B0%E4%B9%8Bdelay_us/</url>
+    <content><![CDATA[<h3 id="ReadME"><a href="#ReadME" class="headerlink" title="ReadME"></a>ReadME</h3><p>对博客 <a href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a> 进行了转载并添加了一些个人的代码理解</p>
+<h4 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h4><pre><code>void delay_us(uint32_t us)
+&#123;
+    uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
+    while (delay--)
+    &#123;
+        ;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h5><p>HAL_RCC_GetHCLKFreq会返回SystemCoreClock的值，在这里就是72M,delay用一个系数与参数相乘并不断自减.<br>利用重复的指令执行时间来做延时的基本单位,这就是为什么只能用于72M的F1系列.<br>但这提供了一个思路，对于其他型号只需要得知指令的执行时间并平衡系数的值，同样可以得到想要的delay_us.</p>
+<h4 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h4><pre><code>#define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
+void HAL_Delay_us(__IO uint32_t delay)
+&#123;
+    int last, curr, val;
+    int temp;
+
+    while (delay != 0)
+    &#123;
+        temp = delay &gt; 900 ? 900 : delay;
+        last = SysTick-&gt;VAL;
+        curr = last - CPU_FREQUENCY_MHZ * temp;
+        if (curr &gt;= 0)
+        &#123;
+            do
+            &#123;
+                val = SysTick-&gt;VAL;
+            &#125;
+            while ((val &lt; last) &amp;&amp; (val &gt;= curr));
+        &#125;
+        else
+        &#123;
+            curr += CPU_FREQUENCY_MHZ * 1000;
+            do
+            &#123;
+                val = SysTick-&gt;VAL;
+            &#125;
+            while ((val &lt;= last) || (val &gt; curr));
+        &#125;
+        delay -= temp;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="工作原理-1"><a href="#工作原理-1" class="headerlink" title="工作原理"></a>工作原理</h5><p>这里定义了四个var：<br>last存放延时(temp)开始的 SysTick-&gt;VAL 寄存器的值.<br>curr存放延时(temp)结束的 SysTick-&gt;VAL 寄存器的值.<br>val更新 SysTick-&gt;VAL寄存器的值.<br>————关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual.<br>temp用来设置一次最大延时的系数.</p>
+<p>虽程序中并未提及但 SysTick-&gt;LOAD 的值应为 (CPU_FREQUENCY_MHZ * 1000) -1 在此条件下 SysTick 1μs自减，1ms重载.<br>当传入delay参数时，对其按照temp进行拆分————因为VAL不会超过1000.<br>对拆分后的delay分批延时 n*temp + delay%temp ;n&#x3D;delay&#x2F;temp.</p>
+<p>当curr ≥ 0时<br><img src="/images/curr+.png"><br>通过(val &lt; last) &amp;&amp; (val &gt;&#x3D; curr)来实现一次延时temp.</p>
+<p>当curr ＜ 0时<br><img src="/images/curr-1.png"><br>将curr搬移 CPU_FREQUENCY_MHZ * 1000 如下图：<br><img src="/images/curr-2.png"><br>通过(val &lt;&#x3D; last) || (val &gt; curr)来实现一次延时temp.</p>
+<h4 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h4><p>(这里是HAL写法)，但需要占用一个定时器，对TIM资源紧张的型号不友好.</p>
+<pre><code>#define DLY_TIM_Handle (&amp;htimx)
+void delay_us(uint16_t nus)
+&#123;
+    __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
+    __HAL_TIM_ENABLE(DLY_TIM_Handle);
+    while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
+    &#123;
+    &#125;
+    __HAL_TIM_DISABLE(DLY_TIM_Handle);
+&#125;
+</code></pre>
+<h5 id="工作原理-2"><a href="#工作原理-2" class="headerlink" title="工作原理"></a>工作原理</h5><p>首先设置TIMx的计数周期为1μs.<br>将TIMx的值与传入的参数nus进行比较，实现delay_μs.</p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+</search>
