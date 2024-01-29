@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
-    <title>确知信号 | lovely-lily&#39;s blog</title>
+    <title>Archives | lovely-lily&#39;s blog</title>
     <meta name="author" content="lovely-lily" />
     <meta name="description" content="好想学习" />
     <meta name="keywords" content="" />
@@ -39,9 +39,7 @@
 
 
 
-
-
-
+<script src="/js/lib/search.js"></script>
 
 
 
@@ -139,99 +137,120 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div class="article">
-    <div>
-        <h1>确知信号</h1>
-    </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/9/24
-        </span>
+            
+<div id="archives">
+    
+    <input id="search-bar" class="input" placeholder="搜索" v-model="rawSearch" />
+    
+    <div id="timeline-wrap" ref="timeline">
         
-        <span class="category">
-            <a href="/categories/%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0/">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                通信原理笔记
-            </a>
-        </span>
+        <div class="timeline" data-title="aboutme">
+            <div class="timeline-tail"></div>
+            <div class="timeline-content">
+                <div class="item-time">2023/8/14</div>
+                <a href="/2023/08/14/About%20me/">
+                    <h3>About me</h3>
+                </a>
+                <div class="info">
+                    
+                    
+                </div>
+            </div>
+        </div>
         
+        <div class="timeline" data-title="电感与纹波">
+            <div class="timeline-tail"></div>
+            <div class="timeline-content">
+                <div class="item-time">2023/9/8</div>
+                <a href="/2023/09/08/MP2456/">
+                    <h3>电感与纹波</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/">
+                            <span class="icon">
+                                <i class="fa-solid fa-bookmark fa-fw"></i>
+                            </span>
+                            开关电源
+                        </a>
+                    </span>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline" data-title="ssd1306">
+            <div class="timeline-tail"></div>
+            <div class="timeline-content">
+                <div class="item-time">2023/10/20</div>
+                <a href="/2023/10/20/SSD1306/">
+                    <h3>SSD1306</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/MCU/">
+                            <span class="icon">
+                                <i class="fa-solid fa-bookmark fa-fw"></i>
+                            </span>
+                            MCU
+                        </a>
+                    </span>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline" data-title="stm32笔记之delay_us">
+            <div class="timeline-tail"></div>
+            <div class="timeline-content">
+                <div class="item-time">2023/12/29</div>
+                <a href="/2023/12/29/STM32%E7%AC%94%E8%AE%B0%E4%B9%8Bdelay_us/">
+                    <h3>STM32笔记之delay_us</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/MCU/">
+                            <span class="icon">
+                                <i class="fa-solid fa-bookmark fa-fw"></i>
+                            </span>
+                            MCU
+                        </a>
+                    </span>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline" data-title="dht20（硬件i2c）">
+            <div class="timeline-tail"></div>
+            <div class="timeline-content">
+                <div class="item-time">2024/1/29</div>
+                <a href="/2024/01/29/DHT20/">
+                    <h3>DHT20（硬件I2C）</h3>
+                </a>
+                <div class="info">
+                    
+                    <span class="category">
+                        <a href="/categories/MCU/">
+                            <span class="icon">
+                                <i class="fa-solid fa-bookmark fa-fw"></i>
+                            </span>
+                            MCU
+                        </a>
+                    </span>
+                    
+                    
+                </div>
+            </div>
+        </div>
         
     </div>
-    
-    <div class="content" v-pre>
-        <h3 id="信号的类型"><a href="#信号的类型" class="headerlink" title="信号的类型"></a>信号的类型</h3><p>信号按照能量是否有限区分 能量信号、功率信号<br>信号能量E为<del>对瞬时功率求积分</del></p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
-
-<h4 id="能量信号"><a href="#能量信号" class="headerlink" title="能量信号"></a>能量信号</h4><p>若E是一个正的有限值，即下式，称信号为能量信号</p>
- \[0 < E = \int_{ - \infty }^\infty  {{s^2}(t)dt}  < \infty \] 
-<p>将信号的平均功率定义为<del>对单位时间的能量求平均并推广到整个时域</del></p>
- \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - T/2}^{T/2} {{s^2}(t)dt} \] 
-<p>不难看出，能量信号的平均功率P&#x3D;0</p>
-<h4 id="功率信号"><a href="#功率信号" class="headerlink" title="功率信号"></a>功率信号</h4><p>若P是一个正的有限值，即下式，称信号为功率信号</p>
- \[0 < P < \infty \] 
-<p>功率信号的能量E无穷大</p>
-<h3 id="确知信号的频域性质"><a href="#确知信号的频域性质" class="headerlink" title="确知信号的频域性质"></a>确知信号的频域性质</h3><h4 id="功率信号的频谱Cn"><a href="#功率信号的频谱Cn" class="headerlink" title="功率信号的频谱Cn"></a>功率信号的频谱Cn</h4><p>对于一个周期为 T0 的周期性功率信号s(t)，其频谱函数为傅里叶级数系数，如下式</p>
- \[{C_n} = C(n{f_0}) = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} \] 
-<p>故周期性信号可以展开成如下的傅里叶级数</p>
- \[s(t) = \sum\limits_{ - \infty }^\infty  {{C_n}{e^{j2\pi nt/{T_0}}}} \] 
-<p>当 n&#x3D;0 时，为信号s(t)的时间平均值，即 直流分量</p>
- \[{C_0} = \frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t)dt} \] 
-<p>一般来说，频谱函数 Cn 为复数，代表在各频率上信号分量的复振幅，可写作</p>
- \[{C_n} = \left| {{C_n}} \right|{e^{j{\theta _n}}}\] 
-<p>其中</p>
- \[\left| {{C_n}} \right| = \frac{1}{2}\sqrt {{a_n}^2 + {b_n}^2} \] 
- \[{\theta _n} =  - \arctan ({b_n}/{a_n})\] 
-<p>因为 n 可取负值，称 Cn 为双边谱，但负频谱仅在数学上有意义，将实信号的频谱称为单边谱<br>对物理可实现的实信号，其频谱如下</p>
- \[{C_{ - n}} = {C_n}^*\] 
- \[\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{j2\pi n{f_0}t}}dt}  = {\left[ {\frac{1}{{{T_0}}}\int_{ - {T_0}/2}^{{T_0}/2} {s(t){e^{ - j2\pi n{f_0}t}}dt} } \right]^ * }\] 
-<p>可得正频和负频部分之间存在共轭关系，即正负频谱的模偶对称，相位奇对称。</p>
-<h4 id="能量信号的频谱密度S-f"><a href="#能量信号的频谱密度S-f" class="headerlink" title="能量信号的频谱密度S(f)"></a>能量信号的频谱密度S(f)</h4><p>设能量信号s(t),则它的傅里叶变换s(f)被定义为它的频谱密度</p>
- \[S(f) = \int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt} \] 
-<p>s(f)的逆傅里叶变换为s(t):</p>
- \[s(t) = \int_{ - \infty }^\infty  {S(f){e^{j2\pi ft}}df} \] 
-<p>同样的，其正负频谱的模偶对称，相位奇对称。</p>
- \[S(f) = {\left[ {S( - f)} \right]^*}\] 
- \[\int_{ - \infty }^\infty  {s(t){e^{ - j2\pi ft}}dt}  = {\left[ {\int_{ - \infty }^\infty  {s(t){e^{j2\pi ft}}dt} } \right]^*}\] 
-
-<h5 id="Cn和S-f-区别"><a href="#Cn和S-f-区别" class="headerlink" title="Cn和S(f)区别"></a>Cn和S(f)区别</h5><p>1：S(f)是连续谱,Cn&#x3D;C(nf0)是离散谱<br>2：S(f)的单位是V&#x2F;Hz，而Cn的单位是V</p>
-<h5 id="单位冲激函数"><a href="#单位冲激函数" class="headerlink" title="单位冲激函数"></a>单位冲激函数</h5><p>声明一下，占个位</p>
-<h4 id="能量信号的能量谱密度G-f"><a href="#能量信号的能量谱密度G-f" class="headerlink" title="能量信号的能量谱密度G(f)"></a>能量信号的能量谱密度G(f)</h4><p>信号能量:</p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} \] 
-<p>由巴塞伐尔定理得</p>
- \[E = \int_{ - \infty }^\infty  {{s^2}(t)dt} = \int_{ - \infty }^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
- \[G(f) = {\left| {S(f)} \right|^2}\] 
-<p>能量谱密度G(f)在频率轴f上的积分等于信号能量，单位J&#x2F;Hz。<br>且G(f)为偶函数</p>
- \[E = 2\int_0^\infty  {{{\left| {S(f)} \right|}^2}df} \] 
-
-<h4 id="功率信号的功率谱密度P-f"><a href="#功率信号的功率谱密度P-f" class="headerlink" title="功率信号的功率谱密度P(f)"></a>功率信号的功率谱密度P(f)</h4><p>将信号截出一段长度为T的截短信号S_T(t)，通过能量信号的计算方法得</p>
- \[E = \int_{ - T/2}^{T/2} {s_T^2(t)dt}  = \int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df} \] 
- \[P(f) = \mathop {\lim }\limits_{T \to \infty } \frac{{{{\left| {{S_T}(f)} \right|}^2}}}{T}\] 
-<p>同样的，功率谱密度P(f)在频率轴f上的积分等于信号功率，单位W&#x2F;Hz。</p>
- \[P = \mathop {\lim }\limits_{T \to \infty } \frac{1}{T}\int_{ - \infty }^\infty  {{{\left| {{S_T}(f)} \right|}^2}df}  = \int_{ - \infty }^\infty  {P(f)df} \] 
-
-
-
-
-
-  
-  
-  
-  
-  
-  
-    </div>
-    
-    
-    
-    
-    
-    
-    
 </div>
 
             <footer id="footer">
@@ -262,12 +281,6 @@
         
     </div>
     <script src="/js/main.js"></script>
-    
-    
-
-
-
-
     
 </body>
 </html>

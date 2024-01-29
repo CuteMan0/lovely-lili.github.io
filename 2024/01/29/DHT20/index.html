@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
-    <title>lovely-lily&#39;s blog</title>
+    <title>DHT20（硬件I2C） | lovely-lily&#39;s blog</title>
     <meta name="author" content="lovely-lily" />
     <meta name="description" content="好想学习" />
     <meta name="keywords" content="" />
@@ -41,7 +41,9 @@
 
 
 
-<script src="/js/lib/home.js"></script>
+
+
+
 
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -137,41 +139,11 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="home-head">
-    <div id="home-background" ref="homeBackground" data-images="/images/background.jpg"></div>
-    <div id="home-info" @click="homeClick">
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="info">
-            <div class="wrap">
-                <h1>lovely-lily&#39;s blog</h1>
-                <h3>于道各努力 千里自同风</h3>
-                <h5>好想学习</h5>
-            </div>
-        </span>
+            <div class="article">
+    <div>
+        <h1>DHT20（硬件I2C）</h1>
     </div>
-</div>
-<div id="home-posts-wrap" true ref="homePostsWrap">
-    <div id="home-posts">
-        
-
-<div class="post">
-    <a href="/2024/01/29/DHT20/">
-        <h2 class="post-title">DHT20（硬件I2C）</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="category">
-            <a href="/categories/MCU/">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                MCU
-            </a>
-        </span>
-        
+    <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
@@ -179,30 +151,6 @@
             2024/1/29
         </span>
         
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>来试试硬件I2C（HAL）吧</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2024/01/29/DHT20/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/12/29/STM32%E7%AC%94%E8%AE%B0%E4%B9%8Bdelay_us/">
-        <h2 class="post-title">STM32笔记之delay_us</h2>
-    </a>
-    <div class="category-and-date">
-        
         <span class="category">
             <a href="/categories/MCU/">
                 <span class="icon">
@@ -212,183 +160,56 @@
             </a>
         </span>
         
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/12/29
-        </span>
-        
         
     </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>The backup of some delay_μs functions for STM32</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/12/29/STM32%E7%AC%94%E8%AE%B0%E4%B9%8Bdelay_us/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/10/20/SSD1306/">
-        <h2 class="post-title">SSD1306</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="category">
-            <a href="/categories/MCU/">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                MCU
-            </a>
-        </span>
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/20
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>了解SSD1306(I2C)</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/10/20/SSD1306/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/09/08/MP2456/">
-        <h2 class="post-title">电感与纹波</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="category">
-            <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                开关电源
-            </a>
-        </span>
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/9/8
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>电感取值计算</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/09/08/MP2456/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/08/14/About%20me/">
-        <h2 class="post-title">About me</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/8/14
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>一些我的咕咕咕</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/08/14/About%20me/" class="go-post">阅读全文</a>
-</div>
-
-
-        <div class="page-current">
     
-    <span class="current">1</span>
+    <div class="content" v-pre>
+        <p>ASAIR继DHT11推出了DHT20，封装相同但采用I2C协议通信。除此外，两者量程与精度上也有些许差别</p>
+<h3 id="Pin-Set-Slave-Address"><a href="#Pin-Set-Slave-Address" class="headerlink" title="Pin Set &amp; Slave Address"></a>Pin Set &amp; Slave Address</h3><p><img src="/images/hw_i2c/dht20_pinset.png"></p>
+<p><img src="/images/hw_i2c/state_bit.png"></p>
+<h3 id="Data-Format"><a href="#Data-Format" class="headerlink" title="Data Format"></a>Data Format</h3><p>DHT20上电之后需等待100ms并初始化，测量时的数据格式如图示：<br><img src="/images/hw_i2c/Mind_map.png"><br>测量后分别将获得温湿度的20位数据带入下图公式计算得出测量值。<br><img src="/images/hw_i2c/RH.png"><br><img src="/images/hw_i2c/T.png"></p>
+<h3 id="Code-Reference"><a href="#Code-Reference" class="headerlink" title="Code Reference"></a>Code Reference</h3><pre><code>void dht20_run(float *pdht20)
+&#123;
+    uint8_t pt_DAT[] = &#123;0xAC,0x33,0x00&#125;;
+    uint8_t pr_DAT[7] = &#123;0x00&#125;;
+    static char init = 1;
+    
+    if(init)
+    &#123;
+        HAL_Delay(100);//上电100ms等待
+        init -= 1;
+    &#125;
+    HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,1,100);//读状态字
+        
+    if( (pr_DAT[0] &amp; 0x10) &amp;&amp; (pr_DAT[0] &amp;0x08) )
+    &#123;
+        HAL_Delay(10);
+        HAL_I2C_Master_Transmit(&amp;hi2c1,0x71,pt_DAT,3,100);//触发测量
+    &#125;
+    else
+    &#123;
+        //初始化1B\1C\1E寄存器
+    &#125;  
+    HAL_Delay(80);//等待转换
+
+    HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,7,100);//接受数据
+    while( pr_DAT[0]&amp;0x80 )
+    &#123;
+        ;//正忙
+    &#125;
+    
+    pdht20[0] = (((pr_DAT[1]&lt;&lt;12) + (pr_DAT[2]&lt;&lt;4) + (pr_DAT[3]&gt;&gt;4))*100.0) / 0xfffff;
+    pdht20[1] = ((((pr_DAT[3]&lt;&lt;28)&gt;&gt;12) + (pr_DAT[4]&lt;&lt;8) + (pr_DAT[5]))*200.0) / 0xfffff - 50;
+&#125;
+</code></pre>
+<h3 id="CRC8"><a href="#CRC8" class="headerlink" title="CRC8"></a>CRC8</h3>
+    </div>
     
     
     
     
-</div>
-
-    </div>
     
-    <div id="home-card">
-        <div id="card-style">
-    <div id="card-div">
-        <div class="avatar">
-            <img src="/images/avatar.png" alt="avatar" />
-        </div>
-        <div class="name">lovely-lily</div>
-        <div class="description">
-            <p>bushi🌈</p>
-
-        </div>
-        
-        
-        <div class="friend-links">
-            
-            <div class="friend-link">
-                <a target="_blank" rel="noopener" href="http://cuteman0.top/">笠笠</a>
-            </div>
-            
-            <div class="friend-link">
-                <a href="http://">秦奇怪(还没有)</a>
-            </div>
-            
-        </div>
-        
-    </div>
-</div>
-
-    </div>
+    
     
 </div>
 
@@ -420,6 +241,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 </body>
 </html>
