@@ -202,7 +202,9 @@
     pdht20[1] = ((((pr_DAT[3]&lt;&lt;28)&gt;&gt;12) + (pr_DAT[4]&lt;&lt;8) + (pr_DAT[5]))*200.0) / 0xfffff - 50;
 &#125;
 </code></pre>
-<h3 id="CRC8"><a href="#CRC8" class="headerlink" title="CRC8"></a>CRC8</h3>
+<h3 id="CRC8-X8-X5-X4-1"><a href="#CRC8-X8-X5-X4-1" class="headerlink" title="CRC8 (X8+X5+X4+1)"></a>CRC8 (X8+X5+X4+1)</h3><p>DHT20支持CRC校验，在收到六个字节的数据后，可响应ACK&#x2F;NACK来接收&#x2F;拒绝 CRC校验值。<br><img src="/images/hw_i2c/CRC_output.png"></p>
+<p>CRC8 的初值为 0xFFFF，结果异或值为 0x0000。<br>示例：当收到数据：1c 8c 67 34 e5 2c后通过CRC单元计算校验值是否为C6<del>（手头只有F1，不支持配置CRC参数）</del><br><img src="/images/hw_i2c/CRC_check.png"></p>
+
     </div>
     
     

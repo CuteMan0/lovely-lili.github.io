@@ -168,9 +168,9 @@
 <!-- 此处需要介绍I2C的硬件配置 -->
 
 <h4 id="端口设置"><a href="#端口设置" class="headerlink" title="端口设置"></a>端口设置</h4><p>采用外部上拉（强上拉）时，端口配置为开漏输出，配合上拉电阻（1K左右）以输出高电平。</p>
-<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"></p>
+<h4 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h4><p><img src="/images/sw_i2c/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"></p>
 <p>在传输期间，SCL为高电平时数据有效，数据的切换只能在SCL为低电平时进行。</p>
-<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"></p>
+<h4 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h4><p><img src="/images/sw_i2c/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"></p>
 <pre><code>void IIC_Start(void)
 &#123;
     SDA_HIGH;
@@ -186,7 +186,7 @@ void IIC_Stop(void)
     SDA_HIGH;
 &#125;
 </code></pre>
-<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/I2C_ACK.png"></p>
+<h4 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h4><p><img src="/images/sw_i2c/I2C_ACK.png"></p>
 <p>START之后，在接下来的8个CLK中，SDA进行一次8bit的数据传输，若接收到数据，则在第9个CLK对SDA拉低，将其视作一次ACK应答信号。</p>
 <h5 id="发送ACK的方式参考"><a href="#发送ACK的方式参考" class="headerlink" title="发送ACK的方式参考"></a>发送ACK的方式参考</h5><pre><code>void IIC_SendAck(u8 ACK_Byte)
 &#123;
@@ -239,7 +239,7 @@ void IIC_Stop(void)
     return IIC_Byte;
 &#125;
 </code></pre>
-<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="SSD1306使用I2C的数据格式"><a href="#SSD1306使用I2C的数据格式" class="headerlink" title="SSD1306使用I2C的数据格式"></a>SSD1306使用I2C的数据格式</h4><p><img src="/images/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"></p>
+<h3 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h3><h4 id="SSD1306使用I2C的数据格式"><a href="#SSD1306使用I2C的数据格式" class="headerlink" title="SSD1306使用I2C的数据格式"></a>SSD1306使用I2C的数据格式</h4><p><img src="/images/sw_i2c/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"></p>
 <h5 id="首字节"><a href="#首字节" class="headerlink" title="首字节"></a>首字节</h5><p>由从机地址（0x3C）和R&#x2F;W#组成。</p>
 <pre><code>    IIC_WriteByte(0x78);//W
     IIC_WriteByte(0x79);//R
@@ -270,9 +270,9 @@ void IIC_Stop(void)
 <pre><code>OLED_CMD(0xAF);
 </code></pre>
 <p>接上逻辑分析仪查看时序</p>
-<p><img src="/images/I2C_logic.png"></p>
+<p><img src="/images/sw_i2c/I2C_logic.png"></p>
 <p>观察屏幕，情况如下：</p>
-<p><img src="/images/12864_ON.jpg"></p>
+<p><img src="/images/sw_i2c/12864_ON.jpg"></p>
 <p>屏幕被成功点亮，并将GDDRAM中的初始数据输出。</p>
 <h5 id="快速刷屏"><a href="#快速刷屏" class="headerlink" title="快速刷屏"></a>快速刷屏</h5><pre><code>void OLED_ClearScreen(void)
 &#123;
@@ -305,13 +305,13 @@ void OLED_DATA_128_64(u8 DATA_128_64)
     IIC_Stop();
 &#125;
 </code></pre>
-<h4 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h4><h5 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h5><p><img src="/images/SSD1306_GDDRAM.png"></p>
+<h4 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h4><h5 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h5><p><img src="/images/sw_i2c/SSD1306_GDDRAM.png"></p>
 <p>从上至下，将GDDRAM分为8个PAGE，8 * 128Byte。<br>从左至右，将PAGE分为128个SEG，128 * 1Byte。</p>
-<p><img src="/images/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行。</p>
+<p><img src="/images/sw_i2c/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行。</p>
 <h5 id="GDDRAM的寻址模式"><a href="#GDDRAM的寻址模式" class="headerlink" title="GDDRAM的寻址模式"></a>GDDRAM的寻址模式</h5><p>20h+A[1:0]        设置内存寻址模式</p>
-<p> A[1:0]&#x3D;10b	页面寻址    用于局部刷新<br> 仅在PAGE中寻址。向GDDRAM写入1Byte后，列指针自增1，直至寻址结束，页指针不变。<br><img src="/images/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
-<p> A[1:0]&#x3D;00b	水平寻址<br><img src="/images/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
-<p> A[1:0]&#x3D;01b	竖直寻址<br><img src="/images/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;10b	页面寻址    用于局部刷新<br> 仅在PAGE中寻址。向GDDRAM写入1Byte后，列指针自增1，直至寻址结束，页指针不变。<br><img src="/images/sw_i2c/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;00b	水平寻址<br><img src="/images/sw_i2c/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+<p> A[1:0]&#x3D;01b	竖直寻址<br><img src="/images/sw_i2c/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
 <p> A[1:0]&#x3D;11b	无效寻址</p>
 <h5 id="填充全屏"><a href="#填充全屏" class="headerlink" title="填充全屏"></a>填充全屏</h5><pre><code>OLED_FILL（）
 &#123;
@@ -331,8 +331,8 @@ void OLED_DATA_128_64(u8 DATA_128_64)
             OLED_DATA(0xFF);
 &#125;
 </code></pre>
-<h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
-<h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p><img src="/images/26.png"></p>
+<h4 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h4><h5 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h5><p><img src="/images/sw_i2c/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
+<h5 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h5><p><img src="/images/sw_i2c/26.png"></p>
 <h5 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h5><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
 
     </div>
