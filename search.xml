@@ -10,10 +10,10 @@
   <entry>
     <title>DHT20（硬件I2C）</title>
     <url>/2024/01/29/DHT20/</url>
-    <content><![CDATA[<p>ASAIR继DHT11推出了DHT20，封装相同但采用I2C协议通信。除此外，两者量程与精度上也有些许差别</p>
+    <content><![CDATA[<p>ASAIR继DHT11推出了DHT20，采用I2C协议通信。除此外，两者在量程与精度上也有些许差别,详见：<br>DHT20 <a href="http://www.aosong.com/en/products-67.html">http://www.aosong.com/en/products-67.html</a><br>DHT11 <a href="http://www.aosong.com/en/products-21.html">http://www.aosong.com/en/products-21.html</a></p>
 <h3 id="Pin-Set-Slave-Address"><a href="#Pin-Set-Slave-Address" class="headerlink" title="Pin Set &amp; Slave Address"></a>Pin Set &amp; Slave Address</h3><p><img src="/images/hw_i2c/dht20_pinset.png"></p>
 <p><img src="/images/hw_i2c/state_bit.png"></p>
-<h3 id="Data-Format"><a href="#Data-Format" class="headerlink" title="Data Format"></a>Data Format</h3><p>DHT20上电之后需等待100ms并初始化，测量时的数据格式如图示：<br><img src="/images/hw_i2c/Mind_map.png"><br>测量后分别将获得温湿度的20位数据带入下图公式计算得出测量值。<br><img src="/images/hw_i2c/RH.png"><br><img src="/images/hw_i2c/T.png"></p>
+<h3 id="Data-Format"><a href="#Data-Format" class="headerlink" title="Data Format"></a>Data Format</h3><p>DHT20上电之后需等待100ms并初始化，测量时的数据格式如图示：<br><img src="/images/hw_i2c/Mind_map.png"></p>
 <h3 id="Code-Reference"><a href="#Code-Reference" class="headerlink" title="Code Reference"></a>Code Reference</h3><pre><code>void dht20_run(float *pdht20)
 &#123;
     uint8_t pt_DAT[] = &#123;0xAC,0x33,0x00&#125;;
@@ -48,8 +48,29 @@
     pdht20[1] = ((((pr_DAT[3]&lt;&lt;28)&gt;&gt;12) + (pr_DAT[4]&lt;&lt;8) + (pr_DAT[5]))*200.0) / 0xfffff - 50;
 &#125;
 </code></pre>
+<h3 id="Data-Calculation"><a href="#Data-Calculation" class="headerlink" title="Data Calculation"></a>Data Calculation</h3><p>测量后分别将获得温湿度的20位数据带入下图公式计算得出测量值。<br><img src="/images/hw_i2c/RH.png"><br><img src="/images/hw_i2c/T.png"><br>如数据：<del>1c（状态字）</del> 8c 67 34 e5 2c，计算得到湿度：54.844951%RH，温度：11.190032℃。</p>
 <h3 id="CRC8-X8-X5-X4-1"><a href="#CRC8-X8-X5-X4-1" class="headerlink" title="CRC8 (X8+X5+X4+1)"></a>CRC8 (X8+X5+X4+1)</h3><p>DHT20支持CRC校验，在收到六个字节的数据后，可响应ACK&#x2F;NACK来接收&#x2F;拒绝 CRC校验值。<br><img src="/images/hw_i2c/CRC_output.png"></p>
-<p>CRC8 的初值为 0xFFFF，结果异或值为 0x0000。<br>示例：当收到数据：1c 8c 67 34 e5 2c后通过CRC单元计算校验值是否为C6<del>（手头只有F1，不支持配置CRC参数）</del><br><img src="/images/hw_i2c/CRC_check.png"></p>
+<p>STM32中CRC的初始化结构体参数如下图:</p>
+<pre><code>typedef struct
+&#123;
+    uint8_t DefaultPolynomialUse;		//是否使用默认多项式
+    uint8_t DefaultInitValueUse;		//是否使用默认初始值
+    uint32_t GeneratingPolynomial;		//配置多项式--不使用默认时
+    uint32_t CRCLength;				//CRC校验的位数
+    uint32_t InitValue;				//配置初始值--不使用默认时
+    uint32_t InputDataInversionMode;		//输入数据反转模式
+    uint32_t OutputDataInversionMode;		//输出数据反转模式
+&#125; CRC_InitTypeDef;
+</code></pre>
+<p>当收到数据：1c 8c 67 34 e5 2c 时，CRC校验值为C6，CRC参数如下图示：<del>初值为 0xFFFF，结果异或值为 0x0000</del><br><img src="/images/hw_i2c/CRC_check.png"></p>
+<pre><code>hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_DISABLE;
+hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_ENABLE;
+hcrc.Init.GeneratingPolynomial    = 49;
+hcrc.Init.CRCLength               = CRC_POLYLENGTH_8B;
+hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+</code></pre>
+<p><del>f1不支持CRC配置，CRC程序部分要等到开学了</del></p>
 ]]></content>
       <categories>
         <category>MCU</category>
