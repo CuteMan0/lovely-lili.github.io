@@ -208,7 +208,7 @@ void HAL_Delay_us(__IO uint32_t delay)
 &#125;
 </code></pre>
 <h5 id="工作原理-1"><a href="#工作原理-1" class="headerlink" title="工作原理"></a>工作原理</h5><p>这里定义了四个var：<br>last存放延时(temp)开始的 SysTick-&gt;VAL 寄存器的值.<br>curr存放延时(temp)结束的 SysTick-&gt;VAL 寄存器的值.<br>val更新 SysTick-&gt;VAL寄存器的值.<br>————关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual.<br>temp用来设置一次最大延时的系数.</p>
-<p>虽程序中并未提及但 SysTick-&gt;LOAD 的值应为 (CPU_FREQUENCY_MHZ * 1000) -1 在此条件下 SysTick 1μs自减，1ms重载.<br>当传入delay参数时，对其按照temp进行拆分————因为VAL不会超过1000.<br>对拆分后的delay分批延时 n*temp + delay%temp ;n&#x3D;delay&#x2F;temp.</p>
+<p>SysTick-&gt;LOAD 的值应为 (CPU_FREQUENCY_MHZ * 1000) -1 在此条件下 SysTick 1μs自减，1ms重载.<br>当传入delay参数时，对其按照temp进行拆分————因为VAL不会超过1000.<br>对拆分后的delay分批延时 n*temp + delay%temp ;n&#x3D;delay&#x2F;temp.</p>
 <p>当curr ≥ 0时<br><img src="/images/delay_us/curr+.png"><br>通过(val &lt; last) &amp;&amp; (val &gt;&#x3D; curr)来实现一次延时temp.</p>
 <p>当curr ＜ 0时<br><img src="/images/delay_us/curr-1.png"><br>将curr搬移 CPU_FREQUENCY_MHZ * 1000 如下图：<br><img src="/images/delay_us/curr-2.png"><br>通过(val &lt;&#x3D; last) || (val &gt; curr)来实现一次延时temp.</p>
 <h4 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h4><p>(这里是HAL写法)，但需要占用一个定时器，对TIM资源紧张的型号不友好.</p>
