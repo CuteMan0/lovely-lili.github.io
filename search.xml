@@ -241,12 +241,6 @@
       </categories>
   </entry>
   <entry>
-    <title>About me</title>
-    <url>/2023/08/14/About%20me/</url>
-    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大三<br>欢迎与我交流一些电子技术哦！</p>
-]]></content>
-  </entry>
-  <entry>
     <title>微秒级delay</title>
     <url>/2023/12/29/Delay_us/</url>
     <content><![CDATA[<h1 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h1><p>转载声明:</p>
@@ -341,6 +335,12 @@
       <categories>
         <category>MCU</category>
       </categories>
+  </entry>
+  <entry>
+    <title>About me</title>
+    <url>/2023/08/14/About%20me/</url>
+    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大三<br>欢迎与我交流一些电子技术哦！</p>
+]]></content>
   </entry>
   <entry>
     <title>Embedded IDE</title>
