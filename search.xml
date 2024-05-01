@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>ARM学习笔记</title>
+    <url>/2024/04/15/ARM/</url>
+    <content><![CDATA[<h1 id="前因后果"><a href="#前因后果" class="headerlink" title="前因后果"></a>前因后果</h1><p>上学期教授我微机原理一课的老师，这学期在其他专业讲嵌入式课程，<del>舍友非常喜欢那位老师，可能是害羞也可能是为壮士气于是拉我入伙去旁听</del> .</p>
+<h1 id="ARM的基础知识"><a href="#ARM的基础知识" class="headerlink" title="ARM的基础知识"></a>ARM的基础知识</h1><h2 id="ARM的处理器模式"><a href="#ARM的处理器模式" class="headerlink" title="ARM的处理器模式"></a>ARM的处理器模式</h2><p>在<code>ARM Cortex-A</code>&#x2F;<code>ARMv7-A</code>系列中有9种Mode,其中实现了安全扩展的处理器才有<code>MON</code>模式.</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>编码</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>USR(User)</td>
+<td>10000</td>
+<td>大多数程序运行时的非特权模式</td>
+</tr>
+<tr>
+<td>FIQ</td>
+<td>10001</td>
+<td>进入FIQ中断异常</td>
+</tr>
+<tr>
+<td>IRQ</td>
+<td>10010</td>
+<td>进入IRQ中断异常</td>
+</tr>
+<tr>
+<td>SVC&#x2F;SWI(Supervisor)</td>
+<td>10011</td>
+<td>管理调用指令被执行或者reset,软中断</td>
+</tr>
+<tr>
+<td>MON(Monitor)</td>
+<td>10110</td>
+<td>安全扩展模式</td>
+</tr>
+<tr>
+<td>ABT(Abort)</td>
+<td>10111</td>
+<td>存储访问异常</td>
+</tr>
+<tr>
+<td>HYP</td>
+<td>11010</td>
+<td>虚拟化扩展</td>
+</tr>
+<tr>
+<td>UND(Undef)</td>
+<td>11011</td>
+<td>未定义的指令执行</td>
+</tr>
+<tr>
+<td>SYS(System)</td>
+<td>11111</td>
+<td>特权模式，与用户模式共享寄存器</td>
+</tr>
+</tbody></table>
+<h2 id="ARM寄存器组"><a href="#ARM寄存器组" class="headerlink" title="ARM寄存器组"></a>ARM寄存器组</h2><p><img src="/images/ARM/ARM_Reg.png"></p>
+<ul>
+<li><code>R1-R12</code>是<code>32bit</code>通用寄存器，并被<code>FIQ</code>以外的模式共享 .</li>
+<li><code>R13(SP)</code>栈指针、<code>R14(LR)</code>链接寄存器、<code>R15(PC)</code>程序计数器 .</li>
+<li><code>APSR/CPSR</code>应用&#x2F;当前程序状态寄存器 .</li>
+<li><code>SPSR</code>已存储..，相当于CPSR切换模式时的备份 .</li>
+<li><code>Thumb</code>指令只能访问<code>R0-R7</code> .</li>
+</ul>
+<h3 id="CPSR的格式"><a href="#CPSR的格式" class="headerlink" title="CPSR的格式"></a>CPSR的格式</h3><table>
+<thead>
+<tr>
+<th>31 : 27</th>
+<th>26 : 25</th>
+<th>24</th>
+<th>23 : 20</th>
+<th>19 : 16</th>
+<th>15 : 10</th>
+<th>9</th>
+<th>8</th>
+<th>7</th>
+<th>6</th>
+<th>5</th>
+<th>4 : 0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>N Z C V Q</td>
+<td>IT[1:0]</td>
+<td>J</td>
+<td>Reserved</td>
+<td>GE[3:0]</td>
+<td>IT[7:2]</td>
+<td>E</td>
+<td>A</td>
+<td>I</td>
+<td>F</td>
+<td>T</td>
+<td>M[4:0]</td>
+</tr>
+</tbody></table>
+<ul>
+<li>N - ALU负数</li>
+<li>Z - ..零位</li>
+<li>C - ..进位</li>
+<li>V - ..溢出</li>
+<li>Q - <code>DSP</code>运算指令溢出</li>
+<li>J - 使用<code>Jazelle</code>指令集，用于<code>Java</code>加速</li>
+<li>GE[3:0] - <code>SIMD</code>指令</li>
+<li>IT[7:2] - <code>Thumb</code>指令集中<code>if-then</code>条件执行</li>
+<li>E - <code>1</code>大端模式<code>0</code>小端..</li>
+<li>A - 禁用<code>ABT</code></li>
+<li>I - 禁用<code>IRQ</code></li>
+<li>F - 禁用<code>FIQ</code></li>
+<li>T - 使用<code>Thumb</code>指令集</li>
+<li>M[4:0] - 模式编码，指示当前运行模式</li>
+<li>当前指令集受<code>J:T</code>的影响：<code>00-ARM</code> <code>01-Thumb</code> <code>10-Jazelle</code> <code>11-ThumbEE</code></li>
+</ul>
+<h2 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h2><blockquote>
+<p><a href="https://zhuanlan.zhihu.com/p/425235910">https://zhuanlan.zhihu.com/p/425235910</a></p>
+</blockquote>
+<p><img src="/images/ARM/pipelining.png"></p>
+<p>在<code>ARM Cortex-A</code>中使用的是5级流水线 .</p>
+<ol>
+<li><p>Inst Fetch</p>
+<p> 从<code>PC</code>中指向的地址取指令并放入指令寄存器<code>IR</code>,接着<code>PC+4</code>指向顺序的下一条指令 .</p>
+</li>
+<li><p>.. Decode</p>
+<p> 对指令进行译码，并用<code>IR</code>中的寄存器地址去访问通用寄存器组，读出所需的操作数 .</p>
+</li>
+<li><p>Excute</p>
+<p> 对不同类型指令进行的响应的执行操作 .</p>
+</li>
+<li><p>Memory</p>
+<p> 该周期处理的指令只有<code>Load、Store</code>和<code>分支指令</code> .</p>
+<ul>
+<li><code>Load、Store</code> 用于访存读写 .</li>
+<li><code>分支指令</code>将转移目标地址送入<code>PC</code>，在编写跳转程序时，应合理优化 <del>采用延迟转移</del> 避免分支预测失败带来的流水线停顿，提高CPU效率 .</li>
+</ul>
+</li>
+<li><p>Write</p>
+<p> 将<code>ALU</code>运算指令后的结果写入寄存器组 .</p>
+</li>
+</ol>
+<ul>
+<li><p>仔细</p>
+<p>  需要指出的是：在此流水线中<code>Excute</code>期间执行的指令的地址与<code>PC</code>所指向的地址间隔<code>8 Byte</code> .</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>About me</title>
+    <url>/2023/08/14/About%20me/</url>
+    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大三<br>欢迎与我交流一些电子技术哦！</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>微秒级delay</title>
+    <url>/2023/12/29/Delay_us/</url>
+    <content><![CDATA[<h1 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h1><p>转载声明:</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a></p>
+</blockquote>
+<h2 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h2><pre><code class="c">    void delay_us(uint32_t us)
+    &#123;
+        uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
+        while (delay--)
+        &#123;
+            ;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h3><ul>
+<li><p>delay的计算<br>使用<code>GCC -O0</code>编译显示，在<code>while</code>中需要重复执行5条指令，而<code>M3</code>内核的<code>STM32</code>整型运算性能为<code>1.25DMIPS/MHz</code> .<br><img src="/images/delay_us/O0.png"><br>非常凑巧的是：</p>
+<pre><code>  设 HAL_RCC_GetHCLKFreq() = f ，N = f / delay .
+  则单位延时Time = [5 * (f / N)] / (1.25 * f) = 5 / (1.25 * N),Uint:us .
+</code></pre>
+<p>  故取<code>N = 4000000</code>恰好为<code>1us</code> .</p>
+</li>
+<li><p>仔细编译优化等级</p>
+<ul>
+<li><code>O1</code>级优化，指令变少 .<br><img src="/images/delay_us/O1.png"></li>
+<li><code>O2</code>级优化，只有一句跳转，不执行<code>while</code> .<br><img src="/images/delay_us/O2.png"></li>
+</ul>
+</li>
+</ul>
+<h2 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h2><pre><code class="c">    #define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
+    void HAL_Delay_us(__IO uint32_t delay)
+    &#123;
+        int last, curr, val;
+        int temp;
+
+        while (delay != 0)
+        &#123;
+            temp = delay &gt; 900 ? 900 : delay;
+            last = SysTick-&gt;VAL;
+            curr = last - CPU_FREQUENCY_MHZ * temp;
+            if (curr &gt;= 0)
+            &#123;
+                do
+                &#123;
+                    val = SysTick-&gt;VAL;
+                &#125;
+                while ((val &lt; last) &amp;&amp; (val &gt;= curr));
+            &#125;
+            else
+            &#123;
+                curr += CPU_FREQUENCY_MHZ * 1000;
+                do
+                &#123;
+                    val = SysTick-&gt;VAL;
+                &#125;
+                while ((val &lt;= last) || (val &gt; curr));
+            &#125;
+            delay -= temp;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="备注-1"><a href="#备注-1" class="headerlink" title="备注"></a>备注</h3><blockquote>
+<p>关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual .</p>
+</blockquote>
+<p><code>SysTick-&gt;LOAD</code> 的值应为 <code>(CPU_FREQUENCY_MHZ * 1000) -1</code> 在此条件下 <code>SysTick</code> 1μs自减，1ms重载 .</p>
+<p>当传入<code>delay</code>参数时，对其按照temp进行拆分———因为VAL不会超过<code>1000</code> .</p>
+<p>对拆分后的<code>delay</code>分段延时:<code>(delay/temp)*temp + delay%temp</code> .</p>
+<ol>
+<li>当<code>curr</code> ≥ 0时<br><img src="/images/delay_us/curr+.png"></li>
+</ol>
+<p>  通过<code>(val &lt; last) &amp;&amp; (val &gt;= curr)</code>来实现一次temp延时.</p>
+<ol start="2">
+<li>当<code>curr</code> ＜ 0时<br><img src="/images/delay_us/curr-1.png"></li>
+</ol>
+<p>  执行<code>curr += CPU_FREQUENCY_MHZ * 1000</code><br><img src="/images/delay_us/curr-2.png"></p>
+<p>  通过<code>(val &lt;= last) || (val &gt; curr)</code>来实现一次temp延时.</p>
+<h2 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h2><p>(这里是HAL写法)，但需要占用一个定时器 .</p>
+<pre><code class="c">    #define DLY_TIM_Handle (&amp;htimx)
+    void delay_us(uint16_t nus)
+    &#123;
+        __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
+        __HAL_TIM_ENABLE(DLY_TIM_Handle);
+        while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
+        &#123;
+            ;
+        &#125;
+        __HAL_TIM_DISABLE(DLY_TIM_Handle);
+    &#125;
+</code></pre>
+<h3 id="备注-2"><a href="#备注-2" class="headerlink" title="备注"></a>备注</h3><p>设置TIMx的计数周期为1μs,实现<code>delay_us</code> .</p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>DHT20（硬件I2C）</title>
+    <url>/2024/01/29/DHT20/</url>
+    <content><![CDATA[<p>ASAIR继DHT11推出了<code>DHT20</code>，采用I2C协议通信。除此外，两者在量程与精度上也有些许差别,详见：</p>
+<blockquote>
+<p>DHT20 <a href="http://www.aosong.com/en/products-67.html">http://www.aosong.com/en/products-67.html</a> </p>
+</blockquote>
+<blockquote>
+<p>DHT11 <a href="http://www.aosong.com/en/products-21.html">http://www.aosong.com/en/products-21.html</a></p>
+</blockquote>
+<h1 id="引脚定义-从机地址"><a href="#引脚定义-从机地址" class="headerlink" title="引脚定义 &amp; 从机地址"></a>引脚定义 &amp; 从机地址</h1><p><img src="/images/hw_i2c/dht20_pinset.png"></p>
+<p><img src="/images/hw_i2c/state_bit.png"></p>
+<h1 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h1><p><code>DHT20</code>上电之后需等待100ms并初始化，测量时的数据格式如图示：<br><img src="/images/hw_i2c/Mind_map.png"></p>
+<h1 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h1><pre><code class="c">    void dht20_run(float *pdht20)
+    &#123;
+        uint8_t pt_DAT[] = &#123;0xAC,0x33,0x00&#125;;
+        uint8_t pr_DAT[7] = &#123;0x00&#125;;
+        static char init = 1;
+        
+        if(init)
+        &#123;
+            HAL_Delay(100);//上电100ms等待
+            init -= 1;
+        &#125;
+        HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,1,100);//读状态字
+            
+        if( (pr_DAT[0] &amp; 0x10) &amp;&amp; (pr_DAT[0] &amp;0x08) )
+        &#123;
+            HAL_Delay(10);
+            HAL_I2C_Master_Transmit(&amp;hi2c1,0x71,pt_DAT,3,100);//触发测量
+        &#125;
+        else
+        &#123;
+            //dht20_RegInit();//初始化1B\1C\1E寄存器
+            //return Reg_status;
+        &#125;  
+        HAL_Delay(80);//等待转换
+
+        HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,7,100);//接受数据
+        while( pr_DAT[0]&amp;0x80 )
+        &#123;
+            //Busy_handler();//正忙
+        &#125;
+        
+        pdht20[0] = (((pr_DAT[1]&lt;&lt;12) + (pr_DAT[2]&lt;&lt;4) + (pr_DAT[3]&gt;&gt;4))*100.0) / 0xfffff;
+        pdht20[1] = ((((pr_DAT[3]&lt;&lt;28)&gt;&gt;12) + (pr_DAT[4]&lt;&lt;8) + (pr_DAT[5]))*200.0) / 0xfffff - 50;
+    &#125;
+</code></pre>
+<h1 id="数据转换"><a href="#数据转换" class="headerlink" title="数据转换"></a>数据转换</h1><p>测量后分别将获得温湿度的20位数据带入下图公式计算得出测量值。<br><img src="/images/hw_i2c/RH.png"><br><img src="/images/hw_i2c/T.png"><br>如数据：<code>1c（状态字）8c 67 34 e5 2c</code>，计算得到湿度：<code>54.844951%RH</code>，温度：<code>11.190032℃</code>.</p>
+<h1 id="CRC8-X8-X5-X4-1"><a href="#CRC8-X8-X5-X4-1" class="headerlink" title="CRC8 (X8+X5+X4+1)"></a>CRC8 (X8+X5+X4+1)</h1><p><code>DHT20</code>支持<code>CRC</code>校验，在收到六个字节的数据后，可响应<code>ACK/NACK</code>来接收&#x2F;拒绝<code>CRC</code>校验值 .<br><img src="/images/hw_i2c/CRC_output.png"></p>
+<p><code>DHT20</code>的<code>CRC</code>的初始化结构体与参数配置如下图:</p>
+<pre><code class="c">        typedef struct
+        &#123;
+            uint8_t DefaultPolynomialUse;		//是否使用默认多项式
+            uint8_t DefaultInitValueUse;		//是否使用默认初始值
+            uint32_t GeneratingPolynomial;		//配置多项式--不使用默认时
+            uint32_t CRCLength;				    //CRC校验的位数
+            uint32_t InitValue;				    //配置初始值--不使用默认时
+            uint32_t InputDataInversionMode;    //输入数据反转模式
+            uint32_t OutputDataInversionMode;   //输出数据反转模式
+        &#125; CRC_InitTypeDef;
+
+        hcrc.Instance = CRC;
+        hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_DISABLE;
+        hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_DISABLE;
+        hcrc.Init.GeneratingPolynomial = 49;//1|00110001
+        hcrc.Init.CRCLength = CRC_POLYLENGTH_8B;
+        hcrc.Init.InitValue = 0xffff;
+        hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+        hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+        hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+</code></pre>
+<ul>
+<li>需要仔细与<code>HAL_CRC_Calculate</code>不同，<code>HAL_CRC_Accumulate</code>不会自动重置<code>CRC_DR</code>，在使用前需要手动添加<code>__HAL_CRC_DR_RESET</code>重置<code>CRC_DR</code> .</li>
+</ul>
+<pre><code class="c">        uint8_t dht20_crc(CRC_HandleTypeDef *hcrc, uint8_t *pBuffer)
+        &#123;
+            uint8_t crc_val = 0;
+            // __HAL_CRC_DR_RESET(hcrc);                                //置位控制寄存器 CRC_CR[0] 以重置数据寄存器 CRC_DR[31:0]
+            // return crc_val  = HAL_CRC_Accumulate(hcrc, pBuffer, 6);  //累计CRC校验
+            return crc_val  = HAL_CRC_Calculate(hcrc, pBuffer, 6);      //单次CRC校验
+        &#125;
+</code></pre>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Embedded IDE</title>
+    <url>/2024/04/17/EIDE/</url>
+    <content><![CDATA[<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>因为笔者难以忍受<code>Keil</code>的魔鬼 “智能” 补全，所以此篇应运而生，编写仓促，不免有误，请见谅 .</p>
+<h2 id="STM32CubeMX"><a href="#STM32CubeMX" class="headerlink" title="STM32CubeMX"></a>STM32CubeMX</h2><p>官网下载地址：</p>
+<blockquote>
+<p><a href="https://www.st.com/zh/development-tools/stm32cubemx.html">https://www.st.com/zh/development-tools/stm32cubemx.html</a></p>
+</blockquote>
+<p><code>STM32CubeMX</code>是 ST 公司开发的一款图形配置工具，可通过配置自动生成初始化代码，在生成的沙箱段中支持用户编写应用程序，用来搭建项目框架再合适不过了,支持<code>EWARM、MDK-ARM、STM32CubeIDE、Makefile</code>等格式输出 .<br><img src="/images/EIDE/MX_output.png"></p>
+<h2 id="Visual-Studio-Code-VSC"><a href="#Visual-Studio-Code-VSC" class="headerlink" title="Visual Studio Code(VSC)"></a>Visual Studio Code(VSC)</h2><p>如果已经使用<code>STM32CubeMX</code>搭建了一个空的项目框架 <del>（其实也不空）</del>，那么将在<code>VSC</code>上编写我们的用户代码啦 .</p>
+<p>同样VSC也可以在官网下载，但是很慢..，可以参考这位博主的下载教程 .</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/leah126/article/details/131661331">https://blog.csdn.net/leah126/article/details/131661331</a></p>
+</blockquote>
+<h3 id="一些插件"><a href="#一些插件" class="headerlink" title="一些插件"></a>一些插件</h3><p>与<code>STM32CubeIDE、IAR、Clion、Keil</code>这些集成开发环境<code>IDE</code>不同，<code>VSC</code>只是一个编辑器，但其丰富的插件使他 “无所不能” .<br><del>现在我就在VSC上写这篇Markdown .</del></p>
+<h4 id="C-C"><a href="#C-C" class="headerlink" title="C&#x2F;C++"></a>C&#x2F;C++</h4><p>选中左侧导航栏的<code>EXTENSIONS</code>，搜索<code>C/C++</code>点击安装 .<br><img src="/images/EIDE/C.png"></p>
+<p>选中左侧导航栏底部的<code>Manage-齿轮</code>点击<code>Settings</code>搜索<code>IntelliSense</code>，可以设置代码补全的使能与参数 .<br><img src="/images/EIDE/IntelliSense.png"></p>
+<h4 id="Cortex-Debug"><a href="#Cortex-Debug" class="headerlink" title="Cortex-Debug"></a>Cortex-Debug</h4><p>选中左侧导航栏的<code>EXTENSIONS</code>，搜索<code>Cortex-Debug</code>点击安装，用来调试<code>Cortex-M</code>内核的<code>GDB</code>插件<br><img src="/images/EIDE/Cortex-Debug.png"></p>
+<h3 id="Embedded-IDE-EIDE"><a href="#Embedded-IDE-EIDE" class="headerlink" title="Embedded IDE(EIDE)"></a>Embedded IDE(EIDE)</h3><p>官网链接:有使用教程和论坛</p>
+<blockquote>
+<p><a href="https://em-ide.com/">https://em-ide.com/</a></p>
+</blockquote>
+<p>无敌！不多说好吧！无敌！向大佬致敬！</p>
+<p>同样在<code>EXTENSIONS</code>中搜索安装<code>EIDE</code> .<br><img src="/images/EIDE/EIDE.png"></p>
+<h4 id="EIDE的一些插件与配置"><a href="#EIDE的一些插件与配置" class="headerlink" title="EIDE的一些插件与配置"></a>EIDE的一些插件与配置</h4><h5 id="Setup-Utility-Tools"><a href="#Setup-Utility-Tools" class="headerlink" title="Setup Utility Tools"></a>Setup Utility Tools</h5><p>在<code>EIDE</code>中选择左下区域的<code>OPERATIONS</code> .<br><img src="/images/EIDE/EIDE_Insert.png"></p>
+<p>点击<code>Setup Utility Tools</code>，安装相应的工具，图示是我目前下载的工具，以供参考 .<br><img src="/images/EIDE/EIDE_Insert2.png"></p>
+<h5 id="绑定编译器"><a href="#绑定编译器" class="headerlink" title="绑定编译器"></a>绑定编译器</h5><p>还是回到<code>齿轮</code>中的<code>Setting</code>，搜索<code>ARM</code>并在<code>ARMCC5、ARMCC6、GCC</code>和<code>ARM.INI</code>下方填入编译器及<code>Keil MDK-ARM</code>的本地路径，将<code>ARMCC</code>生成的<code>.axf</code>文件转成<code>.elf</code>文件 .<br><img src="/images/EIDE/ARMCC.png"></p>
+<h2 id="CubeMX-VSC-开发流程"><a href="#CubeMX-VSC-开发流程" class="headerlink" title="CubeMX + VSC 开发流程"></a>CubeMX + VSC 开发流程</h2><p>如果上面有关<code>EIDE</code>的配置内容笔者讲的不够具体或引起读者误解，可以参考b站up主<code>threekb</code>的视频，当然最好解决和学习途径是<code>EIDE</code>的官网 .<br>视频链接:</p>
+<blockquote>
+<p><a href="https://www.bilibili.com/video/BV1nr4y1R7Jb/?share_source=copy_web&vd_source=1db224e93eb7d9db5b8f56dfae3e6630">https://www.bilibili.com/video/BV1nr4y1R7Jb/?share_source=copy_web&amp;vd_source=1db224e93eb7d9db5b8f56dfae3e6630</a></p>
+</blockquote>
+<p>这段视频后半部分演示了如何导入现有的<code>MDK-ARM</code>工程，并基于<code>EIDE</code>开发 . <del>当然空的工程也可以</del></p>
+<p>对于正在开发或者移植的项目来说是顶好的消息，那对于一个全新的工程呢？<del>当然不可能全新，也没有不可能</del></p>
+<h3 id="1-创建Makefile"><a href="#1-创建Makefile" class="headerlink" title="1.创建Makefile"></a>1.创建Makefile</h3><p><code>Makefile</code>文件用来自动化编译<code>C/C++</code>项目 .<code>Makefile</code>文件定义了一系列规则，指明了源文件的编译顺序、依赖关系、是否需要重新编译等 .</p>
+<p>非常高兴的是<code>STM32CubeMX</code>可以生成<code>Makefile</code>文件，无需开发者编写 .<br><img src="/images/EIDE/STM32CubeMX_Output.png"></p>
+<h3 id="2-新建EIDE工程"><a href="#2-新建EIDE工程" class="headerlink" title="2.新建EIDE工程"></a>2.新建EIDE工程</h3><p>选中左侧导航栏的<code>EIDE</code>，点击<code>创建新工程</code>-&gt;<code>空项目</code> .<br><img src="/images/EIDE/EIDE_New.png"></p>
+<p>笔者选用的芯片是STM32F407系列的，故选择<code>Cortex-M Project</code> .<br><img src="/images/EIDE/core.png"></p>
+<p>需要仔细的是，此时的<code>EIDE</code>的新建工程名称应该与之前在<code>STM32CubeMX</code>设置的工程名称一致 .<br><img src="/images/EIDE/prj_name.png"></p>
+<p>不止于此，项目路径同样需要保持一致 .<br><img src="/images/EIDE/prj_path.png"></p>
+<p>因为之前通过<code>STM32CubeMX</code>创建了项目文件，这里<code>EIDE</code>会提示是否基于已有的路径创建工程文件 .<br><img src="/images/EIDE/yes1.png"><br>切换工作区 .<br><img src="/images/EIDE/yes2.png"></p>
+<h3 id="3-一些初始化设置"><a href="#3-一些初始化设置" class="headerlink" title="3.一些初始化设置"></a>3.一些初始化设置</h3><p>打开<code>Makefile</code>文件，并复制<code>.Id</code>文件的文件名称 .<br><img src="/images/EIDE/config1.png"></p>
+<h3 id="4-添加Core与Drivers"><a href="#4-添加Core与Drivers" class="headerlink" title="4.添加Core与Drivers"></a>4.添加Core与Drivers</h3><p>在生成的<code>EIDE</code>工程界面中点击<code>Project Resources</code>，选择<code>Normal Folder</code>，导入<code>Core</code>与<code>Drivers</code>文件夹 .<del>只导入文件也是可以的，但是不建议</del><br><img src="/images/EIDE/config2.png"></p>
+<h3 id="5-项目配置"><a href="#5-项目配置" class="headerlink" title="5.项目配置"></a>5.项目配置</h3><p>按照<code>Makefile</code>中的信息配置编译器和烧录器选项，添加<code>C</code>的宏定义 .</p>
+<p>将链接文件名<code>STM32xxxxxxx_FLASH.ld</code>复制到选项框 .<br><img src="/images/EIDE/config3.png"></p>
+<h3 id="6-编译"><a href="#6-编译" class="headerlink" title="6.编译"></a>6.编译</h3><ul>
+<li>中文路径会导致编译失败 .</li>
+</ul>
+<p>编译成功后会显示内存资源占用、<code>hex</code>和<code>bin</code>文件输出路径 .<br><img src="/images/EIDE/build.png"></p>
+<h3 id="7-调试"><a href="#7-调试" class="headerlink" title="7.调试"></a>7.调试</h3><blockquote>
+<p><a href="https://marketplace.visualstudio.com/items/CL.eide/changelog">https://marketplace.visualstudio.com/items/CL.eide/changelog</a></p>
+</blockquote>
+<ul>
+<li><code>3.16.0</code>版本中删除了自动生成<code>launch.json</code>调试配置的功能，取而代之的是菜单栏中的<code>Generate Cortex-Debug Configuration</code><br><img src="/images/EIDE/debug_menu.png"></li>
+</ul>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>BUCK的电感值计算</title>
+    <url>/2023/09/08/MP2456/</url>
+    <content><![CDATA[<h1 id="手册"><a href="#手册" class="headerlink" title="手册"></a>手册</h1><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/buck/MP2456.jpg"></p>
+<h2 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h2><ul>
+<li>电感上的电流不能突变</li>
+<li>电感上储存的能量不能突变</li>
+</ul>
+<p>将公式变换为</p>
+<pre><code>V * Δt = L * ΔI    （1）
+</code></pre>
+<h2 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h2><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
+<pre><code>由(1)得出
+Ion、Ioff为导通与关断期间电感的电流变化量
+Von * ton = L * Ion
+Voff * toff = L * Ioff
+
+D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
+ton = D * T = D / fsw 
+toff = (1-D) * T = (1-D) / fsw
+代入至伏秒定律，得
+Von * ton = Von * D / fsw = L * Ion             (2.1)
+Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
+</code></pre>
+<h2 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h2><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
+<pre><code>（1）负载电流 Iload = Idc
+（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
+（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
+ 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
+</code></pre>
+<h2 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h2><p>此图为同步整流的BUCK电路模型<br><img src="/images/buck/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
+<h3 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h3><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
+<pre><code>根据(2.1)、(1)、(3)有
+Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
+将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
+得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
+</code></pre>
+<h3 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h3><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
+<pre><code>根据(2.2)、(1)、(3)有
+Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
+将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
+得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
+</code></pre>
+<h2 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h2><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式</p>
+<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
+只要满足 Vout / Vin = D ，可使(4.1)与(4.2) 相同
+即 (Vin - Vout) * D = Vout * (1-D)
+将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
+故，Buck电路的电感计算公式为
+L = (Vin - Vout) * D / fsw * r * Iload
+</code></pre>
+]]></content>
+      <categories>
+        <category>开关电源</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>SSD1306</title>
+    <url>/2023/10/20/SSD1306/</url>
+    <content><![CDATA[<h1 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h1><p>飞利浦（NXP）于1980提出<code>I2C</code>串行总线，使用多主从架构，为同步半双工通信方式 .<br>常见速率：100kbps、300kbps、3.4Mbps .</p>
+<!-- 此处需要介绍I2C的硬件配置 -->
+
+<h2 id="端口设置"><a href="#端口设置" class="headerlink" title="端口设置"></a>端口设置</h2><p>采用外部上拉（强上拉）时，端口配置为开漏输出，配合上拉电阻（1K左右）以输出高电平 .</p>
+<h2 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h2><p><img src="/images/sw_i2c/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"></p>
+<p>在传输期间，<code>SCL</code>为高电平时数据有效，数据的切换只能在<code>SCL</code>为低电平时进行 .</p>
+<h2 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h2><p><img src="/images/sw_i2c/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"></p>
+<pre><code class="c">    void IIC_Start(void)
+    &#123;
+        SDA_HIGH;
+        SCL_HIGH;
+        SDA_LOW;
+        SCL_LOW;
+    &#125;
+
+    void IIC_Stop(void)
+    &#123;
+        SDA_LOW;
+        SCL_HIGH;
+        SDA_HIGH;
+    &#125;
+</code></pre>
+<h2 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h2><p><img src="/images/sw_i2c/I2C_ACK.png"></p>
+<p><code>START</code>之后，在接下来的8个CLK中，<code>SDA</code>进行一次8bit的数据传输，若接收到数据，则在第9个CLK对<code>SDA</code>拉低，将其视作一次<code>ACK</code>应答信号 .</p>
+<h3 id="发送ACK的方式参考"><a href="#发送ACK的方式参考" class="headerlink" title="发送ACK的方式参考"></a>发送ACK的方式参考</h3><pre><code class="c">    void IIC_SendAck(u8 ACK_Byte)
+    &#123;
+        if(ACK_Byte == 1)
+            SDA_HIGH;
+        else
+            SDA_LOW;
+        SCL_HIGH;
+        SCL_LOW;
+    &#125;
+</code></pre>
+<h3 id="接受ACK方式参考"><a href="#接受ACK方式参考" class="headerlink" title="接受ACK方式参考"></a>接受ACK方式参考</h3><pre><code class="c">    u8 IIC_ReceiveAck(void)
+    &#123;
+        u8 ACK_Byte;
+        SDA_HIGH;//主机释放，从机接管
+        SCL_HIGH;
+        ACK_Byte = READ_SDA;
+        SCL_LOW;
+        return ACK_Byte;
+    &#125;
+</code></pre>
+<h2 id="I2C读写1Byte数据"><a href="#I2C读写1Byte数据" class="headerlink" title="I2C读写1Byte数据"></a>I2C读写1Byte数据</h2><h3 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h3><pre><code class="c">    void IIC_WriteByte(u8 IIC_Byte)
+    &#123;
+        u8 i;
+        u8 data = IIC_Byte;
+        SCL_LOW;
+        for(i=0;i&lt;8;i++)
+        &#123;
+            if((data&amp;0x80) == 0x80)
+                SDA_HIGH;
+            else
+                SDA_LOW;
+            data = data&lt;&lt;1;
+            SCL_HIGH;
+            SCL_LOW;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h3><pre><code class="c">    u8 IIC_ReadByte(void)
+    &#123;
+        u8 i,IIC_Byte = 0x00;
+        SDA_HIGH;//主机释放，从机接管  --这里的SDA,SCL都是推挽输出
+        for(i=0;i&lt;8;i++)
+        &#123;
+            SCL_HIGH;
+            if(READ_SDA == 1)
+                IIC_Byte |= (0x80&gt;&gt;i);
+            SCL_LOW;
+        &#125;
+        return IIC_Byte;
+    &#125;
+</code></pre>
+<h1 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h1><h2 id="SSD1306使用I2C的数据格式"><a href="#SSD1306使用I2C的数据格式" class="headerlink" title="SSD1306使用I2C的数据格式"></a>SSD1306使用I2C的数据格式</h2><p><img src="/images/sw_i2c/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"></p>
+<h3 id="首字节"><a href="#首字节" class="headerlink" title="首字节"></a>首字节</h3><p>由从机地址<code>0x3C</code>和<code>R/W#</code>组成 .</p>
+<pre><code class="c">        IIC_WriteByte(0x78);//W
+        IIC_WriteByte(0x79);//R
+</code></pre>
+<h3 id="控制字节"><a href="#控制字节" class="headerlink" title="控制字节"></a>控制字节</h3><p>由<code>Co</code>和<code>D/C#</code>及<code>000000</code>组成，<code>Co</code>低电平意指后续的Byte都是数据，可用于连续输出 CMD 和 DATA .</p>
+<pre><code class="c">        IIC_WriteByte(0x00);//后面的字节是命令
+        IIC_WriteByte(0x40);//后面的字节是数据，并存入GDDRAM
+        IIC_WriteByte(0x80);//后一位字节是命令
+        IIC_WriteByte(0xC0);//后一位字节是数据，并存入GDDRAM
+</code></pre>
+<h3 id="写一次命令"><a href="#写一次命令" class="headerlink" title="写一次命令"></a>写一次命令</h3><pre><code class="c">    void OLED_CMD(u8 CMD)
+    &#123;
+        IIC_Start();
+
+        IIC_WriteByte(0x78);
+        IIC_ReceiveAck();
+
+        IIC_WriteByte(0x80);
+        IIC_ReceiveAck();
+
+        IIC_WriteByte(CMD);
+        IIC_ReceiveAck();
+
+        IIC_Stop();
+    &#125;
+</code></pre>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>尝试发送 <code>0xAF</code> 开启屏幕的显示</p>
+<pre><code class="c">    OLED_CMD(0xAF);
+</code></pre>
+<p>接上逻辑分析仪查看时序</p>
+<p><img src="/images/sw_i2c/I2C_logic.png"></p>
+<p>观察屏幕，情况如下：</p>
+<p><img src="/images/sw_i2c/12864_ON.jpg"></p>
+<p>屏幕被成功点亮，并将GDDRAM中的初始数据输出 .</p>
+<h3 id="快速刷屏"><a href="#快速刷屏" class="headerlink" title="快速刷屏"></a>快速刷屏</h3><pre><code class="c">    void OLED_ClearScreen(void)
+    &#123;
+        OLED_DATA_128_64(0x00);
+    &#125;
+
+    void OLED_FillScreen(void)
+    &#123;
+        OLED_DATA_128_64(0xFF);
+    &#125;
+
+    void OLED_DATA_128_64(u8 DATA_128_64)
+    &#123;
+        u16 i;
+        
+        IIC_Start();
+        
+        IIC_WriteByte(0x78);//从机地址0111100和R/W#
+        IIC_ReceiveAck();
+
+        IIC_WriteByte(0x40);
+        IIC_ReceiveAck();
+
+        for(i=0;i&lt;128*8;i++)
+        &#123;
+            IIC_WriteByte(DATA_128_64);
+            IIC_ReceiveAck();
+        &#125;
+        
+        IIC_Stop();
+    &#125;
+</code></pre>
+<h2 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h2><h3 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h3><p><img src="/images/sw_i2c/SSD1306_GDDRAM.png"></p>
+<p>从上至下，将GDDRAM分为8个PAGE，<code>8 * 128 Byte</code><br>从左至右，将PAGE分为128个SEG，<code>128 * 1 Byte</code></p>
+<p><img src="/images/sw_i2c/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行 .</p>
+<h3 id="GDDRAM的寻址模式"><a href="#GDDRAM的寻址模式" class="headerlink" title="GDDRAM的寻址模式"></a>GDDRAM的寻址模式</h3><p><code>20h+A[1:0]</code>        设置内存寻址模式</p>
+<ol>
+<li><p><code>A[1:0]=10b</code>	页面寻址    用于局部刷新<br> 仅在PAGE中寻址 .向GDDRAM写入1Byte后，列指针自增1，直至寻址结束，页指针不变 .<br><img src="/images/sw_i2c/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+</li>
+<li><p><code>A[1:0]=00b</code>	水平寻址<br><img src="/images/sw_i2c/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+</li>
+<li><p><code>A[1:0]=01b</code>	竖直寻址<br><img src="/images/sw_i2c/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+</li>
+<li><p><code>A[1:0]=11b</code>	无效寻址</p>
+</li>
+</ol>
+<h3 id="填充全屏"><a href="#填充全屏" class="headerlink" title="填充全屏"></a>填充全屏</h3><pre><code class="c">    OLED_FILL（）
+    &#123;
+        OLED_CMD(0x20);		// 设置寻址模式
+        OLED_CMD(0x00);		// 水平寻址模式
+        OLED_CMD(0X21);		// 设置列起始和结束地址
+        OLED_CMD(0X00);		// 列起始地址 0
+        OLED_CMD(0X7F);		// 列终止地址 127
+        OLED_CMD(0X22);		// 设置页起始和结束地址
+        OLED_CMD(0X00);		// 页起始地址 0
+        OLED_CMD(0X07);		// 页终止地址 7
+
+        u8 r,c;
+
+        for(r=0;r&lt;8;r++)
+            for(c=0;c&lt;128;c++)
+                OLED_DATA(0xFF);
+    &#125;
+</code></pre>
+<h2 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><p><img src="/images/sw_i2c/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
+<h3 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h3><p><img src="/images/sw_i2c/26.png"></p>
+<h3 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h3><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+</search>

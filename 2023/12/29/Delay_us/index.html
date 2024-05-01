@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>微秒级delay | lovely-lily&#39;s blog</title>
+    <meta name="author" content="lovely-lily" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.js"></script>
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>LOVELY-LILY&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/2023/08/14/About%20me/">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;LOVELY-LILY&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/2023/08/14/About%20me/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>微秒级delay</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/12/29
+        </span>
+        
+        <span class="category">
+            <a href="/categories/MCU/">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                MCU
+            </a>
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h1><p>转载声明:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a></p>
+</blockquote>
+<h2 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h2><pre><code class="c">    void delay_us(uint32_t us)
+    &#123;
+        uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
+        while (delay--)
+        &#123;
+            ;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h3><ul>
+<li><p>delay的计算<br>使用<code>GCC -O0</code>编译显示，在<code>while</code>中需要重复执行5条指令，而<code>M3</code>内核的<code>STM32</code>整型运算性能为<code>1.25DMIPS/MHz</code> .<br><img src="/images/delay_us/O0.png"><br>非常凑巧的是：</p>
+<pre><code>  设 HAL_RCC_GetHCLKFreq() = f ，N = f / delay .
+  则单位延时Time = [5 * (f / N)] / (1.25 * f) = 5 / (1.25 * N),Uint:us .
+</code></pre>
+<p>  故取<code>N = 4000000</code>恰好为<code>1us</code> .</p>
+</li>
+<li><p>仔细编译优化等级</p>
+<ul>
+<li><code>O1</code>级优化，指令变少 .<br><img src="/images/delay_us/O1.png"></li>
+<li><code>O2</code>级优化，只有一句跳转，不执行<code>while</code> .<br><img src="/images/delay_us/O2.png"></li>
+</ul>
+</li>
+</ul>
+<h2 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h2><pre><code class="c">    #define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
+    void HAL_Delay_us(__IO uint32_t delay)
+    &#123;
+        int last, curr, val;
+        int temp;
+
+        while (delay != 0)
+        &#123;
+            temp = delay &gt; 900 ? 900 : delay;
+            last = SysTick-&gt;VAL;
+            curr = last - CPU_FREQUENCY_MHZ * temp;
+            if (curr &gt;= 0)
+            &#123;
+                do
+                &#123;
+                    val = SysTick-&gt;VAL;
+                &#125;
+                while ((val &lt; last) &amp;&amp; (val &gt;= curr));
+            &#125;
+            else
+            &#123;
+                curr += CPU_FREQUENCY_MHZ * 1000;
+                do
+                &#123;
+                    val = SysTick-&gt;VAL;
+                &#125;
+                while ((val &lt;= last) || (val &gt; curr));
+            &#125;
+            delay -= temp;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="备注-1"><a href="#备注-1" class="headerlink" title="备注"></a>备注</h3><blockquote>
+<p>关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual .</p>
+</blockquote>
+<p><code>SysTick-&gt;LOAD</code> 的值应为 <code>(CPU_FREQUENCY_MHZ * 1000) -1</code> 在此条件下 <code>SysTick</code> 1μs自减，1ms重载 .</p>
+<p>当传入<code>delay</code>参数时，对其按照temp进行拆分———因为VAL不会超过<code>1000</code> .</p>
+<p>对拆分后的<code>delay</code>分段延时:<code>(delay/temp)*temp + delay%temp</code> .</p>
+<ol>
+<li>当<code>curr</code> ≥ 0时<br><img src="/images/delay_us/curr+.png"></li>
+</ol>
+<p>  通过<code>(val &lt; last) &amp;&amp; (val &gt;= curr)</code>来实现一次temp延时.</p>
+<ol start="2">
+<li>当<code>curr</code> ＜ 0时<br><img src="/images/delay_us/curr-1.png"></li>
+</ol>
+<p>  执行<code>curr += CPU_FREQUENCY_MHZ * 1000</code><br><img src="/images/delay_us/curr-2.png"></p>
+<p>  通过<code>(val &lt;= last) || (val &gt; curr)</code>来实现一次temp延时.</p>
+<h2 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h2><p>(这里是HAL写法)，但需要占用一个定时器 .</p>
+<pre><code class="c">    #define DLY_TIM_Handle (&amp;htimx)
+    void delay_us(uint16_t nus)
+    &#123;
+        __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
+        __HAL_TIM_ENABLE(DLY_TIM_Handle);
+        while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
+        &#123;
+            ;
+        &#125;
+        __HAL_TIM_DISABLE(DLY_TIM_Handle);
+    &#125;
+</code></pre>
+<h3 id="备注-2"><a href="#备注-2" class="headerlink" title="备注"></a>备注</h3><p>设置TIMx的计数周期为1μs,实现<code>delay_us</code> .</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 lovely-lily&#39;s blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;lovely-lily
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+	
+	<canvas
+    id="fireworks"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 32767"
+	></canvas>
+	<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/lib/fireworks.min.js"></script>
+	
+</body>
+</html>

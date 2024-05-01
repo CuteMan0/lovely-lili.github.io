@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>SSD1306 | lovely-lily&#39;s blog</title>
+    <meta name="author" content="lovely-lily" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.js"></script>
+<script src="https://cdn.staticfile.org/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.8/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>LOVELY-LILY&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/2023/08/14/About%20me/">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;LOVELY-LILY&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/2023/08/14/About%20me/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>SSD1306</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/20
+        </span>
+        
+        <span class="category">
+            <a href="/categories/MCU/">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                MCU
+            </a>
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="了解I2C"><a href="#了解I2C" class="headerlink" title="了解I2C"></a>了解I2C</h1><p>飞利浦（NXP）于1980提出<code>I2C</code>串行总线，使用多主从架构，为同步半双工通信方式 .<br>常见速率：100kbps、300kbps、3.4Mbps .</p>
+<!-- 此处需要介绍I2C的硬件配置 -->
+
+<h2 id="端口设置"><a href="#端口设置" class="headerlink" title="端口设置"></a>端口设置</h2><p>采用外部上拉（强上拉）时，端口配置为开漏输出，配合上拉电阻（1K左右）以输出高电平 .</p>
+<h2 id="I2C的数据有效性"><a href="#I2C的数据有效性" class="headerlink" title="I2C的数据有效性"></a>I2C的数据有效性</h2><p><img src="/images/sw_i2c/I2C%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7.png"></p>
+<p>在传输期间，<code>SCL</code>为高电平时数据有效，数据的切换只能在<code>SCL</code>为低电平时进行 .</p>
+<h2 id="I2C的START和STOP信号"><a href="#I2C的START和STOP信号" class="headerlink" title="I2C的START和STOP信号"></a>I2C的START和STOP信号</h2><p><img src="/images/sw_i2c/I2C%E5%90%AF%E5%8A%A8%E5%92%8C%E7%BB%93%E6%9D%9F%E4%BF%A1%E5%8F%B7.png"></p>
+<pre><code class="c">    void IIC_Start(void)
+    &#123;
+        SDA_HIGH;
+        SCL_HIGH;
+        SDA_LOW;
+        SCL_LOW;
+    &#125;
+
+    void IIC_Stop(void)
+    &#123;
+        SDA_LOW;
+        SCL_HIGH;
+        SDA_HIGH;
+    &#125;
+</code></pre>
+<h2 id="I2C的ACK应答信号"><a href="#I2C的ACK应答信号" class="headerlink" title="I2C的ACK应答信号"></a>I2C的ACK应答信号</h2><p><img src="/images/sw_i2c/I2C_ACK.png"></p>
+<p><code>START</code>之后，在接下来的8个CLK中，<code>SDA</code>进行一次8bit的数据传输，若接收到数据，则在第9个CLK对<code>SDA</code>拉低，将其视作一次<code>ACK</code>应答信号 .</p>
+<h3 id="发送ACK的方式参考"><a href="#发送ACK的方式参考" class="headerlink" title="发送ACK的方式参考"></a>发送ACK的方式参考</h3><pre><code class="c">    void IIC_SendAck(u8 ACK_Byte)
+    &#123;
+        if(ACK_Byte == 1)
+            SDA_HIGH;
+        else
+            SDA_LOW;
+        SCL_HIGH;
+        SCL_LOW;
+    &#125;
+</code></pre>
+<h3 id="接受ACK方式参考"><a href="#接受ACK方式参考" class="headerlink" title="接受ACK方式参考"></a>接受ACK方式参考</h3><pre><code class="c">    u8 IIC_ReceiveAck(void)
+    &#123;
+        u8 ACK_Byte;
+        SDA_HIGH;//主机释放，从机接管
+        SCL_HIGH;
+        ACK_Byte = READ_SDA;
+        SCL_LOW;
+        return ACK_Byte;
+    &#125;
+</code></pre>
+<h2 id="I2C读写1Byte数据"><a href="#I2C读写1Byte数据" class="headerlink" title="I2C读写1Byte数据"></a>I2C读写1Byte数据</h2><h3 id="写数据的方式参考"><a href="#写数据的方式参考" class="headerlink" title="写数据的方式参考"></a>写数据的方式参考</h3><pre><code class="c">    void IIC_WriteByte(u8 IIC_Byte)
+    &#123;
+        u8 i;
+        u8 data = IIC_Byte;
+        SCL_LOW;
+        for(i=0;i&lt;8;i++)
+        &#123;
+            if((data&amp;0x80) == 0x80)
+                SDA_HIGH;
+            else
+                SDA_LOW;
+            data = data&lt;&lt;1;
+            SCL_HIGH;
+            SCL_LOW;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="读数据的方式参考"><a href="#读数据的方式参考" class="headerlink" title="读数据的方式参考"></a>读数据的方式参考</h3><pre><code class="c">    u8 IIC_ReadByte(void)
+    &#123;
+        u8 i,IIC_Byte = 0x00;
+        SDA_HIGH;//主机释放，从机接管  --这里的SDA,SCL都是推挽输出
+        for(i=0;i&lt;8;i++)
+        &#123;
+            SCL_HIGH;
+            if(READ_SDA == 1)
+                IIC_Byte |= (0x80&gt;&gt;i);
+            SCL_LOW;
+        &#125;
+        return IIC_Byte;
+    &#125;
+</code></pre>
+<h1 id="了解SSD1306"><a href="#了解SSD1306" class="headerlink" title="了解SSD1306"></a>了解SSD1306</h1><h2 id="SSD1306使用I2C的数据格式"><a href="#SSD1306使用I2C的数据格式" class="headerlink" title="SSD1306使用I2C的数据格式"></a>SSD1306使用I2C的数据格式</h2><p><img src="/images/sw_i2c/I2C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.png"></p>
+<h3 id="首字节"><a href="#首字节" class="headerlink" title="首字节"></a>首字节</h3><p>由从机地址<code>0x3C</code>和<code>R/W#</code>组成 .</p>
+<pre><code class="c">        IIC_WriteByte(0x78);//W
+        IIC_WriteByte(0x79);//R
+</code></pre>
+<h3 id="控制字节"><a href="#控制字节" class="headerlink" title="控制字节"></a>控制字节</h3><p>由<code>Co</code>和<code>D/C#</code>及<code>000000</code>组成，<code>Co</code>低电平意指后续的Byte都是数据，可用于连续输出 CMD 和 DATA .</p>
+<pre><code class="c">        IIC_WriteByte(0x00);//后面的字节是命令
+        IIC_WriteByte(0x40);//后面的字节是数据，并存入GDDRAM
+        IIC_WriteByte(0x80);//后一位字节是命令
+        IIC_WriteByte(0xC0);//后一位字节是数据，并存入GDDRAM
+</code></pre>
+<h3 id="写一次命令"><a href="#写一次命令" class="headerlink" title="写一次命令"></a>写一次命令</h3><pre><code class="c">    void OLED_CMD(u8 CMD)
+    &#123;
+        IIC_Start();
+
+        IIC_WriteByte(0x78);
+        IIC_ReceiveAck();
+
+        IIC_WriteByte(0x80);
+        IIC_ReceiveAck();
+
+        IIC_WriteByte(CMD);
+        IIC_ReceiveAck();
+
+        IIC_Stop();
+    &#125;
+</code></pre>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>尝试发送 <code>0xAF</code> 开启屏幕的显示</p>
+<pre><code class="c">    OLED_CMD(0xAF);
+</code></pre>
+<p>接上逻辑分析仪查看时序</p>
+<p><img src="/images/sw_i2c/I2C_logic.png"></p>
+<p>观察屏幕，情况如下：</p>
+<p><img src="/images/sw_i2c/12864_ON.jpg"></p>
+<p>屏幕被成功点亮，并将GDDRAM中的初始数据输出 .</p>
+<h3 id="快速刷屏"><a href="#快速刷屏" class="headerlink" title="快速刷屏"></a>快速刷屏</h3><pre><code class="c">    void OLED_ClearScreen(void)
+    &#123;
+        OLED_DATA_128_64(0x00);
+    &#125;
+
+    void OLED_FillScreen(void)
+    &#123;
+        OLED_DATA_128_64(0xFF);
+    &#125;
+
+    void OLED_DATA_128_64(u8 DATA_128_64)
+    &#123;
+        u16 i;
+        
+        IIC_Start();
+        
+        IIC_WriteByte(0x78);//从机地址0111100和R/W#
+        IIC_ReceiveAck();
+
+        IIC_WriteByte(0x40);
+        IIC_ReceiveAck();
+
+        for(i=0;i&lt;128*8;i++)
+        &#123;
+            IIC_WriteByte(DATA_128_64);
+            IIC_ReceiveAck();
+        &#125;
+        
+        IIC_Stop();
+    &#125;
+</code></pre>
+<h2 id="SSD1306的GDDRAM"><a href="#SSD1306的GDDRAM" class="headerlink" title="SSD1306的GDDRAM"></a>SSD1306的GDDRAM</h2><h3 id="GDDRAM结构"><a href="#GDDRAM结构" class="headerlink" title="GDDRAM结构"></a>GDDRAM结构</h3><p><img src="/images/sw_i2c/SSD1306_GDDRAM.png"></p>
+<p>从上至下，将GDDRAM分为8个PAGE，<code>8 * 128 Byte</code><br>从左至右，将PAGE分为128个SEG，<code>128 * 1 Byte</code></p>
+<p><img src="/images/sw_i2c/GDDRAM_DATA.png"><br>写入GDDRAM的Byte,最低位D0在顶行，最高位D7在底行 .</p>
+<h3 id="GDDRAM的寻址模式"><a href="#GDDRAM的寻址模式" class="headerlink" title="GDDRAM的寻址模式"></a>GDDRAM的寻址模式</h3><p><code>20h+A[1:0]</code>        设置内存寻址模式</p>
+<ol>
+<li><p><code>A[1:0]=10b</code>	页面寻址    用于局部刷新<br> 仅在PAGE中寻址 .向GDDRAM写入1Byte后，列指针自增1，直至寻址结束，页指针不变 .<br><img src="/images/sw_i2c/%E9%A1%B5%E9%9D%A2%E5%AF%BB%E5%9D%80.png"></p>
+</li>
+<li><p><code>A[1:0]=00b</code>	水平寻址<br><img src="/images/sw_i2c/%E6%B0%B4%E5%B9%B3%E5%AF%BB%E5%9D%80.png"></p>
+</li>
+<li><p><code>A[1:0]=01b</code>	竖直寻址<br><img src="/images/sw_i2c/%E7%AB%96%E7%9B%B4%E5%AF%BB%E5%9D%80.png"></p>
+</li>
+<li><p><code>A[1:0]=11b</code>	无效寻址</p>
+</li>
+</ol>
+<h3 id="填充全屏"><a href="#填充全屏" class="headerlink" title="填充全屏"></a>填充全屏</h3><pre><code class="c">    OLED_FILL（）
+    &#123;
+        OLED_CMD(0x20);		// 设置寻址模式
+        OLED_CMD(0x00);		// 水平寻址模式
+        OLED_CMD(0X21);		// 设置列起始和结束地址
+        OLED_CMD(0X00);		// 列起始地址 0
+        OLED_CMD(0X7F);		// 列终止地址 127
+        OLED_CMD(0X22);		// 设置页起始和结束地址
+        OLED_CMD(0X00);		// 页起始地址 0
+        OLED_CMD(0X07);		// 页终止地址 7
+
+        u8 r,c;
+
+        for(r=0;r&lt;8;r++)
+            for(c=0;c&lt;128;c++)
+                OLED_DATA(0xFF);
+    &#125;
+</code></pre>
+<h2 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><p><img src="/images/sw_i2c/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
+<h3 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h3><p><img src="/images/sw_i2c/26.png"></p>
+<h3 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h3><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 lovely-lily&#39;s blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;lovely-lily
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+	
+	<canvas
+    id="fireworks"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 32767"
+	></canvas>
+	<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/lib/fireworks.min.js"></script>
+	
+</body>
+</html>
