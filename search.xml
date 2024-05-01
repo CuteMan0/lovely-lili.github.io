@@ -159,6 +159,102 @@
 ]]></content>
   </entry>
   <entry>
+    <title>微秒级delay</title>
+    <url>/2023/12/29/Delay_us/</url>
+    <content><![CDATA[<h1 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h1><p>转载声明:</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a></p>
+</blockquote>
+<h2 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h2><pre><code class="c">    void delay_us(uint32_t us)
+    &#123;
+        uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
+        while (delay--)
+        &#123;
+            ;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h3><ul>
+<li><p>delay的计算<br>使用<code>GCC -O0</code>编译显示，在<code>while</code>中需要重复执行5条指令，而<code>M3</code>内核的<code>STM32</code>整型运算性能为<code>1.25DMIPS/MHz</code> .<br><img src="/images/delay_us/O0.png"><br>非常凑巧的是：</p>
+<pre><code>  设 HAL_RCC_GetHCLKFreq() = f ，N = f / delay .
+  则单位延时Time = [5 * (f / N)] / (1.25 * f) = 5 / (1.25 * N),Uint:us .
+</code></pre>
+<p>  故取<code>N = 4000000</code>恰好为<code>1us</code> .</p>
+</li>
+<li><p>仔细编译优化等级</p>
+<ul>
+<li><code>O1</code>级优化，指令变少 .<br><img src="/images/delay_us/O1.png"></li>
+<li><code>O2</code>级优化，只有一句跳转，不执行<code>while</code> .<br><img src="/images/delay_us/O2.png"></li>
+</ul>
+</li>
+</ul>
+<h2 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h2><pre><code class="c">    #define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
+    void HAL_Delay_us(__IO uint32_t delay)
+    &#123;
+        int last, curr, val;
+        int temp;
+
+        while (delay != 0)
+        &#123;
+            temp = delay &gt; 900 ? 900 : delay;
+            last = SysTick-&gt;VAL;
+            curr = last - CPU_FREQUENCY_MHZ * temp;
+            if (curr &gt;= 0)
+            &#123;
+                do
+                &#123;
+                    val = SysTick-&gt;VAL;
+                &#125;
+                while ((val &lt; last) &amp;&amp; (val &gt;= curr));
+            &#125;
+            else
+            &#123;
+                curr += CPU_FREQUENCY_MHZ * 1000;
+                do
+                &#123;
+                    val = SysTick-&gt;VAL;
+                &#125;
+                while ((val &lt;= last) || (val &gt; curr));
+            &#125;
+            delay -= temp;
+        &#125;
+    &#125;
+</code></pre>
+<h3 id="备注-1"><a href="#备注-1" class="headerlink" title="备注"></a>备注</h3><blockquote>
+<p>关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual .</p>
+</blockquote>
+<p><code>SysTick-&gt;LOAD</code> 的值应为 <code>(CPU_FREQUENCY_MHZ * 1000) -1</code> 在此条件下 <code>SysTick</code> 1μs自减，1ms重载 .</p>
+<p>当传入<code>delay</code>参数时，对其按照temp进行拆分———因为VAL不会超过<code>1000</code> .</p>
+<p>对拆分后的<code>delay</code>分段延时:<code>(delay/temp)*temp + delay%temp</code> .</p>
+<ol>
+<li>当<code>curr</code> ≥ 0时<br><img src="/images/delay_us/curr+.png"></li>
+</ol>
+<p>  通过<code>(val &lt; last) &amp;&amp; (val &gt;= curr)</code>来实现一次temp延时.</p>
+<ol start="2">
+<li>当<code>curr</code> ＜ 0时<br><img src="/images/delay_us/curr-1.png"></li>
+</ol>
+<p>  执行<code>curr += CPU_FREQUENCY_MHZ * 1000</code><br><img src="/images/delay_us/curr-2.png"></p>
+<p>  通过<code>(val &lt;= last) || (val &gt; curr)</code>来实现一次temp延时.</p>
+<h2 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h2><p>(这里是HAL写法)，但需要占用一个定时器 .</p>
+<pre><code class="c">    #define DLY_TIM_Handle (&amp;htimx)
+    void delay_us(uint16_t nus)
+    &#123;
+        __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
+        __HAL_TIM_ENABLE(DLY_TIM_Handle);
+        while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
+        &#123;
+            ;
+        &#125;
+        __HAL_TIM_DISABLE(DLY_TIM_Handle);
+    &#125;
+</code></pre>
+<h3 id="备注-2"><a href="#备注-2" class="headerlink" title="备注"></a>备注</h3><p>设置TIMx的计数周期为1μs,实现<code>delay_us</code> .</p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
     <title>DHT20（硬件I2C）</title>
     <url>/2024/01/29/DHT20/</url>
     <content><![CDATA[<p>ASAIR继DHT11推出了<code>DHT20</code>，采用I2C协议通信。除此外，两者在量程与精度上也有些许差别,详见：</p>
@@ -300,158 +396,6 @@
 <ul>
 <li><code>3.16.0</code>版本中删除了自动生成<code>launch.json</code>调试配置的功能，取而代之的是菜单栏中的<code>Generate Cortex-Debug Configuration</code><br><img src="/images/EIDE/debug_menu.png"></li>
 </ul>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>BUCK的电感值计算</title>
-    <url>/2023/09/08/MP2456/</url>
-    <content><![CDATA[<h1 id="手册"><a href="#手册" class="headerlink" title="手册"></a>手册</h1><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/buck/MP2456.jpg"></p>
-<h2 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h2><ul>
-<li>电感上的电流不能突变</li>
-<li>电感上储存的能量不能突变</li>
-</ul>
-<p>将公式变换为</p>
-<pre><code>V * Δt = L * ΔI    （1）
-</code></pre>
-<h2 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h2><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
-<pre><code>由(1)得出
-Ion、Ioff为导通与关断期间电感的电流变化量
-Von * ton = L * Ion
-Voff * toff = L * Ioff
-
-D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
-ton = D * T = D / fsw 
-toff = (1-D) * T = (1-D) / fsw
-代入至伏秒定律，得
-Von * ton = Von * D / fsw = L * Ion             (2.1)
-Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
-</code></pre>
-<h2 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h2><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
-<pre><code>（1）负载电流 Iload = Idc
-（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
-（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
- 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
-</code></pre>
-<h2 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h2><p>此图为同步整流的BUCK电路模型<br><img src="/images/buck/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
-<h3 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h3><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
-<pre><code>根据(2.1)、(1)、(3)有
-Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
-将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
-得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
-</code></pre>
-<h3 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h3><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
-<pre><code>根据(2.2)、(1)、(3)有
-Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
-将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
-得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
-</code></pre>
-<h2 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h2><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式</p>
-<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
-只要满足 Vout / Vin = D ，可使(4.1)与(4.2) 相同
-即 (Vin - Vout) * D = Vout * (1-D)
-将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
-故，Buck电路的电感计算公式为
-L = (Vin - Vout) * D / fsw * r * Iload
-</code></pre>
-]]></content>
-      <categories>
-        <category>开关电源</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>微秒级delay</title>
-    <url>/2023/12/29/Delay_us/</url>
-    <content><![CDATA[<h1 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h1><p>转载声明:</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/qq153471503/article/details/102930097">https://blog.csdn.net/qq153471503/article/details/102930097</a></p>
-</blockquote>
-<h2 id="F1系列-72M"><a href="#F1系列-72M" class="headerlink" title="F1系列(72M)"></a>F1系列(72M)</h2><pre><code class="c">    void delay_us(uint32_t us)
-    &#123;
-        uint32_t delay = (HAL_RCC_GetHCLKFreq() / 4000000 * us);
-        while (delay--)
-        &#123;
-            ;
-        &#125;
-    &#125;
-</code></pre>
-<h3 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h3><ul>
-<li><p>delay的计算<br>使用<code>GCC -O0</code>编译显示，在<code>while</code>中需要重复执行5条指令，而<code>M3</code>内核的<code>STM32</code>整型运算性能为<code>1.25DMIPS/MHz</code> .<br><img src="/images/delay_us/O0.png"><br>非常凑巧的是：</p>
-<pre><code>  设 HAL_RCC_GetHCLKFreq() = f ，N = f / delay .
-  则单位延时Time = [5 * (f / N)] / (1.25 * f) = 5 / (1.25 * N),Uint:us .
-</code></pre>
-<p>  故取<code>N = 4000000</code>恰好为<code>1us</code> .</p>
-</li>
-<li><p>仔细编译优化等级</p>
-<ul>
-<li><code>O1</code>级优化，指令变少 .<br><img src="/images/delay_us/O1.png"></li>
-<li><code>O2</code>级优化，只有一句跳转，不执行<code>while</code> .<br><img src="/images/delay_us/O2.png"></li>
-</ul>
-</li>
-</ul>
-<h2 id="Hal库通用"><a href="#Hal库通用" class="headerlink" title="Hal库通用"></a>Hal库通用</h2><pre><code class="c">    #define CPU_FREQUENCY_MHZ    184		// STM32系统时钟主频
-    void HAL_Delay_us(__IO uint32_t delay)
-    &#123;
-        int last, curr, val;
-        int temp;
-
-        while (delay != 0)
-        &#123;
-            temp = delay &gt; 900 ? 900 : delay;
-            last = SysTick-&gt;VAL;
-            curr = last - CPU_FREQUENCY_MHZ * temp;
-            if (curr &gt;= 0)
-            &#123;
-                do
-                &#123;
-                    val = SysTick-&gt;VAL;
-                &#125;
-                while ((val &lt; last) &amp;&amp; (val &gt;= curr));
-            &#125;
-            else
-            &#123;
-                curr += CPU_FREQUENCY_MHZ * 1000;
-                do
-                &#123;
-                    val = SysTick-&gt;VAL;
-                &#125;
-                while ((val &lt;= last) || (val &gt; curr));
-            &#125;
-            delay -= temp;
-        &#125;
-    &#125;
-</code></pre>
-<h3 id="备注-1"><a href="#备注-1" class="headerlink" title="备注"></a>备注</h3><blockquote>
-<p>关于 SysTick可参考ST的CM3内核手册PM0056 Programming manual .</p>
-</blockquote>
-<p><code>SysTick-&gt;LOAD</code> 的值应为 <code>(CPU_FREQUENCY_MHZ * 1000) -1</code> 在此条件下 <code>SysTick</code> 1μs自减，1ms重载 .</p>
-<p>当传入<code>delay</code>参数时，对其按照temp进行拆分———因为VAL不会超过<code>1000</code> .</p>
-<p>对拆分后的<code>delay</code>分段延时:<code>(delay/temp)*temp + delay%temp</code> .</p>
-<ol>
-<li>当<code>curr</code> ≥ 0时<br><img src="/images/delay_us/curr+.png"></li>
-</ol>
-<p>  通过<code>(val &lt; last) &amp;&amp; (val &gt;= curr)</code>来实现一次temp延时.</p>
-<ol start="2">
-<li>当<code>curr</code> ＜ 0时<br><img src="/images/delay_us/curr-1.png"></li>
-</ol>
-<p>  执行<code>curr += CPU_FREQUENCY_MHZ * 1000</code><br><img src="/images/delay_us/curr-2.png"></p>
-<p>  通过<code>(val &lt;= last) || (val &gt; curr)</code>来实现一次temp延时.</p>
-<h2 id="全通用"><a href="#全通用" class="headerlink" title="全通用"></a>全通用</h2><p>(这里是HAL写法)，但需要占用一个定时器 .</p>
-<pre><code class="c">    #define DLY_TIM_Handle (&amp;htimx)
-    void delay_us(uint16_t nus)
-    &#123;
-        __HAL_TIM_SET_COUNTER(DLY_TIM_Handle, 0);
-        __HAL_TIM_ENABLE(DLY_TIM_Handle);
-        while (__HAL_TIM_GET_COUNTER(DLY_TIM_Handle) &lt; nus)
-        &#123;
-            ;
-        &#125;
-        __HAL_TIM_DISABLE(DLY_TIM_Handle);
-    &#125;
-</code></pre>
-<h3 id="备注-2"><a href="#备注-2" class="headerlink" title="备注"></a>备注</h3><p>设置TIMx的计数周期为1μs,实现<code>delay_us</code> .</p>
 ]]></content>
       <categories>
         <category>MCU</category>
@@ -639,6 +583,62 @@ L = (Vin - Vout) * D / fsw * r * Iload
 ]]></content>
       <categories>
         <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>BUCK的电感值计算</title>
+    <url>/2023/09/08/MP2456/</url>
+    <content><![CDATA[<h1 id="手册"><a href="#手册" class="headerlink" title="手册"></a>手册</h1><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/buck/MP2456.jpg"></p>
+<h2 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h2><ul>
+<li>电感上的电流不能突变</li>
+<li>电感上储存的能量不能突变</li>
+</ul>
+<p>将公式变换为</p>
+<pre><code>V * Δt = L * ΔI    （1）
+</code></pre>
+<h2 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h2><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
+<pre><code>由(1)得出
+Ion、Ioff为导通与关断期间电感的电流变化量
+Von * ton = L * Ion
+Voff * toff = L * Ioff
+
+D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
+ton = D * T = D / fsw 
+toff = (1-D) * T = (1-D) / fsw
+代入至伏秒定律，得
+Von * ton = Von * D / fsw = L * Ion             (2.1)
+Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
+</code></pre>
+<h2 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h2><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
+<pre><code>（1）负载电流 Iload = Idc
+（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
+（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
+ 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
+</code></pre>
+<h2 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h2><p>此图为同步整流的BUCK电路模型<br><img src="/images/buck/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
+<h3 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h3><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
+<pre><code>根据(2.1)、(1)、(3)有
+Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
+将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
+得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
+</code></pre>
+<h3 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h3><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
+<pre><code>根据(2.2)、(1)、(3)有
+Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
+将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
+得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
+</code></pre>
+<h2 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h2><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式</p>
+<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
+只要满足 Vout / Vin = D ，可使(4.1)与(4.2) 相同
+即 (Vin - Vout) * D = Vout * (1-D)
+将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
+故，Buck电路的电感计算公式为
+L = (Vin - Vout) * D / fsw * r * Iload
+</code></pre>
+]]></content>
+      <categories>
+        <category>开关电源</category>
       </categories>
   </entry>
 </search>
