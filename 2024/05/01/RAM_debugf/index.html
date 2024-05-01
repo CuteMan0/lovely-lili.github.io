@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
-    <title>Categories: MCU | lovely-lily&#39;s blog</title>
+    <title>在RAM中调试 | lovely-lily&#39;s blog</title>
     <meta name="author" content="lovely-lily" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -36,6 +36,10 @@
 
 
 <script src="/js/lib/preview.js"></script>
+
+
+
+
 
 
 
@@ -135,14 +139,20 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="archives">
-    
-    <div class="categories-tags">
+            <div class="article">
+    <div>
+        <h1>在RAM中调试</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/5/1
+        </span>
         
-        
-        
-        <span>
-            <a href="/categories/MCU/" style="background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%)">
+        <span class="category">
+            <a href="/categories/MCU/">
                 <span class="icon">
                     <i class="fa-solid fa-bookmark fa-fw"></i>
                 </span>
@@ -151,158 +161,39 @@
         </span>
         
         
-        
-        
-        
-        <span>
-            <a href="/categories/%E5%BC%80%E5%85%B3%E7%94%B5%E6%BA%90/" style="background: #03a9f4">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                开关电源
-            </a>
-        </span>
-        
-        
     </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2024/5/1</div>
-            <a href="/2024/05/01/RAM_debugf/">
-                <h3>在RAM中调试</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/MCU/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        MCU
-                    </a>
-                </span>
-                
-                
-            </div>
-        </div>
+    <div class="content" v-pre>
+        <h1 id="在RAM中调试的好处？"><a href="#在RAM中调试的好处？" class="headerlink" title="在RAM中调试的好处？"></a>在RAM中调试的好处？</h1><h2 id="FLASH的擦除寿命"><a href="#FLASH的擦除寿命" class="headerlink" title="FLASH的擦除寿命"></a>FLASH的擦除寿命</h2><p>需要了解的是<code>FLASH</code>的擦除次数有限，例如：<code>STM32g0xx</code>的擦除耐力大约在<code>10K</code>次。<br><img src="/images/RAM_Debug/FLASH_endurance.png"></p>
+<p>而每次烧录程序是会对 部分 &#x2F; 所有 扇区进行擦除然后再写入的，虽然<code>10K</code>是一个较大的值，假设每天烧录百次也需要百天才会损耗掉频繁使用的区域。<br>但更具有优势的是把程序放在<code>RAM</code>中运行，并不用担心擦除耐力这个问题。不止于此，在<code>RAM</code>中烧录程序会非常迅速，因为省去了擦除<code>FLASH</code>操作所带来的时间。</p>
+<h1 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h1><h2 id="设置启动地址"><a href="#设置启动地址" class="headerlink" title="设置启动地址"></a>设置启动地址</h2><p>在<code>STM32</code>中我们可以设置 <code>BOOT</code>引脚 &#x2F; 选项字节 使<code>MCU</code>在不同的地址区域上电运行。</p>
+<ul>
+<li>通过<code>BOOTx</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Pin.png"></li>
+<li>通过<code>BOOT</code>和<code>选项字节</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Reg.png"></li>
+</ul>
+<h2 id="链接设置"><a href="#链接设置" class="headerlink" title="链接设置"></a>链接设置</h2><p>虽然设置了<code>MCU</code>上电在<code>RAM</code>中启动，但是需要仔细的是编译之后生成的文件并没有全部正确的链接到<code>RAM</code>所属的地址当中。这时需要我们修改<code>ld</code>文件,将<strong>所有</strong>的分区映射到<code>RAM</code>当中。</p>
+<ul>
+<li>这里仅演示部分修改。<br><img src="/images/RAM_Debug/Chang_ld.png"></li>
+</ul>
+<p>修改之后，编译输出信息里我们会观察到<code>FLASH</code>占用为<code>0%</code>。<br><img src="/images/RAM_Debug/Build.png"></p>
+<h2 id="Debug设置"><a href="#Debug设置" class="headerlink" title="Debug设置"></a>Debug设置</h2><p>如果顺利完成上述中<code>设置启动地址</code>和<code>链接设置</code>这两步，并且烧录后进行软复位（复位PC等寄存器），程序会正常运行，但是看上去似乎和在<code>FLASH</code>中运行没有区别。因为即便是烧录到<code>FLASH</code>中，程序也会“搬移”到<code>RAM</code>中运行，所以大多数情况在<code>RAM</code>或者<code>FLASH</code>中调试结果区别不大。</p>
+<p>那如何判断之前的工作是否成功呢？一个有效的办法是在程序运行时，观察<code>PC</code>的值是否如我们所愿——在<code>RAM</code>所属的地址区域内变化。</p>
+<ul>
+<li>在示例图中：PC值为<code>0x20000226</code>，值得高兴的是，这属于<code>RAM</code>的地址——告示着，配置工作成功完成了。<br><img src="/images/RAM_Debug/PC_Value.png"></li>
+</ul>
+<h1 id="一些Bug"><a href="#一些Bug" class="headerlink" title="一些Bug"></a>一些Bug</h1><p>因为笔者不久前成功完成了一款<code>Wireless DAP-Link</code>的制作， 无线 &#x2F; 有线 模式工作正常。但是当笔者想要在<code>RAM</code>中烧录时候却出现校验不通过问题，惊奇的是在调试模式及退出后程序都是如期进行的。<br><img src="/images/RAM_Debug/Verify_Error.png"></p>
+<ul>
+<li><code>ST-Link</code>、<code>J-Link</code>在烧录程序时候非常顺利。</li>
+<li><code> DAP-Link</code>需要按住<code>RST</code>并在烧录过程中松开。<del>或许这样避开了校验</del></li>
+</ul>
+
     </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2024/4/17</div>
-            <a href="/2024/04/17/EIDE/">
-                <h3>Embedded IDE</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/MCU/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        MCU
-                    </a>
-                </span>
-                
-                
-            </div>
-        </div>
-    </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2024/4/15</div>
-            <a href="/2024/04/15/ARM/">
-                <h3>ARM学习笔记</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/MCU/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        MCU
-                    </a>
-                </span>
-                
-                
-            </div>
-        </div>
-    </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2024/1/29</div>
-            <a href="/2024/01/29/DHT20/">
-                <h3>DHT20（硬件I2C）</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/MCU/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        MCU
-                    </a>
-                </span>
-                
-                
-            </div>
-        </div>
-    </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2023/12/29</div>
-            <a href="/2023/12/29/Delay_us/">
-                <h3>微秒级delay</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/MCU/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        MCU
-                    </a>
-                </span>
-                
-                
-            </div>
-        </div>
-    </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2023/10/20</div>
-            <a href="/2023/10/20/SSD1306/">
-                <h3>SSD1306</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/MCU/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        MCU
-                    </a>
-                </span>
-                
-                
-            </div>
-        </div>
-    </div>
+    
     
 </div>
 
@@ -334,6 +225,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 	
 	<canvas
