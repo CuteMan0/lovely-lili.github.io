@@ -159,6 +159,94 @@
 ]]></content>
   </entry>
   <entry>
+    <title>DHT20（硬件I2C）</title>
+    <url>/2024/01/29/DHT20/</url>
+    <content><![CDATA[<p>ASAIR继DHT11推出了<code>DHT20</code>，采用I2C协议通信。除此外，两者在量程与精度上也有些许差别,详见：</p>
+<blockquote>
+<p>DHT20 <a href="http://www.aosong.com/en/products-67.html">http://www.aosong.com/en/products-67.html</a> </p>
+</blockquote>
+<blockquote>
+<p>DHT11 <a href="http://www.aosong.com/en/products-21.html">http://www.aosong.com/en/products-21.html</a></p>
+</blockquote>
+<h1 id="引脚定义-从机地址"><a href="#引脚定义-从机地址" class="headerlink" title="引脚定义 &amp; 从机地址"></a>引脚定义 &amp; 从机地址</h1><p><img src="/images/hw_i2c/dht20_pinset.png"></p>
+<p><img src="/images/hw_i2c/state_bit.png"></p>
+<h1 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h1><p><code>DHT20</code>上电之后需等待100ms并初始化，测量时的数据格式如图示：<br><img src="/images/hw_i2c/Mind_map.png"></p>
+<h1 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h1><pre><code class="c">    void dht20_run(float *pdht20)
+    &#123;
+        uint8_t pt_DAT[] = &#123;0xAC,0x33,0x00&#125;;
+        uint8_t pr_DAT[7] = &#123;0x00&#125;;
+        static char init = 1;
+        
+        if(init)
+        &#123;
+            HAL_Delay(100);//上电100ms等待
+            init -= 1;
+        &#125;
+        HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,1,100);//读状态字
+            
+        if( (pr_DAT[0] &amp; 0x10) &amp;&amp; (pr_DAT[0] &amp;0x08) )
+        &#123;
+            HAL_Delay(10);
+            HAL_I2C_Master_Transmit(&amp;hi2c1,0x71,pt_DAT,3,100);//触发测量
+        &#125;
+        else
+        &#123;
+            //dht20_RegInit();//初始化1B\1C\1E寄存器
+            //return Reg_status;
+        &#125;  
+        HAL_Delay(80);//等待转换
+
+        HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,7,100);//接受数据
+        while( pr_DAT[0]&amp;0x80 )
+        &#123;
+            //Busy_handler();//正忙
+        &#125;
+        
+        pdht20[0] = (((pr_DAT[1]&lt;&lt;12) + (pr_DAT[2]&lt;&lt;4) + (pr_DAT[3]&gt;&gt;4))*100.0) / 0xfffff;
+        pdht20[1] = ((((pr_DAT[3]&lt;&lt;28)&gt;&gt;12) + (pr_DAT[4]&lt;&lt;8) + (pr_DAT[5]))*200.0) / 0xfffff - 50;
+    &#125;
+</code></pre>
+<h1 id="数据转换"><a href="#数据转换" class="headerlink" title="数据转换"></a>数据转换</h1><p>测量后分别将获得温湿度的20位数据带入下图公式计算得出测量值。<br><img src="/images/hw_i2c/RH.png"><br><img src="/images/hw_i2c/T.png"><br>如数据：<code>1c（状态字）8c 67 34 e5 2c</code>，计算得到湿度：<code>54.844951%RH</code>，温度：<code>11.190032℃</code>.</p>
+<h1 id="CRC8-X8-X5-X4-1"><a href="#CRC8-X8-X5-X4-1" class="headerlink" title="CRC8 (X8+X5+X4+1)"></a>CRC8 (X8+X5+X4+1)</h1><p><code>DHT20</code>支持<code>CRC</code>校验，在收到六个字节的数据后，可响应<code>ACK/NACK</code>来接收&#x2F;拒绝<code>CRC</code>校验值 .<br><img src="/images/hw_i2c/CRC_output.png"></p>
+<p><code>DHT20</code>的<code>CRC</code>的初始化结构体与参数配置如下图:</p>
+<pre><code class="c">        typedef struct
+        &#123;
+            uint8_t DefaultPolynomialUse;		//是否使用默认多项式
+            uint8_t DefaultInitValueUse;		//是否使用默认初始值
+            uint32_t GeneratingPolynomial;		//配置多项式--不使用默认时
+            uint32_t CRCLength;				    //CRC校验的位数
+            uint32_t InitValue;				    //配置初始值--不使用默认时
+            uint32_t InputDataInversionMode;    //输入数据反转模式
+            uint32_t OutputDataInversionMode;   //输出数据反转模式
+        &#125; CRC_InitTypeDef;
+
+        hcrc.Instance = CRC;
+        hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_DISABLE;
+        hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_DISABLE;
+        hcrc.Init.GeneratingPolynomial = 49;//1|00110001
+        hcrc.Init.CRCLength = CRC_POLYLENGTH_8B;
+        hcrc.Init.InitValue = 0xffff;
+        hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+        hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+        hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+</code></pre>
+<ul>
+<li>需要仔细与<code>HAL_CRC_Calculate</code>不同，<code>HAL_CRC_Accumulate</code>不会自动重置<code>CRC_DR</code>，在使用前需要手动添加<code>__HAL_CRC_DR_RESET</code>重置<code>CRC_DR</code> .</li>
+</ul>
+<pre><code class="c">        uint8_t dht20_crc(CRC_HandleTypeDef *hcrc, uint8_t *pBuffer)
+        &#123;
+            uint8_t crc_val = 0;
+            // __HAL_CRC_DR_RESET(hcrc);                                //置位控制寄存器 CRC_CR[0] 以重置数据寄存器 CRC_DR[31:0]
+            // return crc_val  = HAL_CRC_Accumulate(hcrc, pBuffer, 6);  //累计CRC校验
+            return crc_val  = HAL_CRC_Calculate(hcrc, pBuffer, 6);      //单次CRC校验
+        &#125;
+</code></pre>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
     <title>微秒级delay</title>
     <url>/2023/12/29/Delay_us/</url>
     <content><![CDATA[<h1 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h1><p>转载声明:</p>
@@ -255,94 +343,6 @@
       </categories>
   </entry>
   <entry>
-    <title>DHT20（硬件I2C）</title>
-    <url>/2024/01/29/DHT20/</url>
-    <content><![CDATA[<p>ASAIR继DHT11推出了<code>DHT20</code>，采用I2C协议通信。除此外，两者在量程与精度上也有些许差别,详见：</p>
-<blockquote>
-<p>DHT20 <a href="http://www.aosong.com/en/products-67.html">http://www.aosong.com/en/products-67.html</a> </p>
-</blockquote>
-<blockquote>
-<p>DHT11 <a href="http://www.aosong.com/en/products-21.html">http://www.aosong.com/en/products-21.html</a></p>
-</blockquote>
-<h1 id="引脚定义-从机地址"><a href="#引脚定义-从机地址" class="headerlink" title="引脚定义 &amp; 从机地址"></a>引脚定义 &amp; 从机地址</h1><p><img src="/images/hw_i2c/dht20_pinset.png"></p>
-<p><img src="/images/hw_i2c/state_bit.png"></p>
-<h1 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h1><p><code>DHT20</code>上电之后需等待100ms并初始化，测量时的数据格式如图示：<br><img src="/images/hw_i2c/Mind_map.png"></p>
-<h1 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h1><pre><code class="c">    void dht20_run(float *pdht20)
-    &#123;
-        uint8_t pt_DAT[] = &#123;0xAC,0x33,0x00&#125;;
-        uint8_t pr_DAT[7] = &#123;0x00&#125;;
-        static char init = 1;
-        
-        if(init)
-        &#123;
-            HAL_Delay(100);//上电100ms等待
-            init -= 1;
-        &#125;
-        HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,1,100);//读状态字
-            
-        if( (pr_DAT[0] &amp; 0x10) &amp;&amp; (pr_DAT[0] &amp;0x08) )
-        &#123;
-            HAL_Delay(10);
-            HAL_I2C_Master_Transmit(&amp;hi2c1,0x71,pt_DAT,3,100);//触发测量
-        &#125;
-        else
-        &#123;
-            //dht20_RegInit();//初始化1B\1C\1E寄存器
-            //return Reg_status;
-        &#125;  
-        HAL_Delay(80);//等待转换
-
-        HAL_I2C_Master_Receive(&amp;hi2c1,0x71,pr_DAT,7,100);//接受数据
-        while( pr_DAT[0]&amp;0x80 )
-        &#123;
-            //Busy_handler();//正忙
-        &#125;
-        
-        pdht20[0] = (((pr_DAT[1]&lt;&lt;12) + (pr_DAT[2]&lt;&lt;4) + (pr_DAT[3]&gt;&gt;4))*100.0) / 0xfffff;
-        pdht20[1] = ((((pr_DAT[3]&lt;&lt;28)&gt;&gt;12) + (pr_DAT[4]&lt;&lt;8) + (pr_DAT[5]))*200.0) / 0xfffff - 50;
-    &#125;
-</code></pre>
-<h1 id="数据转换"><a href="#数据转换" class="headerlink" title="数据转换"></a>数据转换</h1><p>测量后分别将获得温湿度的20位数据带入下图公式计算得出测量值。<br><img src="/images/hw_i2c/RH.png"><br><img src="/images/hw_i2c/T.png"><br>如数据：<code>1c（状态字）8c 67 34 e5 2c</code>，计算得到湿度：<code>54.844951%RH</code>，温度：<code>11.190032℃</code>.</p>
-<h1 id="CRC8-X8-X5-X4-1"><a href="#CRC8-X8-X5-X4-1" class="headerlink" title="CRC8 (X8+X5+X4+1)"></a>CRC8 (X8+X5+X4+1)</h1><p><code>DHT20</code>支持<code>CRC</code>校验，在收到六个字节的数据后，可响应<code>ACK/NACK</code>来接收&#x2F;拒绝<code>CRC</code>校验值 .<br><img src="/images/hw_i2c/CRC_output.png"></p>
-<p><code>DHT20</code>的<code>CRC</code>的初始化结构体与参数配置如下图:</p>
-<pre><code class="c">        typedef struct
-        &#123;
-            uint8_t DefaultPolynomialUse;		//是否使用默认多项式
-            uint8_t DefaultInitValueUse;		//是否使用默认初始值
-            uint32_t GeneratingPolynomial;		//配置多项式--不使用默认时
-            uint32_t CRCLength;				    //CRC校验的位数
-            uint32_t InitValue;				    //配置初始值--不使用默认时
-            uint32_t InputDataInversionMode;    //输入数据反转模式
-            uint32_t OutputDataInversionMode;   //输出数据反转模式
-        &#125; CRC_InitTypeDef;
-
-        hcrc.Instance = CRC;
-        hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_DISABLE;
-        hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_DISABLE;
-        hcrc.Init.GeneratingPolynomial = 49;//1|00110001
-        hcrc.Init.CRCLength = CRC_POLYLENGTH_8B;
-        hcrc.Init.InitValue = 0xffff;
-        hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
-        hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-        hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
-</code></pre>
-<ul>
-<li>需要仔细与<code>HAL_CRC_Calculate</code>不同，<code>HAL_CRC_Accumulate</code>不会自动重置<code>CRC_DR</code>，在使用前需要手动添加<code>__HAL_CRC_DR_RESET</code>重置<code>CRC_DR</code> .</li>
-</ul>
-<pre><code class="c">        uint8_t dht20_crc(CRC_HandleTypeDef *hcrc, uint8_t *pBuffer)
-        &#123;
-            uint8_t crc_val = 0;
-            // __HAL_CRC_DR_RESET(hcrc);                                //置位控制寄存器 CRC_CR[0] 以重置数据寄存器 CRC_DR[31:0]
-            // return crc_val  = HAL_CRC_Accumulate(hcrc, pBuffer, 6);  //累计CRC校验
-            return crc_val  = HAL_CRC_Calculate(hcrc, pBuffer, 6);      //单次CRC校验
-        &#125;
-</code></pre>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Embedded IDE</title>
     <url>/2024/04/17/EIDE/</url>
     <content><![CDATA[<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>因为笔者难以忍受<code>Keil</code>的魔鬼 “智能” 补全，所以此篇应运而生，编写仓促，不免有误，请见谅 .</p>
@@ -395,36 +395,6 @@
 </blockquote>
 <ul>
 <li><code>3.16.0</code>版本中删除了自动生成<code>launch.json</code>调试配置的功能，取而代之的是菜单栏中的<code>Generate Cortex-Debug Configuration</code><br><img src="/images/EIDE/debug_menu.png"></li>
-</ul>
-]]></content>
-      <categories>
-        <category>MCU</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>在RAM中调试</title>
-    <url>/2024/05/01/RAM_debugf/</url>
-    <content><![CDATA[<h1 id="在RAM中调试的好处？"><a href="#在RAM中调试的好处？" class="headerlink" title="在RAM中调试的好处？"></a>在RAM中调试的好处？</h1><h2 id="FLASH的擦除寿命"><a href="#FLASH的擦除寿命" class="headerlink" title="FLASH的擦除寿命"></a>FLASH的擦除寿命</h2><p>需要了解的是<code>FLASH</code>的擦除次数有限，例如：<code>STM32g0xx</code>的擦除耐力大约在<code>10K</code>次。<br><img src="/images/RAM_Debug/FLASH_endurance.png"></p>
-<p>而每次烧录程序是会对 部分 &#x2F; 所有 扇区进行擦除然后再写入的，虽然<code>10K</code>是一个较大的值，假设每天烧录百次也需要百天才会损耗掉频繁使用的区域。<br>但更具有优势的是把程序放在<code>RAM</code>中运行，并不用担心擦除耐力这个问题。不止于此，在<code>RAM</code>中烧录程序会非常迅速，因为省去了擦除<code>FLASH</code>操作所带来的时间。</p>
-<h1 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h1><h2 id="设置启动地址"><a href="#设置启动地址" class="headerlink" title="设置启动地址"></a>设置启动地址</h2><p>在<code>STM32</code>中我们可以设置 <code>BOOT</code>引脚 &#x2F; 选项字节 使<code>MCU</code>在不同的地址区域上电运行。</p>
-<ul>
-<li>通过<code>BOOTx</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Pin.png"></li>
-<li>通过<code>BOOT</code>和<code>选项字节</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Reg.png"></li>
-</ul>
-<h2 id="链接设置"><a href="#链接设置" class="headerlink" title="链接设置"></a>链接设置</h2><p>虽然设置了<code>MCU</code>上电在<code>RAM</code>中启动，但是需要仔细的是编译之后生成的文件并没有全部正确的链接到<code>RAM</code>所属的地址当中。这时需要我们修改<code>ld</code>文件,将<strong>所有</strong>的分区映射到<code>RAM</code>当中。</p>
-<ul>
-<li>这里仅演示部分修改。<br><img src="/images/RAM_Debug/Chang_ld.png"></li>
-</ul>
-<p>修改之后，编译输出信息里我们会观察到<code>FLASH</code>占用为<code>0%</code>。<br><img src="/images/RAM_Debug/Build.png"></p>
-<h2 id="Debug设置"><a href="#Debug设置" class="headerlink" title="Debug设置"></a>Debug设置</h2><p>如果顺利完成上述中<code>设置启动地址</code>和<code>链接设置</code>这两步，并且烧录后进行软复位（复位PC等寄存器），程序会正常运行，但是看上去似乎和在<code>FLASH</code>中运行没有区别。因为即便是烧录到<code>FLASH</code>中，程序也会“搬移”到<code>RAM</code>中运行，所以大多数情况在<code>RAM</code>或者<code>FLASH</code>中调试结果区别不大。</p>
-<p>那如何判断之前的工作是否成功呢？一个有效的办法是在程序运行时，观察<code>PC</code>的值是否如我们所愿——在<code>RAM</code>所属的地址区域内变化。</p>
-<ul>
-<li>在示例图中：PC值为<code>0x20000226</code>，值得高兴的是，这属于<code>RAM</code>的地址——告示着，配置工作成功完成了。<br><img src="/images/RAM_Debug/PC_Value.png"></li>
-</ul>
-<h1 id="一些Bug"><a href="#一些Bug" class="headerlink" title="一些Bug"></a>一些Bug</h1><p>因为笔者不久前成功完成了一款<code>Wireless DAP-Link</code>的制作， 无线 &#x2F; 有线 模式工作正常。但是当笔者想要在<code>RAM</code>中烧录时候却出现校验不通过问题，惊奇的是在调试模式及退出后程序都是如期进行的。<br><img src="/images/RAM_Debug/Verify_Error.png"></p>
-<ul>
-<li><code>ST-Link</code>、<code>J-Link</code>在烧录程序时候非常顺利。</li>
-<li><code> DAP-Link</code>需要按住<code>RST</code>并在烧录过程中松开。<del>或许这样避开了校验</del></li>
 </ul>
 ]]></content>
       <categories>
@@ -669,6 +639,36 @@ L = (Vin - Vout) * D / fsw * r * Iload
 ]]></content>
       <categories>
         <category>开关电源</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>在RAM中调试</title>
+    <url>/2024/05/01/RAM_debugf/</url>
+    <content><![CDATA[<h1 id="在RAM中调试的好处？"><a href="#在RAM中调试的好处？" class="headerlink" title="在RAM中调试的好处？"></a>在RAM中调试的好处？</h1><h2 id="FLASH的擦除寿命"><a href="#FLASH的擦除寿命" class="headerlink" title="FLASH的擦除寿命"></a>FLASH的擦除寿命</h2><p>需要了解的是<code>FLASH</code>的擦除次数有限，例如：<code>STM32g0xx</code>的擦除耐力大约在<code>10K</code>次。<br><img src="/images/RAM_Debug/FLASH_endurance.png"></p>
+<p>而每次烧录程序是会对 部分 &#x2F; 所有 扇区进行擦除然后再写入的，虽然<code>10K</code>是一个较大的值，假设每天烧录百次也需要百天才会损耗掉频繁使用的区域。<br>但更具有优势的是把程序放在<code>RAM</code>中运行，并不用担心擦除耐力这个问题。不止于此，在<code>RAM</code>中烧录程序会非常迅速，因为省去了擦除<code>FLASH</code>操作所带来的时间。</p>
+<h1 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h1><h2 id="设置启动地址"><a href="#设置启动地址" class="headerlink" title="设置启动地址"></a>设置启动地址</h2><p>在<code>STM32</code>中可以设置 <code>BOOT</code>引脚 &#x2F; 选项字节 使<code>MCU</code>在不同的地址区域上电运行。</p>
+<ul>
+<li>通过<code>BOOTx</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Pin.png"></li>
+<li>通过<code>BOOT</code>和<code>选项字节</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Reg.png"></li>
+</ul>
+<h2 id="链接设置"><a href="#链接设置" class="headerlink" title="链接设置"></a>链接设置</h2><p>虽然设置了<code>MCU</code>上电在<code>RAM</code>中启动，但是需要仔细的是编译之后生成的文件并没有全部正确的链接到<code>RAM</code>所属的地址当中。这时需要修改<code>ld</code>文件,将<strong>所有</strong>的分区映射到<code>RAM</code>当中。</p>
+<ul>
+<li>这里仅演示部分修改。<br><img src="/images/RAM_Debug/Chang_ld.png"></li>
+</ul>
+<p>修改之后，编译输出信息里会观察到<code>FLASH</code>占用为<code>0%</code>。<br><img src="/images/RAM_Debug/Build.png"></p>
+<h2 id="Debug设置"><a href="#Debug设置" class="headerlink" title="Debug设置"></a>Debug设置</h2><p>如果顺利完成上述中<code>设置启动地址</code>和<code>链接设置</code>这两步，并且烧录后进行软复位（复位PC等寄存器），程序会正常运行，但是看上去似乎和在<code>FLASH</code>中运行没有区别。因为即便是烧录到<code>FLASH</code>中，程序也会“搬移”到<code>RAM</code>中运行，所以大多数情况在<code>RAM</code>或者<code>FLASH</code>中调试结果区别不大。</p>
+<p>那如何判断之前的工作是否成功呢？一个有效的办法是在程序运行时，观察<code>PC</code>的值是否如所愿——在<code>RAM</code>所属的地址区域内变化。</p>
+<ul>
+<li>在示例图中：PC值为<code>0x20000226</code>，值得高兴的是，这属于<code>RAM</code>的地址——告示着，配置工作成功完成了。<br><img src="/images/RAM_Debug/PC_Value.png"></li>
+</ul>
+<h1 id="一些Bug"><a href="#一些Bug" class="headerlink" title="一些Bug"></a>一些Bug</h1><p>因为笔者不久前成功完成了一款<code>Wireless DAP-Link</code>的制作， 无线 &#x2F; 有线 模式工作正常。但是当笔者想要在<code>RAM</code>中烧录时候却出现校验不通过问题，惊奇的是在调试模式及退出后程序都是如期进行的。<br><img src="/images/RAM_Debug/Verify_Error.png"></p>
+<ul>
+<li><code>ST-Link</code>、<code>J-Link</code>在烧录程序时候非常顺利。</li>
+<li><code> DAP-Link</code>需要按住<code>RST</code>并在烧录过程中松开。<del>或许这样避开了校验</del></li>
+</ul>
+]]></content>
+      <categories>
+        <category>MCU</category>
       </categories>
   </entry>
 </search>
