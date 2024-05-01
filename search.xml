@@ -153,6 +153,12 @@
       </categories>
   </entry>
   <entry>
+    <title>About me</title>
+    <url>/2023/08/14/About%20me/</url>
+    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大三<br>欢迎与我交流一些电子技术哦！</p>
+]]></content>
+  </entry>
+  <entry>
     <title>DHT20（硬件I2C）</title>
     <url>/2024/01/29/DHT20/</url>
     <content><![CDATA[<p>ASAIR继DHT11推出了<code>DHT20</code>，采用I2C协议通信。除此外，两者在量程与精度上也有些许差别,详见：</p>
@@ -335,12 +341,6 @@
       <categories>
         <category>MCU</category>
       </categories>
-  </entry>
-  <entry>
-    <title>About me</title>
-    <url>/2023/08/14/About%20me/</url>
-    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大三<br>欢迎与我交流一些电子技术哦！</p>
-]]></content>
   </entry>
   <entry>
     <title>Embedded IDE</title>
