@@ -3,8 +3,7 @@
   <entry>
     <title>ARM学习笔记</title>
     <url>/2024/04/15/ARM/</url>
-    <content><![CDATA[<h1 id="前因后果"><a href="#前因后果" class="headerlink" title="前因后果"></a>前因后果</h1><p>上学期教授我微机原理一课的老师，这学期在其他专业讲嵌入式课程，<del>舍友非常喜欢那位老师，可能是害羞也可能是为壮士气于是拉我入伙去旁听</del> .</p>
-<h1 id="ARM的基础知识"><a href="#ARM的基础知识" class="headerlink" title="ARM的基础知识"></a>ARM的基础知识</h1><h2 id="ARM的处理器模式"><a href="#ARM的处理器模式" class="headerlink" title="ARM的处理器模式"></a>ARM的处理器模式</h2><p>在<code>ARM Cortex-A</code>&#x2F;<code>ARMv7-A</code>系列中有9种Mode,其中实现了安全扩展的处理器才有<code>MON</code>模式.</p>
+    <content><![CDATA[<h1 id="ARM-的基础知识"><a href="#ARM-的基础知识" class="headerlink" title="ARM 的基础知识"></a>ARM 的基础知识</h1><h2 id="ARM-的处理器模式"><a href="#ARM-的处理器模式" class="headerlink" title="ARM 的处理器模式"></a>ARM 的处理器模式</h2><p>在<code>ARM Cortex-A</code>&#x2F;<code>ARMv7-A</code>系列中有 9 种 Mode,其中实现了安全扩展的处理器才有<code>MON</code>模式.</p>
 <table>
 <thead>
 <tr>
@@ -21,17 +20,17 @@
 <tr>
 <td>FIQ</td>
 <td>10001</td>
-<td>进入FIQ中断异常</td>
+<td>进入 FIQ 中断异常</td>
 </tr>
 <tr>
 <td>IRQ</td>
 <td>10010</td>
-<td>进入IRQ中断异常</td>
+<td>进入 IRQ 中断异常</td>
 </tr>
 <tr>
 <td>SVC&#x2F;SWI(Supervisor)</td>
 <td>10011</td>
-<td>管理调用指令被执行或者reset,软中断</td>
+<td>管理调用指令被执行或者 reset,软中断</td>
 </tr>
 <tr>
 <td>MON(Monitor)</td>
@@ -59,15 +58,15 @@
 <td>特权模式，与用户模式共享寄存器</td>
 </tr>
 </tbody></table>
-<h2 id="ARM寄存器组"><a href="#ARM寄存器组" class="headerlink" title="ARM寄存器组"></a>ARM寄存器组</h2><p><img src="/images/ARM/ARM_Reg.png"></p>
+<h2 id="ARM-寄存器组"><a href="#ARM-寄存器组" class="headerlink" title="ARM 寄存器组"></a>ARM 寄存器组</h2><p><img src="/images/ARM/ARM_Reg.png"></p>
 <ul>
 <li><code>R1-R12</code>是<code>32bit</code>通用寄存器，并被<code>FIQ</code>以外的模式共享 .</li>
 <li><code>R13(SP)</code>栈指针、<code>R14(LR)</code>链接寄存器、<code>R15(PC)</code>程序计数器 .</li>
 <li><code>APSR/CPSR</code>应用&#x2F;当前程序状态寄存器 .</li>
-<li><code>SPSR</code>已存储..，相当于CPSR切换模式时的备份 .</li>
+<li><code>SPSR</code>已存储..，相当于 CPSR 切换模式时的备份 .</li>
 <li><code>Thumb</code>指令只能访问<code>R0-R7</code> .</li>
 </ul>
-<h3 id="CPSR的格式"><a href="#CPSR的格式" class="headerlink" title="CPSR的格式"></a>CPSR的格式</h3><table>
+<h3 id="CPSR-的格式"><a href="#CPSR-的格式" class="headerlink" title="CPSR 的格式"></a>CPSR 的格式</h3><table>
 <thead>
 <tr>
 <th>31 : 27</th>
@@ -100,7 +99,7 @@
 </tr>
 </tbody></table>
 <ul>
-<li>N - ALU负数</li>
+<li>N - ALU 负数</li>
 <li>Z - ..零位</li>
 <li>C - ..进位</li>
 <li>V - ..溢出</li>
@@ -120,31 +119,31 @@
 <p><a href="https://zhuanlan.zhihu.com/p/425235910">https://zhuanlan.zhihu.com/p/425235910</a></p>
 </blockquote>
 <p><img src="/images/ARM/pipelining.png"></p>
-<p>在<code>ARM Cortex-A</code>中使用的是5级流水线 .</p>
+<p>在<code>ARM Cortex-A</code>中使用的是 5 级流水线 .</p>
 <ol>
 <li><p>Inst Fetch</p>
-<p> 从<code>PC</code>中指向的地址取指令并放入指令寄存器<code>IR</code>,接着<code>PC+4</code>指向顺序的下一条指令 .</p>
+<p>从<code>PC</code>中指向的地址取指令并放入指令寄存器<code>IR</code>,接着<code>PC+4</code>指向顺序的下一条指令 .</p>
 </li>
 <li><p>.. Decode</p>
-<p> 对指令进行译码，并用<code>IR</code>中的寄存器地址去访问通用寄存器组，读出所需的操作数 .</p>
+<p>对指令进行译码，并用<code>IR</code>中的寄存器地址去访问通用寄存器组，读出所需的操作数 .</p>
 </li>
 <li><p>Excute</p>
-<p> 对不同类型指令进行的响应的执行操作 .</p>
+<p>对不同类型指令进行的响应的执行操作 .</p>
 </li>
 <li><p>Memory</p>
-<p> 该周期处理的指令只有<code>Load、Store</code>和<code>分支指令</code> .</p>
+<p>该周期处理的指令只有<code>Load、Store</code>和<code>分支指令</code> .</p>
 <ul>
 <li><code>Load、Store</code> 用于访存读写 .</li>
-<li><code>分支指令</code>将转移目标地址送入<code>PC</code>，在编写跳转程序时，应合理优化 <del>采用延迟转移</del> 避免分支预测失败带来的流水线停顿，提高CPU效率 .</li>
+<li><code>分支指令</code>将转移目标地址送入<code>PC</code>，在编写跳转程序时，应合理优化 <del>采用延迟转移</del> 避免分支预测失败带来的流水线停顿，提高 CPU 效率 .</li>
 </ul>
 </li>
 <li><p>Write</p>
-<p> 将<code>ALU</code>运算指令后的结果写入寄存器组 .</p>
+<p>将<code>ALU</code>运算指令后的结果写入寄存器组 .</p>
 </li>
 </ol>
 <ul>
 <li><p>仔细</p>
-<p>  需要指出的是：在此流水线中<code>Excute</code>期间执行的指令的地址与<code>PC</code>所指向的地址间隔<code>8 Byte</code> .</p>
+<p>需要指出的是：在此流水线中<code>Excute</code>期间执行的指令的地址与<code>PC</code>所指向的地址间隔<code>8 Byte</code> .</p>
 </li>
 </ul>
 ]]></content>
@@ -155,7 +154,7 @@
   <entry>
     <title>About me</title>
     <url>/2023/08/14/About%20me/</url>
-    <content><![CDATA[<h3 id="欢迎来到lovely-lili’s-Blog"><a href="#欢迎来到lovely-lili’s-Blog" class="headerlink" title="欢迎来到lovely-lili’s Blog"></a>欢迎来到lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大三<br>欢迎与我交流一些电子技术哦！</p>
+    <content><![CDATA[<h3 id="欢迎来到-lovely-lili’s-Blog"><a href="#欢迎来到-lovely-lili’s-Blog" class="headerlink" title="欢迎来到 lovely-lili’s Blog"></a>欢迎来到 lovely-lili’s Blog</h3><h4 id="我是谁"><a href="#我是谁" class="headerlink" title="我是谁"></a>我是谁</h4><p>我是笠笠，<code>EIE</code>专业的在读大四<br>欢迎与我交流一些电子技术哦！</p>
 ]]></content>
   </entry>
   <entry>
@@ -343,62 +342,6 @@
       </categories>
   </entry>
   <entry>
-    <title>BUCK的电感值计算</title>
-    <url>/2023/09/08/MP2456/</url>
-    <content><![CDATA[<h1 id="手册"><a href="#手册" class="headerlink" title="手册"></a>手册</h1><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/buck/MP2456.jpg"></p>
-<h2 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h2><ul>
-<li>电感上的电流不能突变</li>
-<li>电感上储存的能量不能突变</li>
-</ul>
-<p>将公式变换为</p>
-<pre><code>V * Δt = L * ΔI    （1）
-</code></pre>
-<h2 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h2><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
-<pre><code>由(1)得出
-Ion、Ioff为导通与关断期间电感的电流变化量
-Von * ton = L * Ion
-Voff * toff = L * Ioff
-
-D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
-ton = D * T = D / fsw 
-toff = (1-D) * T = (1-D) / fsw
-代入至伏秒定律，得
-Von * ton = Von * D / fsw = L * Ion             (2.1)
-Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
-</code></pre>
-<h2 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h2><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
-<pre><code>（1）负载电流 Iload = Idc
-（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
-（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
- 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
-</code></pre>
-<h2 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h2><p>此图为同步整流的BUCK电路模型<br><img src="/images/buck/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
-<h3 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h3><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
-<pre><code>根据(2.1)、(1)、(3)有
-Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
-将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
-得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
-</code></pre>
-<h3 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h3><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
-<pre><code>根据(2.2)、(1)、(3)有
-Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
-将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
-得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
-</code></pre>
-<h2 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h2><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式</p>
-<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
-只要满足 Vout / Vin = D ，可使(4.1)与(4.2) 相同
-即 (Vin - Vout) * D = Vout * (1-D)
-将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
-故，Buck电路的电感计算公式为
-L = (Vin - Vout) * D / fsw * r * Iload
-</code></pre>
-]]></content>
-      <categories>
-        <category>开关电源</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Embedded IDE</title>
     <url>/2024/04/17/EIDE/</url>
     <content><![CDATA[<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>因为笔者难以忍受<code>Keil</code>的魔鬼 “智能” 补全，所以此篇应运而生，编写仓促，不免有误，请见谅 .</p>
@@ -458,33 +401,59 @@ L = (Vin - Vout) * D / fsw * r * Iload
       </categories>
   </entry>
   <entry>
-    <title>在RAM中调试</title>
-    <url>/2024/05/01/RAM_debugf/</url>
-    <content><![CDATA[<h1 id="在RAM中调试的好处？"><a href="#在RAM中调试的好处？" class="headerlink" title="在RAM中调试的好处？"></a>在RAM中调试的好处？</h1><h2 id="FLASH的擦除寿命"><a href="#FLASH的擦除寿命" class="headerlink" title="FLASH的擦除寿命"></a>FLASH的擦除寿命</h2><p>需要了解的是<code>FLASH</code>的擦除次数有限，例如：<code>STM32g0xx</code>的擦除耐力大约在<code>10K</code>次。<br><img src="/images/RAM_Debug/FLASH_endurance.png"></p>
-<p>而每次烧录程序是会对 部分 &#x2F; 所有 扇区进行擦除然后再写入的，虽然<code>10K</code>是一个较大的值，假设每天烧录百次也需要百天才会损耗掉频繁使用的区域。<br>但更具有优势的是把程序放在<code>RAM</code>中运行，并不用担心擦除耐力这个问题。不止于此，在<code>RAM</code>中烧录程序会非常迅速，因为省去了擦除<code>FLASH</code>操作所带来的时间。</p>
-<h1 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h1><h2 id="设置启动地址"><a href="#设置启动地址" class="headerlink" title="设置启动地址"></a>设置启动地址</h2><p>在<code>STM32</code>中可以设置 <code>BOOT</code>引脚 &#x2F; 选项字节 使<code>MCU</code>在不同的地址区域上电运行。</p>
-<ul>
-<li>通过<code>BOOTx</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Pin.png"></li>
-<li>通过<code>BOOT</code>和<code>选项字节</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Reg.png"></li>
+    <title>BUCK的电感值计算</title>
+    <url>/2023/09/08/MP2456/</url>
+    <content><![CDATA[<h1 id="手册"><a href="#手册" class="headerlink" title="手册"></a>手册</h1><p>MP2456 datasheet有关于电感值的计算公式<br>下图为手册相关内容<br><img src="/images/buck/MP2456.jpg"></p>
+<h2 id="电感感应电压公式-V-L-di-dt"><a href="#电感感应电压公式-V-L-di-dt" class="headerlink" title="电感感应电压公式 V &#x3D; L * (di&#x2F;dt)"></a>电感感应电压公式 V &#x3D; L * (di&#x2F;dt)</h2><ul>
+<li>电感上的电流不能突变</li>
+<li>电感上储存的能量不能突变</li>
 </ul>
-<h2 id="链接设置"><a href="#链接设置" class="headerlink" title="链接设置"></a>链接设置</h2><p>虽然设置了<code>MCU</code>上电在<code>RAM</code>中启动，但是需要仔细的是编译之后生成的文件并没有全部正确的链接到<code>RAM</code>所属的地址当中。这时需要修改<code>ld</code>文件,将<strong>所有</strong>的分区映射到<code>RAM</code>当中。</p>
-<ul>
-<li>这里仅演示部分修改。<br><img src="/images/RAM_Debug/Chang_ld.png"></li>
-</ul>
-<p>修改之后，编译输出信息里会观察到<code>FLASH</code>占用为<code>0%</code>。<br><img src="/images/RAM_Debug/Build.png"></p>
-<h2 id="Debug设置"><a href="#Debug设置" class="headerlink" title="Debug设置"></a>Debug设置</h2><p>如果顺利完成上述中<code>设置启动地址</code>和<code>链接设置</code>这两步，并且烧录后进行软复位（复位PC等寄存器），程序会正常运行，但是看上去似乎和在<code>FLASH</code>中运行没有区别。因为即便是烧录到<code>FLASH</code>中，程序也会“搬移”到<code>RAM</code>中运行，所以大多数情况在<code>RAM</code>或者<code>FLASH</code>中调试结果区别不大。</p>
-<p>那如何判断之前的工作是否成功呢？一个有效的办法是在程序运行时，观察<code>PC</code>的值是否如所愿——在<code>RAM</code>所属的地址区域内变化。</p>
-<ul>
-<li>在示例图中：PC值为<code>0x20000226</code>，值得高兴的是，这属于<code>RAM</code>的地址——告示着，配置工作成功完成了。<br><img src="/images/RAM_Debug/PC_Value.png"></li>
-</ul>
-<h1 id="一些Bug"><a href="#一些Bug" class="headerlink" title="一些Bug"></a>一些Bug</h1><p>因为笔者不久前成功完成了一款<code>Wireless DAP-Link</code>的制作， 无线 &#x2F; 有线 模式工作正常。但是当笔者想要在<code>RAM</code>中烧录时候却出现校验不通过问题，惊奇的是在调试模式及退出后程序都是如期进行的。<br><img src="/images/RAM_Debug/Verify_Error.png"></p>
-<ul>
-<li><code>ST-Link</code>、<code>J-Link</code>在烧录程序时候非常顺利。</li>
-<li><code> DAP-Link</code>需要按住<code>RST</code>并在烧录过程中松开。<del>或许这样避开了校验</del></li>
-</ul>
+<p>将公式变换为</p>
+<pre><code>V * Δt = L * ΔI    （1）
+</code></pre>
+<h2 id="伏秒定律-Von-ton-Voff-toff"><a href="#伏秒定律-Von-ton-Voff-toff" class="headerlink" title="伏秒定律 Von * ton &#x3D; Voff * toff"></a>伏秒定律 Von * ton &#x3D; Voff * toff</h2><p>伏秒定律指，导通阶段的电感电压 Von 与其导通时间 ton 的乘积必然等于关断阶段的电感电压 Voff 与其关断时间 toff 的乘积</p>
+<pre><code>由(1)得出
+Ion、Ioff为导通与关断期间电感的电流变化量
+Von * ton = L * Ion
+Voff * toff = L * Ioff
+
+D为占空比、T为开关周期、fsw为开关频率，在CCM模式下有
+ton = D * T = D / fsw 
+toff = (1-D) * T = (1-D) / fsw
+代入至伏秒定律，得
+Von * ton = Von * D / fsw = L * Ion             (2.1)
+Voff * toff = Voff * (1-D) / fsw = L * Ioff     (2.2)
+</code></pre>
+<h2 id="电流纹波率-r-ΔI-Idc"><a href="#电流纹波率-r-ΔI-Idc" class="headerlink" title="电流纹波率 r &#x3D; ΔI &#x2F; Idc"></a>电流纹波率 r &#x3D; ΔI &#x2F; Idc</h2><p>r 为电感的交流纹波 ΔI 与电感的直流分量 Idc 的比值，经验取值 0.3 - 0.5<br>    在Buck电路</p>
+<pre><code>（1）负载电流 Iload = Idc
+（2）电流纹波 ΔI 与交流分量 Iac 的关系：ΔI = 2 * Iac = r * Idc          (3)
+（3）峰值电流 Ipeak 与 Iac、Idc 的关系：Ipeak = Iac + Idc = Idc * (1+r/2)
+ 得出 Ipeak = Iload + 1/2 * ΔI 与手册吻合
+</code></pre>
+<h2 id="ton与toff的电路"><a href="#ton与toff的电路" class="headerlink" title="ton与toff的电路"></a>ton与toff的电路</h2><p>此图为同步整流的BUCK电路模型<br><img src="/images/buck/BUCK%E7%94%B5%E8%B7%AF%E5%9B%BE.png"></p>
+<h3 id="Von-Vin-Vout-ton段"><a href="#Von-Vin-Vout-ton段" class="headerlink" title="Von &#x3D; Vin - Vout (ton段)"></a>Von &#x3D; Vin - Vout (ton段)</h3><p>Buck电路，在ton期间Q1导通、Q2关断，电流回路如上图蓝色所示</p>
+<pre><code>根据(2.1)、(1)、(3)有
+Von * ton = Von * D / fsw = L * Ion = L * ΔI = L * r * Idc = L * r * Iload
+将 Von = Vin - Vout 代入 Von * D / fsw = L * r * Iload
+得 L = (Vin - Vout) * D / fsw * r * Iload       (4.1)
+</code></pre>
+<h3 id="Voff-Vout-toff段"><a href="#Voff-Vout-toff段" class="headerlink" title="Voff &#x3D; Vout (toff段)"></a>Voff &#x3D; Vout (toff段)</h3><p>Buck电路，在toff期间Q2导通、Q1关断，电流回路如上图红色所示</p>
+<pre><code>根据(2.2)、(1)、(3)有
+Voff * toff = Voff * (1-D) / fsw = L * Ioff = L * ΔI = L * r * Idc = L * r * Iload
+将 Voff = Vout 代入 Voff * (1-D) / fsw = L * r * Iload
+得 L = Vout * (1-D) / fsw * r * Iload           (4.2)
+</code></pre>
+<h2 id="传递函数-D-Vout-Vin"><a href="#传递函数-D-Vout-Vin" class="headerlink" title="传递函数 D &#x3D; Vout &#x2F; Vin"></a>传递函数 D &#x3D; Vout &#x2F; Vin</h2><p>在 ton 和 toff 段出现了(4.1)、(4.2)两个公式</p>
+<pre><code>(Vin - Vout) * D = Vin * D * (1 - Vout/Vin)
+只要满足 Vout / Vin = D ，可使(4.1)与(4.2) 相同
+即 (Vin - Vout) * D = Vout * (1-D)
+将 D = Vout / Vin 称为 BUCK电路 的直流传递函数
+故，Buck电路的电感计算公式为
+L = (Vin - Vout) * D / fsw * r * Iload
+</code></pre>
 ]]></content>
       <categories>
-        <category>MCU</category>
+        <category>开关电源</category>
       </categories>
   </entry>
   <entry>
@@ -666,6 +635,36 @@ L = (Vin - Vout) * D / fsw * r * Iload
 <h2 id="命令列表"><a href="#命令列表" class="headerlink" title="命令列表"></a>命令列表</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><p><img src="/images/sw_i2c/%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4.png"></p>
 <h3 id="滚动命令"><a href="#滚动命令" class="headerlink" title="滚动命令"></a>滚动命令</h3><p><img src="/images/sw_i2c/26.png"></p>
 <h3 id="11-8"><a href="#11-8" class="headerlink" title="11&#x2F;8"></a>11&#x2F;8</h3><p><img src="/images/%E9%B8%BD%E5%AD%90.png"></p>
+]]></content>
+      <categories>
+        <category>MCU</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>在RAM中调试</title>
+    <url>/2024/05/01/RAM_debugf/</url>
+    <content><![CDATA[<h1 id="在RAM中调试的好处？"><a href="#在RAM中调试的好处？" class="headerlink" title="在RAM中调试的好处？"></a>在RAM中调试的好处？</h1><h2 id="FLASH的擦除寿命"><a href="#FLASH的擦除寿命" class="headerlink" title="FLASH的擦除寿命"></a>FLASH的擦除寿命</h2><p>需要了解的是<code>FLASH</code>的擦除次数有限，例如：<code>STM32g0xx</code>的擦除耐力大约在<code>10K</code>次。<br><img src="/images/RAM_Debug/FLASH_endurance.png"></p>
+<p>而每次烧录程序是会对 部分 &#x2F; 所有 扇区进行擦除然后再写入的，虽然<code>10K</code>是一个较大的值，假设每天烧录百次也需要百天才会损耗掉频繁使用的区域。<br>但更具有优势的是把程序放在<code>RAM</code>中运行，并不用担心擦除耐力这个问题。不止于此，在<code>RAM</code>中烧录程序会非常迅速，因为省去了擦除<code>FLASH</code>操作所带来的时间。</p>
+<h1 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h1><h2 id="设置启动地址"><a href="#设置启动地址" class="headerlink" title="设置启动地址"></a>设置启动地址</h2><p>在<code>STM32</code>中可以设置 <code>BOOT</code>引脚 &#x2F; 选项字节 使<code>MCU</code>在不同的地址区域上电运行。</p>
+<ul>
+<li>通过<code>BOOTx</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Pin.png"></li>
+<li>通过<code>BOOT</code>和<code>选项字节</code>来设置启动地址。<br><img src="/images/RAM_Debug/BOOT_Reg.png"></li>
+</ul>
+<h2 id="链接设置"><a href="#链接设置" class="headerlink" title="链接设置"></a>链接设置</h2><p>虽然设置了<code>MCU</code>上电在<code>RAM</code>中启动，但是需要仔细的是编译之后生成的文件并没有全部正确的链接到<code>RAM</code>所属的地址当中。这时需要修改<code>ld</code>文件,将<strong>所有</strong>的分区映射到<code>RAM</code>当中。</p>
+<ul>
+<li>这里仅演示部分修改。<br><img src="/images/RAM_Debug/Chang_ld.png"></li>
+</ul>
+<p>修改之后，编译输出信息里会观察到<code>FLASH</code>占用为<code>0%</code>。<br><img src="/images/RAM_Debug/Build.png"></p>
+<h2 id="Debug设置"><a href="#Debug设置" class="headerlink" title="Debug设置"></a>Debug设置</h2><p>如果顺利完成上述中<code>设置启动地址</code>和<code>链接设置</code>这两步，并且烧录后进行软复位（复位PC等寄存器），程序会正常运行，但是看上去似乎和在<code>FLASH</code>中运行没有区别。因为即便是烧录到<code>FLASH</code>中，程序也会“搬移”到<code>RAM</code>中运行，所以大多数情况在<code>RAM</code>或者<code>FLASH</code>中调试结果区别不大。</p>
+<p>那如何判断之前的工作是否成功呢？一个有效的办法是在程序运行时，观察<code>PC</code>的值是否如所愿——在<code>RAM</code>所属的地址区域内变化。</p>
+<ul>
+<li>在示例图中：PC值为<code>0x20000226</code>，值得高兴的是，这属于<code>RAM</code>的地址——告示着，配置工作成功完成了。<br><img src="/images/RAM_Debug/PC_Value.png"></li>
+</ul>
+<h1 id="一些Bug"><a href="#一些Bug" class="headerlink" title="一些Bug"></a>一些Bug</h1><p>因为笔者不久前成功完成了一款<code>Wireless DAP-Link</code>的制作， 无线 &#x2F; 有线 模式工作正常。但是当笔者想要在<code>RAM</code>中烧录时候却出现校验不通过问题，惊奇的是在调试模式及退出后程序都是如期进行的。<br><img src="/images/RAM_Debug/Verify_Error.png"></p>
+<ul>
+<li><code>ST-Link</code>、<code>J-Link</code>在烧录程序时候非常顺利。</li>
+<li><code> DAP-Link</code>需要按住<code>RST</code>并在烧录过程中松开。<del>或许这样避开了校验</del></li>
+</ul>
 ]]></content>
       <categories>
         <category>MCU</category>

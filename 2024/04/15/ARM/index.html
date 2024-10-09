@@ -164,8 +164,7 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="前因后果"><a href="#前因后果" class="headerlink" title="前因后果"></a>前因后果</h1><p>上学期教授我微机原理一课的老师，这学期在其他专业讲嵌入式课程，<del>舍友非常喜欢那位老师，可能是害羞也可能是为壮士气于是拉我入伙去旁听</del> .</p>
-<h1 id="ARM的基础知识"><a href="#ARM的基础知识" class="headerlink" title="ARM的基础知识"></a>ARM的基础知识</h1><h2 id="ARM的处理器模式"><a href="#ARM的处理器模式" class="headerlink" title="ARM的处理器模式"></a>ARM的处理器模式</h2><p>在<code>ARM Cortex-A</code>&#x2F;<code>ARMv7-A</code>系列中有9种Mode,其中实现了安全扩展的处理器才有<code>MON</code>模式.</p>
+        <h1 id="ARM-的基础知识"><a href="#ARM-的基础知识" class="headerlink" title="ARM 的基础知识"></a>ARM 的基础知识</h1><h2 id="ARM-的处理器模式"><a href="#ARM-的处理器模式" class="headerlink" title="ARM 的处理器模式"></a>ARM 的处理器模式</h2><p>在<code>ARM Cortex-A</code>&#x2F;<code>ARMv7-A</code>系列中有 9 种 Mode,其中实现了安全扩展的处理器才有<code>MON</code>模式.</p>
 <table>
 <thead>
 <tr>
@@ -182,17 +181,17 @@
 <tr>
 <td>FIQ</td>
 <td>10001</td>
-<td>进入FIQ中断异常</td>
+<td>进入 FIQ 中断异常</td>
 </tr>
 <tr>
 <td>IRQ</td>
 <td>10010</td>
-<td>进入IRQ中断异常</td>
+<td>进入 IRQ 中断异常</td>
 </tr>
 <tr>
 <td>SVC&#x2F;SWI(Supervisor)</td>
 <td>10011</td>
-<td>管理调用指令被执行或者reset,软中断</td>
+<td>管理调用指令被执行或者 reset,软中断</td>
 </tr>
 <tr>
 <td>MON(Monitor)</td>
@@ -220,15 +219,15 @@
 <td>特权模式，与用户模式共享寄存器</td>
 </tr>
 </tbody></table>
-<h2 id="ARM寄存器组"><a href="#ARM寄存器组" class="headerlink" title="ARM寄存器组"></a>ARM寄存器组</h2><p><img src="/images/ARM/ARM_Reg.png"></p>
+<h2 id="ARM-寄存器组"><a href="#ARM-寄存器组" class="headerlink" title="ARM 寄存器组"></a>ARM 寄存器组</h2><p><img src="/images/ARM/ARM_Reg.png"></p>
 <ul>
 <li><code>R1-R12</code>是<code>32bit</code>通用寄存器，并被<code>FIQ</code>以外的模式共享 .</li>
 <li><code>R13(SP)</code>栈指针、<code>R14(LR)</code>链接寄存器、<code>R15(PC)</code>程序计数器 .</li>
 <li><code>APSR/CPSR</code>应用&#x2F;当前程序状态寄存器 .</li>
-<li><code>SPSR</code>已存储..，相当于CPSR切换模式时的备份 .</li>
+<li><code>SPSR</code>已存储..，相当于 CPSR 切换模式时的备份 .</li>
 <li><code>Thumb</code>指令只能访问<code>R0-R7</code> .</li>
 </ul>
-<h3 id="CPSR的格式"><a href="#CPSR的格式" class="headerlink" title="CPSR的格式"></a>CPSR的格式</h3><table>
+<h3 id="CPSR-的格式"><a href="#CPSR-的格式" class="headerlink" title="CPSR 的格式"></a>CPSR 的格式</h3><table>
 <thead>
 <tr>
 <th>31 : 27</th>
@@ -261,7 +260,7 @@
 </tr>
 </tbody></table>
 <ul>
-<li>N - ALU负数</li>
+<li>N - ALU 负数</li>
 <li>Z - ..零位</li>
 <li>C - ..进位</li>
 <li>V - ..溢出</li>
@@ -281,31 +280,31 @@
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/425235910">https://zhuanlan.zhihu.com/p/425235910</a></p>
 </blockquote>
 <p><img src="/images/ARM/pipelining.png"></p>
-<p>在<code>ARM Cortex-A</code>中使用的是5级流水线 .</p>
+<p>在<code>ARM Cortex-A</code>中使用的是 5 级流水线 .</p>
 <ol>
 <li><p>Inst Fetch</p>
-<p> 从<code>PC</code>中指向的地址取指令并放入指令寄存器<code>IR</code>,接着<code>PC+4</code>指向顺序的下一条指令 .</p>
+<p>从<code>PC</code>中指向的地址取指令并放入指令寄存器<code>IR</code>,接着<code>PC+4</code>指向顺序的下一条指令 .</p>
 </li>
 <li><p>.. Decode</p>
-<p> 对指令进行译码，并用<code>IR</code>中的寄存器地址去访问通用寄存器组，读出所需的操作数 .</p>
+<p>对指令进行译码，并用<code>IR</code>中的寄存器地址去访问通用寄存器组，读出所需的操作数 .</p>
 </li>
 <li><p>Excute</p>
-<p> 对不同类型指令进行的响应的执行操作 .</p>
+<p>对不同类型指令进行的响应的执行操作 .</p>
 </li>
 <li><p>Memory</p>
-<p> 该周期处理的指令只有<code>Load、Store</code>和<code>分支指令</code> .</p>
+<p>该周期处理的指令只有<code>Load、Store</code>和<code>分支指令</code> .</p>
 <ul>
 <li><code>Load、Store</code> 用于访存读写 .</li>
-<li><code>分支指令</code>将转移目标地址送入<code>PC</code>，在编写跳转程序时，应合理优化 <del>采用延迟转移</del> 避免分支预测失败带来的流水线停顿，提高CPU效率 .</li>
+<li><code>分支指令</code>将转移目标地址送入<code>PC</code>，在编写跳转程序时，应合理优化 <del>采用延迟转移</del> 避免分支预测失败带来的流水线停顿，提高 CPU 效率 .</li>
 </ul>
 </li>
 <li><p>Write</p>
-<p> 将<code>ALU</code>运算指令后的结果写入寄存器组 .</p>
+<p>将<code>ALU</code>运算指令后的结果写入寄存器组 .</p>
 </li>
 </ol>
 <ul>
 <li><p>仔细</p>
-<p>  需要指出的是：在此流水线中<code>Excute</code>期间执行的指令的地址与<code>PC</code>所指向的地址间隔<code>8 Byte</code> .</p>
+<p>需要指出的是：在此流水线中<code>Excute</code>期间执行的指令的地址与<code>PC</code>所指向的地址间隔<code>8 Byte</code> .</p>
 </li>
 </ul>
 
